@@ -28,6 +28,7 @@ import VueColorpicker from 'vue-pop-colorpicker'
 import VueCustomScrollbar from 'vue-custom-scrollbar'
 import VueApexCharts from 'vue-apexcharts'
 import DateRangePicker from 'vue2-daterange-picker'
+import VueGoodTablePlugin from 'vue-good-table'
 
 // plugins css
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -44,9 +45,16 @@ import 'fullcalendar/dist/fullcalendar.css'
 import 'vue-select/dist/vue-select.css'
 import 'vue-slider-component/theme/antd.css'
 import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
+import 'vue-good-table/dist/vue-good-table.css'
+import './assets/plugins/jvectormap-next/jquery-jvectormap.css'
+import './assets/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.css'
+import './assets/plugins/gritter/css/jquery.gritter.css'
 
 // color admin css
-import './assets/css/default/app.min.css'
+// import './assets/css/default/app.min.css'
+import './assets/css/facebook/font-google.css'
+import './assets/css/facebook/app.min.css'
+import './assets/css/facebook/theme/green.min.css'
 import './scss/vue.scss'
 import 'bootstrap-social/bootstrap-social.css'
 
@@ -80,6 +88,8 @@ Vue.use(VueInsProgressBar, {
   show: true,
   height: '3px'
 })
+Vue.use(VueGoodTablePlugin);
+
 Vue.component('v-select', VueSelect);
 Vue.component('datepicker', VueDatepicker)
 Vue.component('masked-input', VueMaskedInput)

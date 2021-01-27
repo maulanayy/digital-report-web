@@ -58,6 +58,14 @@ import UserLoginV2 from '../pages/User-login-v2.vue'
 import UserLoginV3 from '../pages/User-login-v3.vue'
 import UserRegisterV3 from '../pages/User-register-v3.vue'
 import HelperCss from '../pages/Helper-css'
+import UserData from '../pages/user/data'
+import LabData from '../pages/lab/data'
+import AreaData from '../pages/area/data'
+import CPData from '../pages/control-point/data'
+import SettingRole from '../pages/setting/role-data'
+import SettingEwon from '../pages/setting/ewon-data'
+import SettingOracle from '../pages/setting/oracle-date'
+import SettingPermission from '../pages/setting/permission-data'
 
 const routes = [
   { path: '/dashboard/v1', component: DashboardV1 },
@@ -118,7 +126,16 @@ const routes = [
   { path: '/user/login-v2', component: UserLoginV2 },
   { path: '/user/login-v3', component: UserLoginV3 },
   { path: '/user/register-v3', component: UserRegisterV3 },
-  { path: '/helper/css', component: HelperCss }
+  { path: '/helper/css', component: HelperCss },
+  { path: '/user', component: UserData },
+  { path: '/lab', component: LabData },
+  { path: '/area', component: AreaData },
+  { path: '/control_point', component: CPData },
+  { path: '/setting/ewon', component: SettingEwon },
+  { path: '/setting/oracle', component: SettingOracle },
+  { path: '/setting/role', component: SettingRole },
+  { path: '/setting/permission', component: SettingPermission },
+
 ]
 
 export default routes;

@@ -13,14 +13,16 @@
 
     <!-- begin panel -->
     <panel title="Oracle Setting">
-       <b-button class="mb-3" variant="primary" :to="'/oracle/add'">Create</b-button>
+      <b-button class="mb-3" variant="primary" :to="'/seeting/oracle/add'"
+        >Create</b-button
+      >
       <vue-good-table
         :columns="columns"
-        :rows="rows"
+        :rows="data"
         :pagination-options="{
           enabled: true,
           mode: 'records',
-          perPage: 10,
+          perPage: this.meta.perPage,
           position: 'bottom',
           perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
@@ -35,7 +37,12 @@
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
-            <b-button variant="primary" class="mr-2">Edit</b-button>
+            <b-button
+              variant="primary"
+              class="mr-2"
+              :to="'/seeting/oracle/edit/' + props.row.id"
+              >Edit</b-button
+            >
             <b-button variant="danger" class="mr-2">Delete</b-button>
           </span>
           <span v-else>
@@ -57,31 +64,28 @@ export default {
     return {
       columns: [
         {
+          label : "ID",
+          field : "id",
+        },
+        {
           label: "Hostname",
-          field: "hostname",
+          field: "txtHost",
         },
         {
           label: "IP Address",
-          field: "ip_address",
+          field: "txtIP",
         },
         {
           label: "Password",
-          field: "password",
+          field: "txtPassword",
         },
         {
           label: "Action",
           field: "btn",
         },
       ],
-      rows: [
-        {
-          id: 1,
-          hostname: "m*******c",
-          ip_address: "1*******3",
-          password: "********",
-          btn: "<button class='primary'>Edit</button>",
-        },
-      ],
+      data: [],
+      meta: {},
     };
   },
   created() {
@@ -90,6 +94,24 @@ export default {
   beforeRouteLeave(to, from, next) {
     PageOptions.pageWithFooter = false;
     next();
+  },
+  methods: {
+    getData() {
+      const url = "/setting/oracle";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.data = response.data.data.data;
+          this.meta = response.data.data.meta;
+          // console.log(this.meta)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
+  mounted() {
+    this.getData();
   },
 };
 </script>

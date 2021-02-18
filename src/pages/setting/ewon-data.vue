@@ -13,14 +13,16 @@
 
     <!-- begin panel -->
     <panel title="Data Ewon">
-      <b-button class="mb-3" variant="primary" :to="'/seeting/ewon/add'">Create</b-button>
+      <b-button class="mb-3" variant="primary" :to="'/seeting/ewon/add'"
+        >Create</b-button
+      >
       <vue-good-table
         :columns="columns"
         :rows="data"
         :pagination-options="{
           enabled: true,
           mode: 'records',
-          perPage: 10,
+          perPage: this.meta.perPage,
           position: 'bottom',
           perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
@@ -35,8 +37,18 @@
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
-            <b-button variant="primary" class="mr-2">Edit</b-button>
-            <b-button variant="danger" class="mr-2">Delete</b-button>
+            <b-button
+              variant="primary"
+              class="mr-2"
+              :to="'/seeting/ewon/edit/' + props.row.id"
+              >Edit</b-button
+            >
+            <b-button
+              variant="danger"
+              class="mr-2"
+              :to="'/seeting/ewon/edit/' + props.row.id"
+              >Delete</b-button
+            >
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -71,7 +83,7 @@ export default {
         },
         {
           label: "Status",
-          field :"txtStatus",
+          field: "txtStatus",
         },
         {
           label: "Created At",
@@ -85,8 +97,8 @@ export default {
           field: "btn",
         },
       ],
-      data : [],
-      meta : {}
+      data: [],
+      meta: {},
     };
   },
   created() {
@@ -108,7 +120,7 @@ export default {
           console.log(this.data);
         })
         .catch((error) => {
-          this.err.push(error);
+          console.log(error);
         });
     },
   },

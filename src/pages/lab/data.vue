@@ -12,18 +12,20 @@
 
     <!-- begin panel -->
     <panel title="Data Lab">
-      <b-button class="float-right mb-3" variant="primary">Create Lab</b-button>
+      <b-button class="mb-3" variant="primary" :to="'/lab/add'"
+        >Create</b-button
+      >
       <vue-good-table
         :columns="columns"
-        :rows="rows"
+        :rows="data"
         :pagination-options="{
           enabled: true,
           mode: 'records',
-          perPage: 10,
+          perPage: this.meta.perPage,
           position: 'bottom',
           perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
-          setCurrentPage: 2,
+          setCurrentPage: 1,
           nextLabel: 'next',
           prevLabel: 'prev',
           rowsPerPageLabel: 'Rows per page',
@@ -34,8 +36,15 @@
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
-            <b-button variant="primary" class="mr-2">Edit</b-button>
-            <b-button variant="danger" class="mr-2">Delete</b-button>
+            <b-button
+              variant="primary"
+              class="mr-2"
+              :to="'/lab/edit/' + props.row.id"
+              >Edit</b-button
+            >
+            <b-button variant="danger" class="mr-2" :to="'/lab/add'"
+              >Delete</b-button
+            >
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -62,13 +71,13 @@ export default {
         },
         {
           label: "Name",
-          field: "name",
+          field: "txtName",
         },
         {
           label: "Created At",
-          field: "createdAt",
+          field: "dtmCreatedAt",
           type: "date",
-          dateInputFormat: "yyyy-MM-dd",
+          dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
           dateOutputFormat: "dd-MM-yyyy",
         },
         {
@@ -76,18 +85,8 @@ export default {
           field: "btn",
         },
       ],
-      rows: [
-        {
-          id: 1,
-          name: "Lab Micro",
-          createdAt: "2021-01-31",
-        },
-        {
-          id: 2,
-          name: "Lab inline",
-          createdAt: "2021-01-31",
-        },
-      ],
+      data: [],
+      meta: {},
     };
   },
   created() {
@@ -96,6 +95,23 @@ export default {
   beforeRouteLeave(to, from, next) {
     PageOptions.pageWithFooter = false;
     next();
+  },
+  methods: {
+    getData() {
+      const url = "/lab";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.data = response.data.data.data;
+          this.meta = response.data.data.meta;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
+  mounted() {
+    this.getData();
   },
 };
 </script>

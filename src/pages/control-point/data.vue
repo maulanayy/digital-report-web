@@ -12,14 +12,16 @@
 
     <!-- begin panel -->
     <panel title="Data Control Point">
-      <!-- <b-button>Insert</b-button> -->
+      <b-button class="mb-3" variant="primary" :to="'/control_point/add'"
+        >Create</b-button
+      >
       <vue-good-table
         :columns="columns"
-        :rows="rows"
+        :rows="data"
         :pagination-options="{
           enabled: true,
           mode: 'records',
-          perPage: 10,
+          perPage: this.meta.perPage,
           position: 'bottom',
           perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
@@ -34,7 +36,12 @@
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
-            <b-button variant="primary" class="mr-2">Edit</b-button>
+            <b-button
+              variant="primary"
+              class="mr-2"
+              :to="'/control_point/edit/' + props.row.id"
+              >Edit</b-button
+            >
             <b-button variant="danger" class="mr-2">Delete</b-button>
           </span>
           <span v-else>
@@ -62,13 +69,13 @@ export default {
         },
         {
           label: "Name",
-          field: "name",
+          field: "txtName",
         },
         {
           label: "Created At",
-          field: "createdAt",
+          field: "dtmCreatedAt",
           type: "date",
-          dateInputFormat: "yyyy-MM-dd",
+          dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
           dateOutputFormat: "dd-MM-yyyy",
         },
         {
@@ -76,38 +83,9 @@ export default {
           field: "btn",
         },
       ],
-      rows: [
-        {
-          id: 1,
-          name: "CP-1",
-          createdAt: "2021-01-31",
-        },
-        {
-          id: 2,
-          name: "CP-2",
-          createdAt: "2021-01-31",
-        },
-        {
-          id: 3,
-          name: "CP-3",
-          createdAt: "2021-01-30",
-        },
-        {
-          id: 4,
-          name: "CP-4",
-          createdAt: "2021-01-11",
-        },
-        {
-          id: 5,
-          name: "CP-5",
-          createdAt: "2021-01-21",
-        },
-        {
-          id: 6,
-          name: "CP-6",
-          createdAt: "2021-01-31",
-        },
-      ],
+      
+      data: [],
+      meta: {},
     };
   },
   created() {
@@ -116,6 +94,25 @@ export default {
   beforeRouteLeave(to, from, next) {
     PageOptions.pageWithFooter = false;
     next();
+  },
+  methods: {
+    getData() {
+      const url = "/control-point";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.data = response.data.data.data;
+          this.meta = response.data.data.meta;
+          // console.log(this.meta)
+          console.log(this.data);
+        })
+        .catch((error) => {
+          this.err.push(error);
+        });
+    },
+  },
+  mounted() {
+    this.getData();
   },
 };
 </script>

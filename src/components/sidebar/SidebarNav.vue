@@ -1,9 +1,9 @@
 <template>
 	<!-- begin sidebar nav -->
 	<ul class="nav" v-if="menus">
-		<li class="nav-search" v-if="pageOptions.pageSidebarSearch">
+		<!-- <li class="nav-search" v-if="pageOptions.pageSidebarSearch">
 			<input type="text" v-on:keyup="handleSidebarFilter" class="form-control" placeholder="Sidebar menu filter..." />
-		</li>
+		</li> -->
 		<li class="nav-header">Navigation</li>
 		<template v-for="menu in menus">
 			<sidebar-nav-list 

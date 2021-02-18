@@ -13,9 +13,7 @@
 
     <!-- begin panel -->
     <panel title="Oracle Setting">
-      <b-button class="float-right mb-3" variant="primary"
-        >Create Connection</b-button
-      >
+       <b-button class="mb-3" variant="primary" :to="'/oracle/add'">Create</b-button>
       <vue-good-table
         :columns="columns"
         :rows="rows"

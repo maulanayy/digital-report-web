@@ -12,31 +12,25 @@
 
     <!-- begin panel -->
     <panel title="Data Users">
-      <b-button class="float-right mb-3" variant="primary"
-        >Create User</b-button
-      >
-      <vue-good-table
-        :columns="columns"
-        :rows="rows"
-        :pagination-options="{
+      <b-button class="mb-3" variant="primary" :to="'/user/add'">Create</b-button>
+      <vue-good-table :columns="columns" :rows="data" :pagination-options="{
           enabled: true,
           mode: 'records',
-          perPage: 10,
+          perPage: this.meta.perPage,
           position: 'bottom',
           perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
-          setCurrentPage: 2,
+          setCurrentPage: 1,
           nextLabel: 'next',
           prevLabel: 'prev',
           rowsPerPageLabel: 'Rows per page',
           ofLabel: 'of',
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
-        }"
-      >
+        }">
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
-            <b-button variant="primary" class="mr-2">Edit</b-button>
+            <b-button variant="primary" class="mr-2" :to="'/user/edit/' + props.row.id">Edit</b-button>
             <b-button variant="danger" class="mr-2">Delete</b-button>
           </span>
           <span v-else>
@@ -50,95 +44,74 @@
 </template>
 
 <script>
-import PageOptions from "../../config/PageOptions.vue";
+  import PageOptions from "../../config/PageOptions.vue";
 
-export default {
-  name: "data-users",
-  data() {
-    return {
-      columns: [
-        {
-          label: "ID",
-          field: "id",
-          type: "number",
-        },
-        {
-          label: "Name",
-          field: "name",
-        },
-        {
-          label: "Username",
-          field: "username",
-        },
-        {
-          label: "Role",
-          field: "role",
-        },
-        {
-          label: "Created At",
-          field: "createdAt",
-          type: "date",
-          dateInputFormat: "yyyy-MM-dd",
-          dateOutputFormat: "dd-MM-yyyy",
-        },
-        {
-          label: "Action",
-          field: "btn",
-        },
-      ],
-      rows: [
-        {
-          id: 1,
-          name: "John",
-          username: "john",
-          role: "superadmin",
-          createdAt: "2021-01-31",
-        },
-        {
-          id: 2,
-          name: "Jane",
-          username: "jane",
-          role: "admin",
-          createdAt: "2021-01-31",
-        },
-        {
-          id: 3,
-          name: "Susan",
-          username: "susan",
-          role: "admin",
-          createdAt: "2021-01-30",
-        },
-        {
-          id: 4,
-          name: "Chris",
-          username: "chris",
-          role: "admin",
-          createdAt: "2021-01-11",
-        },
-        {
-          id: 5,
-          name: "Dan",
-          username: "dan",
-          role: "admin",
-          createdAt: "2021-01-21",
-          score: 0.03343,
-        },
-        {
-          id: 6,
-          name: "John",
-          username: "john",
-          role: "inspector",
-          createdAt: "2021-01-31",
-        },
-      ],
-    };
-  },
-  created() {
-    PageOptions.pageWithFooter = true;
-  },
-  beforeRouteLeave(to, from, next) {
-    PageOptions.pageWithFooter = false;
-    next();
-  },
-};
+  export default {
+    name: "data-users",
+    data() {
+      return {
+        columns: [{
+            label: "ID",
+            field: "id",
+            type: "number",
+          },
+          {
+            label: "Name",
+            field: "txtName",
+          },
+          {
+            label: "Username",
+            field: "txtUsername",
+          },
+          {
+            label: "Department",
+            field: "txtDepartment",
+          },
+          {
+            label: "Role",
+            field: "txtRoleName",
+          },
+          {
+            label: "Created At",
+            field: "createdAt",
+            type: "date",
+            dateInputFormat: "yyyy-MM-dd",
+            dateOutputFormat: "dd-MM-yyyy",
+          },
+          {
+            label: "Action",
+            field: "btn",
+          },
+        ],
+        data: [],
+        meta: {},
+      };
+    },
+    created() {
+      PageOptions.pageWithFooter = true;
+    },
+    beforeRouteLeave(to, from, next) {
+      PageOptions.pageWithFooter = false;
+      next();
+    },
+    methods: {
+      getData() {
+        const url = "/user";
+        this.$axios
+          .get(url)
+          .then((response) => {
+            this.data = response.data.data.data;
+            this.meta = response.data.data.meta;
+            // console.log(this.meta)
+            console.log(this.data);
+          })
+          .catch((error) => {
+            this.err.push(error);
+          });
+      },
+    },
+    mounted() {
+      this.getData();
+    },
+  };
 </script>

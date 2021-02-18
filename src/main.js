@@ -57,6 +57,7 @@ import './assets/css/facebook/app.min.css'
 import './assets/css/facebook/theme/green.min.css'
 import './scss/vue.scss'
 import 'bootstrap-social/bootstrap-social.css'
+import axios from "axios";
 
 import App from './App.vue'
 
@@ -99,6 +100,16 @@ Vue.component('vue-custom-scrollbar', VueCustomScrollbar)
 Vue.component('apexchart', VueApexCharts)
 Vue.component('date-range-picker', DateRangePicker)
 Vue.component(VueCountdown.name, VueCountdown);
+
+let axiosOptoins = {
+  baseURL: "http://localhost:1337",
+  timeout: 180000, // 3 menit
+  headers: {}
+ 
+}
+
+Vue.prototype.$axios = axios.create(axiosOptoins);
+
 
 const router = new VueRouter({
 	routes

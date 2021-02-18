@@ -3,17 +3,16 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb float-xl-right">
       <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
-      <li class="breadcrumb-item"><a href="javascript:;">Setting</a></li>
-      <li class="breadcrumb-item active">Role</li>
+      <li class="breadcrumb-item active">Lab</li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Setting Role</h1>
+    <h1 class="page-header">Lab</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Data Roles">
-      <b-button class="mb-3" variant="primary" :to="'/role/add'">Create</b-button>
+    <panel title="Data Lab">
+      <b-button class="float-right mb-3" variant="primary">Create Lab</b-button>
       <vue-good-table
         :columns="columns"
         :rows="rows"
@@ -52,7 +51,7 @@
 import PageOptions from "../../config/PageOptions.vue";
 
 export default {
-  name: "data-role",
+  name: "data-lab",
   data() {
     return {
       columns: [
@@ -80,32 +79,12 @@ export default {
       rows: [
         {
           id: 1,
-          name: "superadmin",
+          name: "Lab Micro",
           createdAt: "2021-01-31",
         },
         {
           id: 2,
-          name: "admin",
-          createdAt: "2021-01-31",
-        },
-        {
-          id: 3,
-          name: "coordinator",
-          createdAt: "2021-01-30",
-        },
-        {
-          id: 4,
-          name: "inspector",
-          createdAt: "2021-01-11",
-        },
-        {
-          id: 5,
-          name: "development",
-          createdAt: "2021-01-21",
-        },
-        {
-          id: 6,
-          name: "CP-6",
+          name: "Lab inline",
           createdAt: "2021-01-31",
         },
       ],

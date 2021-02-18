@@ -8,8 +8,8 @@
 				</div>
 				<div class="info">
 					<b class="caret pull-right"></b>
-					Sean Ngu
-					<small>Front end developer</small>
+					Maulana Yusuf
+					<small>Superadmin</small>
 				</div>
 			</a>
 		</li>

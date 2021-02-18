@@ -1,9 +1,19 @@
 <script>
 const sidebarMenu = [
+  {
+    path : "/dashboard",
+     icon: "fa fa-th",
+    title: "Home",
+    children : [
+      { path: "/dashboard/v1", title: "Home" },
+      { path: "/dashboard/v2", title: "Graphic" },
+    ]
+  },
   { path: "/user", icon: "fa fa-users", title: "User" },
   { path: "/lab", icon: "fa fa-flask", title: "Lab" },
   { path: "/area", icon: "fa fa-warehouse", title: "Area" },
   { path: "/control_point", icon : "fa fa-sliders-h", title: "Control Point" },
+  { path: "/form", icon : "fa fa-file", title: "Form" },
   {
     path: "/setting",
     icon: "fa fa-cog",
@@ -15,16 +25,7 @@ const sidebarMenu = [
       { path: "/setting/permission", title: "Permission" },
     ],
   },
-  {
-    path: "/dashboard/v2",
-    icon: "fa fa-th",
-    title: "Dashboard",
-    children: [
-      { path: "/dashboard/v1", title: "Dashboard v1" },
-      { path: "/dashboard/v2", title: "Dashboard v2" },
-      { path: "/dashboard/v3", title: "Dashboard v3" },
-    ],
-  },
+ 
   
 ];
 

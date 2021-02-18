@@ -3,24 +3,25 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb float-xl-right">
       <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
-      <li class="breadcrumb-item"><a href="javascript:;">Setting</a></li>
-      <li class="breadcrumb-item active">Ewon</li>
+      <li class="breadcrumb-item active">Page with Footer</li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Setting Ewon</h1>
+    <h1 class="page-header">Form</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Data Ewon">
-      <b-button class="mb-3" variant="primary" :to="'/seeting/ewon/add'">Create</b-button>
+    <panel title="Data Form">
+      <b-button class="mb-3" variant="primary" :to="'/form/add'"
+        >Create</b-button
+      >
       <vue-good-table
         :columns="columns"
         :rows="data"
         :pagination-options="{
           enabled: true,
           mode: 'records',
-          perPage: 10,
+          perPage: this.meta.perPage,
           position: 'bottom',
           perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
@@ -33,15 +34,6 @@
           allLabel: 'All',
         }"
       >
-        <template slot="table-row" slot-scope="props">
-          <span v-if="props.column.field == 'btn'">
-            <b-button variant="primary" class="mr-2">Edit</b-button>
-            <b-button variant="danger" class="mr-2">Delete</b-button>
-          </span>
-          <span v-else>
-            {{ props.formattedRow[props.column.field] }}
-          </span>
-        </template>
       </vue-good-table>
     </panel>
     <!-- end panel -->
@@ -52,7 +44,7 @@
 import PageOptions from "../../config/PageOptions.vue";
 
 export default {
-  name: "data-ewon",
+  name: "data-control-point",
   data() {
     return {
       columns: [
@@ -62,16 +54,23 @@ export default {
           type: "number",
         },
         {
-          label: "Topic",
-          field: "txtTopic",
+          label: "Name",
+          field: "txtName",
         },
         {
-          label: "Type Topic",
-          field: "txtTypeTopic",
+          label : "Product",
+          field : "txtProductName"
         },
         {
-          label: "Status",
-          field :"txtStatus",
+          label: "No Document",
+          field: "txtNoDok",
+        },
+        {
+          label : "Production Date",
+          field: "dtmProductionDate",
+          type: "date",
+          dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
+          dateOutputFormat: "dd-MM-yyyy",
         },
         {
           label: "Created At",
@@ -81,12 +80,17 @@ export default {
           dateOutputFormat: "dd-MM-yyyy",
         },
         {
+          label : "Approval",
+          field : "txtApprovedBy"
+        },
+        {
           label: "Action",
           field: "btn",
         },
       ],
-      data : [],
-      meta : {}
+      
+      data: [],
+      meta: {},
     };
   },
   created() {
@@ -98,7 +102,7 @@ export default {
   },
   methods: {
     getData() {
-      const url = "/setting/ewon";
+      const url = "/form";
       this.$axios
         .get(url)
         .then((response) => {

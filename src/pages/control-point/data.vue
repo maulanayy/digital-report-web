@@ -69,11 +69,15 @@ export default {
         },
         {
           label: "Name",
-          field: "txtName",
+          field: "txtname",
+        },
+        {
+          label : "Area",
+          field : "areatxtname",
         },
         {
           label: "Created At",
-          field: "dtmCreatedAt",
+          field: "dtmcreatedat",
           type: "date",
           dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
           dateOutputFormat: "dd-MM-yyyy",

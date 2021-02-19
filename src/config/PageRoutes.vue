@@ -76,6 +76,8 @@ import SettingOracle from "../pages/setting/oracle-data";
 import OracleAdd from "../pages/setting/oracle-add";
 import SettingPermission from "../pages/setting/permission-data";
 import SettingPermissionAdd from "../pages/setting/permission-add";
+import SettingParameter from "../pages/setting/parameter-data";
+import ParameterAdd from "../pages/setting/parameter-add";
 
 const routes = [
   { path: "/dashboard/v1", component: DashboardV1 },
@@ -177,6 +179,9 @@ const routes = [
   { path: "/setting/permission", component: SettingPermission },
   { path: "/seeting/permission/add", component: SettingPermissionAdd },
   { path: "/seeting/permission/edit/:id", component: SettingPermissionAdd },
+  { path: "/setting/parameter", component: SettingParameter },
+  { path: "/setting/parameter/add", component: ParameterAdd },
+  { path: "/setting/parameter/edit/:id", component: ParameterAdd },
 ];
 
 export default routes;

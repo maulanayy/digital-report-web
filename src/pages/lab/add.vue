@@ -25,9 +25,8 @@
             />
           </div>
         </div>
-        <b-button class="float-right mb-3" variant="primary" @click="create()"
-          >Create</b-button
-        >
+        <b-button class="float-right mb-3" variant="primary" @click="create()" v-if="url == 'add'">Create</b-button>
+        <b-button class="float-right mb-3" variant="primary" @click="create()" v-else>Edit</b-button>
       </form>
     </panel>
     <!-- end panel -->

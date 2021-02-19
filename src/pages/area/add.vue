@@ -11,7 +11,7 @@
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Add Lab">
+    <panel title="Add Lab Area">
       <form>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Name</label>
@@ -29,16 +29,15 @@
           <label class="col-form-label col-md-3">Lab</label>
           <div class="col-md-9">
             <v-select
-              :options="['Lab Inline', 'Lab Micro']"
-              name="id_lab"
+              :options="lab_category"
+              name="lab_id"
               v-model="lab_id"
             >
             </v-select>
           </div>
         </div>
-        <b-button class="float-right mb-3" variant="primary" @click="create()"
-          >Create</b-button
-        >
+        <b-button class="float-right mb-3" variant="primary" @click="create()" v-if="url == 'add'">Create</b-button>
+        <b-button class="float-right mb-3" variant="primary" @click="create()" v-else>Edit</b-button>
       </form>
     </panel>
     <!-- end panel -->
@@ -57,17 +56,8 @@ export default {
       name: "",
       areaId: "",
       url: "",
-      lab_category: [
-        {
-          id: 1,
-          name: "Lab Inline",
-        },
-        {
-          id: 2,
-          name: "Lab Micru",
-        },
-      ],
-      lab_id: 0,
+      lab_category: [],
+      lab_id: "",
     };
   },
   created() {
@@ -84,7 +74,7 @@ export default {
     create() {
       const body = {
         name: this.name,
-        lab_id: 1,
+        lab_id: this.lab_id.value,
       };
 
       if (this.url == "add") {
@@ -140,7 +130,6 @@ export default {
       }
     },
     getData() {
-      console.log(this.url);
       if (this.url == "edit") {
         const url = "/area/" + this.labId;
         this.$axios
@@ -153,8 +142,25 @@ export default {
           });
       }
     },
+    getLabCode() {
+      const url = "/lab/code";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.lab_category = response.data.data.data.map(x => {
+            return {
+              label : x.txtName,
+              value : x.id
+            }
+          })
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
   mounted() {
+    this.getLabCode();
     this.getData();
   },
 };

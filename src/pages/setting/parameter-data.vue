@@ -3,16 +3,17 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb float-xl-right">
       <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
-      <li class="breadcrumb-item active">Area</li>
+      <li class="breadcrumb-item"><a href="javascript:;">Setting</a></li>
+      <li class="breadcrumb-item active">Parameter</li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Area</h1>
+    <h1 class="page-header">Setting Parameter</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Data Area">
-      <b-button class="mb-3" variant="primary" :to="'/area/add'"
+    <panel title="Data Parameterf">
+      <b-button class="mb-3" variant="primary" :to="'/setting/parameter/add'"
         >Create</b-button
       >
       <vue-good-table
@@ -25,7 +26,7 @@
           position: 'bottom',
           perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
-          setCurrentPage: 1,
+          setCurrentPage: 2,
           nextLabel: 'next',
           prevLabel: 'prev',
           rowsPerPageLabel: 'Rows per page',
@@ -39,10 +40,15 @@
             <b-button
               variant="primary"
               class="mr-2"
-              :to="'/area/edit/' + props.row.id"
+              :to="'/setting/parameter/edit/' + props.row.id"
               >Edit</b-button
             >
-            <b-button variant="danger" class="mr-2">Delete</b-button>
+            <b-button
+              variant="danger"
+              class="mr-2"
+              :to="'/setting/parameter/edit/' + props.row.id"
+              >Delete</b-button
+            >
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -58,7 +64,7 @@
 import PageOptions from "../../config/PageOptions.vue";
 
 export default {
-  name: "data-area",
+  name: "data-parameter",
   data() {
     return {
       columns: [
@@ -69,15 +75,19 @@ export default {
         },
         {
           label: "Name",
-          field: "txtname",
+          field: "txtName",
         },
         {
-          label: "Lab",
-          field: "labtxtname",
+          label: "Topic",
+          field: "txtTopic",
+        },
+        {
+          label: "Control Point",
+          field: "ControlPoint.txtName",
         },
         {
           label: "Created At",
-          field: "dtmcreatedat",
+          field: "dtmCreatedAt",
           type: "date",
           dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
           dateOutputFormat: "dd-MM-yyyy",
@@ -100,17 +110,17 @@ export default {
   },
   methods: {
     getData() {
-      const url = "/area";
+      const url = "/setting/parameter";
       this.$axios
         .get(url)
         .then((response) => {
-          this.data = response.data.data.data;
-          this.meta = response.data.data.meta;
+        //   this.data = response.data.data.data;
+        //   this.meta = response.data.data.meta;
           // console.log(this.meta)
-          console.log(this.data);
+          console.log(response.data.data.data);
         })
         .catch((error) => {
-          this.err.push(error);
+          console.log(error);
         });
     },
   },

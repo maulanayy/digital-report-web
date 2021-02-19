@@ -21,6 +21,7 @@ const sidebarMenu = [
     children: [
       { path: "/setting/ewon", title: "Ewon" },
       { path: "/setting/oracle", title: "Oracle" },
+      { path: "/setting/parameter", title: "Parameter" },
       { path: "/setting/role", title: "Role" },
       { path: "/setting/permission", title: "Permission" },
     ],

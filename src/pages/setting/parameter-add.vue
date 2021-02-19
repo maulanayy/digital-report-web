@@ -3,26 +3,58 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb float-xl-right">
       <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
-      <li class="breadcrumb-item active">Control Point</li>
+      <li class="breadcrumb-item"><a href="javascript:;">Setting</a></li>
+      <li class="breadcrumb-item active">Parameter</li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Add Control Point</h1>
+    <h1 class="page-header">Add Parameter Setting</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Add Control Point">
+    <panel title="Add Parameter" class="col-md-8">
       <form>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-3">Name</label>
-          <div class="col-md-9">
-            <input type="input" class="form-control m-b-5" placeholder="Enter Name Control Point" name="name" v-model="name" />
+          <label class="col-form-label col-md-2">Name</label>
+          <div class="col-md-10">
+            <input type="input" class="form-control m-b-5" placeholder="Enter Parameter" name="parameter" v-model="parameter" />
+          </div>
+        </div>
+         <div class="form-group row m-b-15">
+          <label class="col-form-label col-md-2">Topic</label>
+          <div class="col-md-10">
+            <v-select
+              :options="[
+                'Incoming RM',
+                'Incoming PM',
+                'Incoming FG',
+                'OPRP',
+                'PRP',
+                'Front Line',
+                'COMPOUNDING MIX',
+              ]"
+              name="id_cp"
+              v-model="cp_id"
+            >
+            </v-select>
           </div>
         </div>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-3">Area</label>
-          <div class="col-md-9">
-            <v-select :options="areas" name="area_id" v-model="area_id">
+          <label class="col-form-label col-md-2">Control Point</label>
+          <div class="col-md-10">
+            <v-select
+              :options="[
+                'Incoming RM',
+                'Incoming PM',
+                'Incoming FG',
+                'OPRP',
+                'PRP',
+                'Front Line',
+                'COMPOUNDING MIX',
+              ]"
+              name="id_cp"
+              v-model="cp_id"
+            >
             </v-select>
           </div>
         </div>
@@ -31,8 +63,6 @@
       </form>
     </panel>
     <!-- end panel -->
-
-    <notifications position="top right" class="mt-3 ml-3" :speed="500" />
   </div>
 </template>
 
@@ -40,20 +70,21 @@
   import PageOptions from "../../config/PageOptions.vue";
 
   export default {
-    name: "add-control-point",
+    name: "add-parameter",
     data() {
       return {
-        name: "",
-        cpId: "",
+        name : "",
+        topicID: "",
+        topics: [],
+        contorlPoint : [],
         url: "",
-        areas: [],
-        area_id: "",
+        parameterID: ""
       };
     },
     created() {
       var currentUrl = this.$route.path.split("/");
-      this.cpId = currentUrl[3];
-      this.url = currentUrl[2];
+      this.parameterID = currentUrl[4];
+      this.url = currentUrl[3];
       PageOptions.pageWithFooter = true;
     },
     beforeRouteLeave(to, from, next) {
@@ -63,13 +94,13 @@
     methods: {
       create() {
         const body = {
-          name: this.name,
-          area_id : this.area_id.value,
+          topic: this.topic,
+          type_topic: this.type_topic,
         };
 
         if (this.url == "add") {
           this.$axios
-            .post("/control-point", body, {
+            .post("/setting/parameter", body, {
               headers: {
                 "Content-Type": "application/json",
               },
@@ -82,7 +113,7 @@
               });
 
               setTimeout(() => {
-                this.$router.push("/control_point");
+                this.$router.push("/setting/parameter");
               }, 1500);
             })
             .catch((err) => {
@@ -94,7 +125,7 @@
             });
         } else {
           this.$axios
-            .put("/control-point/" + this.cpId, body, {
+            .put("/setting/parameter/" + this.topicID, body, {
               headers: {
                 "Content-Type": "application/json",
               },
@@ -107,7 +138,7 @@
               });
 
               setTimeout(() => {
-                this.$router.push("/control_point");
+                this.$router.push("/setting/parameter");
               }, 1500);
             })
             .catch((err) => {
@@ -120,40 +151,22 @@
         }
       },
       getData() {
-        console.log(this.url);
         if (this.url == "edit") {
-          const url = "/control-point/" + this.cpId;
+          const url = "/setting/parameter/" + this.topicID;
           this.$axios
             .get(url)
             .then((response) => {
-              this.name = response.data.data.txtName;
+              this.topic = response.data.data.txtTopic;
+              this.type_topic = response.data.data.txtTypeTopic;
             })
             .catch((error) => {
               console.log(error);
             });
         }
       },
-      getAreaCode() {
-        const url = "/area/code";
-        this.$axios
-          .get(url)
-          .then((response) => {
-            this.areas = response.data.data.data.map(x => {
-              return {
-                label: x.txtName,
-                value: x.id
-              }
-            })
-            console.log(this.areas)
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      },
     },
     mounted() {
       this.getData();
-      this.getAreaCode();
     },
   };
 </script>

@@ -13,14 +13,14 @@
 
     <!-- begin panel -->
     <panel title="Data Roles">
-      <b-button class="mb-3" variant="primary" :to="'/role/add'">Create</b-button>
+      <b-button class="mb-3" variant="primary" :to="'/seeting/role/add'">Create</b-button>
       <vue-good-table
         :columns="columns"
         :rows="rows"
         :pagination-options="{
           enabled: true,
           mode: 'records',
-          perPage: 10,
+          perPage: this.meta.perPage,
           position: 'bottom',
           perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
@@ -59,7 +59,6 @@ export default {
         {
           label: "ID",
           field: "id",
-          type: "number",
         },
         {
           label: "Name",
@@ -109,6 +108,8 @@ export default {
           createdAt: "2021-01-31",
         },
       ],
+      data: [],
+      meta: {},
     };
   },
   created() {
@@ -117,6 +118,24 @@ export default {
   beforeRouteLeave(to, from, next) {
     PageOptions.pageWithFooter = false;
     next();
+  },
+  methods: {
+    getData() {
+      const url = "/role";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.data = response.data.data.data;
+          this.meta = response.data.data.meta;
+          // console.log(this.meta)
+        })
+        .catch((error) => {
+          this.err.push(error);
+        });
+    },
+  },
+  mounted() {
+    this.getData();
   },
 };
 </script>

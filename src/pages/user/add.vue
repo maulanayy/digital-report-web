@@ -22,6 +22,7 @@
               placeholder="Enter Username"
               name="username"
               v-model="username"
+              :disabled="url == 'edit' ? true : false"
             />
           </div>
         </div>
@@ -34,6 +35,7 @@
               placeholder="Enter Password"
               name="password"
               v-model="password"
+              :disabled="url == 'edit' ? true : false"
             />
           </div>
         </div>
@@ -61,20 +63,9 @@
           </div>
         </div>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Relationship</label>
+          <label class="col-form-label col-md-2">Gender</label>
           <div class="col-md-5">
-            <v-select
-              :options="['Lab Inline', 'Lab Micro']"
-              name="relationship"
-              v-model="relationship"
-            >
-            </v-select>
-          </div>
-        </div>
-        <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Sex</label>
-          <div class="col-md-5">
-            <v-select :options="['Male', 'Female']" name="sex" v-model="sex">
+            <v-select :options="['Male', 'Female']" name="gender" v-model="gender">
             </v-select>
           </div>
         </div>
@@ -106,9 +97,9 @@
           <label class="col-form-label col-md-2">Lab</label>
           <div class="col-md-5">
             <v-select
-              :options="['Lab Inline', 'Lab Micro']"
-              name="id_lab"
-              v-model="lab_id"
+              :options="labs"
+              name="lab"
+              v-model="lab"
             >
             </v-select>
           </div>
@@ -117,17 +108,9 @@
           <label class="col-form-label col-md-2">Control Point</label>
           <div class="col-md-5">
             <v-select
-              :options="[
-                'Incoming RM',
-                'Incoming PM',
-                'Incoming FG',
-                'OPRP',
-                'PRP',
-                'Front Line',
-                'COMPOUNDING MIX',
-              ]"
-              name="id_cp"
-              v-model="cp_id"
+              :options="contorlPoint"
+              name="control_point"
+              v-model="control_point"
             >
             </v-select>
           </div>
@@ -136,7 +119,7 @@
           <label class="col-form-label col-md-2">Role</label>
           <div class="col-md-5">
             <v-select
-              :options="['Superadmin', 'Validator', 'Admin', 'Inspector']"
+              :options="roles"
               name="role"
               v-model="role"
             >
@@ -162,24 +145,25 @@ export default {
   data() {
     return {
       name: "",
-      areaId: "",
+      userID: "",
       url: "",
-      lab_category: [
-        {
-          id: 1,
-          name: "Lab Inline",
-        },
-        {
-          id: 2,
-          name: "Lab Micru",
-        },
-      ],
-      lab_id: 0,
+      labs: [],
+      contorlPoint : [],
+      roles : [],
+      role: "",
+      lab : "",
+      password : "",
+      username : "",
+      department : "",
+      gender : "",
+      age : 0,
+      birth_date : "",
+      control_point : ""
     };
   },
   created() {
     var currentUrl = this.$route.path.split("/");
-    this.areaId = currentUrl[3];
+    this.userID = currentUrl[3];
     this.url = currentUrl[2];
     PageOptions.pageWithFooter = true;
   },
@@ -191,12 +175,19 @@ export default {
     create() {
       const body = {
         name: this.name,
-        lab_id: 1,
+        username : this.name,
+        password : this.password,
+        department : this.department,
+        gender : this.gender,
+        age : this.age,
+        birth_date : this.birth_date,
+        role : this.role.value,
+        lab : this.lab.value,
+        control_point : this.control_point.value,
       };
-
       if (this.url == "add") {
         this.$axios
-          .post("/area", body, {
+          .post("/user", body, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -209,7 +200,7 @@ export default {
             });
 
             setTimeout(() => {
-              this.$router.push("/area");
+              this.$router.push("/user");
             }, 1500);
           })
           .catch((err) => {
@@ -221,7 +212,7 @@ export default {
           });
       } else {
         this.$axios
-          .put("/area/" + this.areaId, body, {
+          .put("/user/" + this.userID, body, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -234,7 +225,7 @@ export default {
             });
 
             setTimeout(() => {
-              this.$router.push("/area");
+              this.$router.push("/user");
             }, 1500);
           })
           .catch((err) => {
@@ -247,22 +238,78 @@ export default {
       }
     },
     getData() {
-      console.log(this.url);
       if (this.url == "edit") {
-        const url = "/area/" + this.labId;
+        const url = "/user/" + this.userID;
         this.$axios
           .get(url)
           .then((response) => {
+            console.log(response.data.data)
             this.name = response.data.data.txtName;
+            this.username = response.data.data.txtUsername;
+            this.age = response.data.data.intAge;
+            this.birth_date = response.data.data.dtmBirtDate;
+            this.gender = response.data.data.txtSex;
+            this.department = response.data.data.txtDepartment;
           })
           .catch((error) => {
             console.log(error);
           });
       }
     },
+    getCP() {
+      const url = "/control-point/code";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.contorlPoint = response.data.data.data.map((x) => {
+            return {
+              label: x.txtName,
+              value: x.id,
+            };
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getLab() {
+      const url = "/lab/code";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.labs = response.data.data.data.map(x => {
+            return {
+              label : x.txtName,
+              value : x.id
+            }
+          })
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getRole() {
+      const url = "/role/code";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.roles = response.data.data.data.map(x => {
+            return {
+              label : x.txtName,
+              value : x.id
+            }
+          })
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   },
   mounted() {
     this.getData();
+    this.getCP();
+    this.getLab();
+    this.getRole();
   },
 };
 </script>

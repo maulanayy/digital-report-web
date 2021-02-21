@@ -54,7 +54,7 @@
     methods: {
       create() {
         const body = {
-          role: this.txtName,
+          name: this.name,
         };
 
         if (this.url == "add") {
@@ -84,7 +84,7 @@
             });
         } else {
           this.$axios
-            .put("/role/" + this.topicID, body, {
+            .put("/role/" + this.roleID, body, {
               headers: {
                 "Content-Type": "application/json",
               },

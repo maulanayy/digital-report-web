@@ -43,7 +43,7 @@
               :to="'/seeting/oracle/edit/' + props.row.id"
               >Edit</b-button
             >
-            <b-button variant="danger" class="mr-2">Delete</b-button>
+            <b-button variant="danger" class="mr-2" @click="confirm(props.row.id)">Delete</b-button>
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -52,6 +52,20 @@
       </vue-good-table>
     </panel>
     <!-- end panel -->
+    <b-overlay :show="confirmation" no-wrap>
+      <template #overlay>
+        <div ref="dialog" tabindex="-1" role="dialog" aria-modal="false" aria-labelledby="form-confirm-label"
+          class="text-center p-3">
+          <p><strong id="form-confirm-label">Are you sure?</strong></p>
+          <div class="d-flex">
+            <b-button variant="outline-danger" class="mr-3" @click="onCancel">
+              Cancel
+            </b-button>
+            <b-button variant="outline-success" @click="deleteData">OK</b-button>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </div>
 </template>
 
@@ -62,6 +76,8 @@ export default {
   name: "data-role",
   data() {
     return {
+      oracleID : "",
+        confirmation: false,
       columns: [
         {
           label : "ID",
@@ -96,6 +112,13 @@ export default {
     next();
   },
   methods: {
+    onCancel() {
+        this.confirmation = false
+      },
+      confirm(id){
+        this.oracleID = id
+        this.confirmation =true
+      },
     getData() {
       const url = "/setting/oracle";
       this.$axios
@@ -109,6 +132,29 @@ export default {
           console.log(error);
         });
     },
+    deleteData() {
+        const url = "/setting/oracle/" + this.oracleID;
+        this.$axios
+          .delete(url, {})
+          .then(() => {
+            this.$notify({
+              title: `Delete Data Success`,
+              text: `Success`,
+              type: "success",
+            });
+
+            setTimeout(() => {
+              location.reload();
+            }, 1500);
+          })
+          .catch((err) => {
+            this.$notify({
+              title: `Delete Data Failed : ${err}`,
+              text: `Error`,
+              type: "error",
+            });
+          });
+      },
   },
   mounted() {
     this.getData();

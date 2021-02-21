@@ -1,19 +1,11 @@
 <script>
 const sidebarMenu = [
-  {
-    path : "/dashboard",
-     icon: "fa fa-th",
-    title: "Home",
-    children : [
-      { path: "/dashboard/v1", title: "Home" },
-      { path: "/dashboard/v2", title: "Graphic" },
-    ]
-  },
+  { path: "/dashboard", icon: "fa fa-th", title: "Home" },
   { path: "/user", icon: "fa fa-users", title: "User" },
   { path: "/lab", icon: "fa fa-flask", title: "Lab" },
   { path: "/area", icon: "fa fa-warehouse", title: "Area" },
-  { path: "/control_point", icon : "fa fa-sliders-h", title: "Control Point" },
-  { path: "/form", icon : "fa fa-file", title: "Form" },
+  { path: "/control_point", icon: "fa fa-sliders-h", title: "Control Point" },
+  { path: "/form", icon: "fa fa-file", title: "Form" },
   {
     path: "/setting",
     icon: "fa fa-cog",
@@ -26,8 +18,6 @@ const sidebarMenu = [
       { path: "/setting/permission", title: "Permission" },
     ],
   },
- 
-  
 ];
 
 export default sidebarMenu;

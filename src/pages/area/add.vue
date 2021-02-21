@@ -64,6 +64,7 @@ export default {
     var currentUrl = this.$route.path.split("/");
     this.areaId = currentUrl[3];
     this.url = currentUrl[2];
+    console.log("AREA : ",this.areaId)
     PageOptions.pageWithFooter = true;
   },
   beforeRouteLeave(to, from, next) {
@@ -131,7 +132,7 @@ export default {
     },
     getData() {
       if (this.url == "edit") {
-        const url = "/area/" + this.labId;
+        const url = "/area/" + this.areaId;
         this.$axios
           .get(url)
           .then((response) => {

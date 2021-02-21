@@ -58,6 +58,8 @@ import UserLoginV2 from "../pages/User-login-v2.vue";
 import UserLoginV3 from "../pages/User-login-v3.vue";
 import UserRegisterV3 from "../pages/User-register-v3.vue";
 import HelperCss from "../pages/Helper-css";
+import DashboardGraph from "../pages/home/dashboard_graph";
+import Dashboard from "../pages/home/dashboard";
 import UserData from "../pages/user/data";
 import UserAdd from "../pages/user/add";
 import LabData from "../pages/lab/data";
@@ -154,8 +156,11 @@ const routes = [
   { path: "/user/login-v3", component: UserLoginV3 },
   { path: "/user/register-v3", component: UserRegisterV3 },
   { path: "/helper/css", component: HelperCss },
+  { path: "/dashboard" , component: Dashboard},
+  { path: "/dashboard/graph" , component: DashboardGraph},
   { path: "/user", component: UserData },
   { path: "/user/add", component: UserAdd },
+  { path: "/user/edit/:id", component: UserAdd },
   { path: "/lab", component: LabData },
   { path: "/lab/add", component: LabAdd },
   { path: "/lab/edit/:id", component: LabAdd },

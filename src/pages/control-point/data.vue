@@ -12,13 +12,8 @@
 
     <!-- begin panel -->
     <panel title="Data Control Point">
-      <b-button class="mb-3" variant="primary" :to="'/control_point/add'"
-        >Create</b-button
-      >
-      <vue-good-table
-        :columns="columns"
-        :rows="data"
-        :pagination-options="{
+      <b-button class="mb-3" variant="primary" :to="'/control_point/add'">Create</b-button>
+      <vue-good-table :columns="columns" :rows="data" :pagination-options="{
           enabled: true,
           mode: 'records',
           perPage: this.meta.perPage,
@@ -32,17 +27,11 @@
           ofLabel: 'of',
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
-        }"
-      >
+        }">
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
-            <b-button
-              variant="primary"
-              class="mr-2"
-              :to="'/control_point/edit/' + props.row.id"
-              >Edit</b-button
-            >
-            <b-button variant="danger" class="mr-2">Delete</b-button>
+            <b-button variant="primary" class="mr-2" :to="'/control_point/edit/' + props.row.id">Edit</b-button>
+            <b-button variant="danger" class="mr-2" @click="deleteData">Delete</b-button>
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -55,68 +44,99 @@
 </template>
 
 <script>
-import PageOptions from "../../config/PageOptions.vue";
+  import PageOptions from "../../config/PageOptions.vue";
 
-export default {
-  name: "data-control-point",
-  data() {
-    return {
-      columns: [
-        {
-          label: "ID",
-          field: "id",
-          type: "number",
-        },
-        {
-          label: "Name",
-          field: "txtname",
-        },
-        {
-          label : "Area",
-          field : "areatxtname",
-        },
-        {
-          label: "Created At",
-          field: "dtmcreatedat",
-          type: "date",
-          dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
-          dateOutputFormat: "dd-MM-yyyy",
-        },
-        {
-          label: "Action",
-          field: "btn",
-        },
-      ],
-      
-      data: [],
-      meta: {},
-    };
-  },
-  created() {
-    PageOptions.pageWithFooter = true;
-  },
-  beforeRouteLeave(to, from, next) {
-    PageOptions.pageWithFooter = false;
-    next();
-  },
-  methods: {
-    getData() {
-      const url = "/control-point";
-      this.$axios
-        .get(url)
-        .then((response) => {
-          this.data = response.data.data.data;
-          this.meta = response.data.data.meta;
-          // console.log(this.meta)
-          console.log(this.data);
-        })
-        .catch((error) => {
-          this.err.push(error);
-        });
+  export default {
+    name: "data-control-point",
+    data() {
+      return {
+        cpID: "",
+        confirmation: false,
+        columns: [{
+            label: "ID",
+            field: "id",
+            type: "number",
+          },
+          {
+            label: "Name",
+            field: "txtname",
+          },
+          {
+            label: "Area",
+            field: "areatxtname",
+          },
+          {
+            label: "Created At",
+            field: "dtmcreatedat",
+            type: "date",
+            dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
+            dateOutputFormat: "dd-MM-yyyy",
+          },
+          {
+            label: "Action",
+            field: "btn",
+          },
+        ],
+
+        data: [],
+        meta: {},
+      };
     },
-  },
-  mounted() {
-    this.getData();
-  },
-};
+    created() {
+      PageOptions.pageWithFooter = true;
+    },
+    beforeRouteLeave(to, from, next) {
+      PageOptions.pageWithFooter = false;
+      next();
+    },
+    methods: {
+      onCancel() {
+        this.confirmation = false
+      },
+      confirm(id) {
+        this.cpID = id
+        this.confirmation = true
+      },
+      getData() {
+        const url = "/control-point";
+        this.$axios
+          .get(url)
+          .then((response) => {
+            this.data = response.data.data.data;
+            this.meta = response.data.data.meta;
+            // console.log(this.meta)
+            console.log(this.data);
+          })
+          .catch((error) => {
+            this.err.push(error);
+          });
+      },
+      deleteData() {
+        const url = "/control-point/" + this.cpID;
+        this.$axios
+          .delete(url, {})
+          .then(() => {
+            this.$notify({
+              title: `Delete Data Success`,
+              text: `Success`,
+              type: "success",
+            });
+
+            setTimeout(() => {
+              location.reload();
+            }, 1500);
+          })
+          .catch((err) => {
+            this.$notify({
+              title: `Delete Data Failed : ${err}`,
+              text: `Error`,
+              type: "error",
+            });
+          });
+      },
+    },
+    mounted() {
+      this.getData();
+    },
+  };
 </script>

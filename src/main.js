@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import VueX from 'vuex'
-import routes from './config/PageRoutes'
+import router from './router'
+// import routes from './config/PageRoutes'
 
 // plugins
 import VueRouter from 'vue-router'
 import VueBootstrap from 'bootstrap-vue'
 import VueNVD3 from 'vue-nvd3'
 import VueInsProgressBar from 'vue-ins-progress-bar'
-import VueEventCalendar from 'vue-event-calendar'
-import VueSparkline from 'vue-sparklines'
-import * as VueGoogleMaps from 'vue2-google-maps'
+// import cookie from 'js-cookie'
+
 import Vueditor from '@agametov/vueditor'
 import VueHljs from 'vue-hljs'
 import VueSweetalert2 from 'vue-sweetalert2'
@@ -67,8 +67,6 @@ Vue.use(VueX)
 Vue.use(VueRouter)
 Vue.use(VueBootstrap)
 Vue.use(VueNVD3)
-Vue.use(VueEventCalendar, {locale: 'en'})
-Vue.use(VueSparkline)
 Vue.use(Vueditor)
 Vue.use(VueHljs)
 Vue.use(VueSweetalert2)
@@ -78,19 +76,12 @@ Vue.use(VueDateTimePicker)
 Vue.use(VueGoodTable)
 Vue.use(VueFullCalendar)
 Vue.use(VueColorpicker)
-Vue.use(VueGoogleMaps, {
-  load: {
-    key: '',
-    libraries: 'places'
-  }
-})
+Vue.use(VueGoodTablePlugin);
 Vue.use(VueInsProgressBar, {
   position: 'fixed',
   show: true,
   height: '3px'
 })
-Vue.use(VueGoodTablePlugin);
-
 Vue.component('v-select', VueSelect);
 Vue.component('datepicker', VueDatepicker)
 Vue.component('masked-input', VueMaskedInput)
@@ -110,10 +101,15 @@ let axiosOptoins = {
 
 Vue.prototype.$axios = axios.create(axiosOptoins);
 
+// if (cookie.getJSON('userdata') !== undefined) {
+//   let auth = cookie.getJSON('userdata')
+//   store.commit('SET_LOGIN', auth) 
+//   axiosOptoins.headers.Authorization = 'Bearer ' + auth.access_token
+// }
 
-const router = new VueRouter({
-	routes
-})
+// const router = new VueRouter({
+// 	routes
+// })
 
 new Vue({
   render: h => h(App),

@@ -19,7 +19,7 @@
             <input
               type="input"
               class="form-control m-b-5"
-              placeholder="Enter Name Lab"
+              placeholder="Enter Name Lab Area  "
               name="name"
               v-model="name"
             />

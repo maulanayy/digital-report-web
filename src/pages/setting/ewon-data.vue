@@ -13,7 +13,7 @@
 
     <!-- begin panel -->
     <panel title="Data Ewon">
-      <b-button class="mb-3" variant="primary" :to="'/seeting/ewon/add'">Create</b-button>
+      <b-button class="mb-3" variant="primary" :to="'/setting/ewon/add'">Create</b-button>
       <vue-good-table :columns="columns" :rows="data" :pagination-options="{
           enabled: true,
           mode: 'records',

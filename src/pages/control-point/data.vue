@@ -31,7 +31,7 @@
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
             <b-button variant="primary" class="mr-2" :to="'/control_point/edit/' + props.row.id">Edit</b-button>
-            <b-button variant="danger" class="mr-2" @click="deleteData">Delete</b-button>
+            <b-button variant="danger" class="mr-2" @click="confirm(props.row.id)">Delete</b-button>
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -40,6 +40,21 @@
       </vue-good-table>
     </panel>
     <!-- end panel -->
+
+    <b-overlay :show="confirmation" no-wrap>
+      <template #overlay>
+        <div ref="dialog" tabindex="-1" role="dialog" aria-modal="false" aria-labelledby="form-confirm-label"
+          class="text-center p-3">
+          <p><strong id="form-confirm-label">Are you sure?</strong></p>
+          <div class="d-flex">
+            <b-button variant="outline-danger" class="mr-3" @click="onCancel">
+              Cancel
+            </b-button>
+            <b-button variant="outline-success" @click="deleteData">OK</b-button>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </div>
 </template>
 
@@ -91,11 +106,11 @@
     },
     methods: {
       onCancel() {
-        this.confirmation = false
+        this.confirmation = false;
       },
       confirm(id) {
-        this.cpID = id
-        this.confirmation = true
+        this.cpID = id;
+        this.confirmation = true;
       },
       getData() {
         const url = "/control-point";

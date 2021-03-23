@@ -98,9 +98,9 @@
       <form @submit.stop.prevent="login" method="POST" class="margin-bottom-0">
         <div class="form-group m-b-20">
           <input
-            type="email"
+            type="text"
             class="form-control form-control-lg inverse-mode"
-            placeholder="Email Address"
+            placeholder="Username"
             v-model="username"
             required
           />
@@ -110,6 +110,7 @@
             type="password"
             class="form-control form-control-lg inverse-mode"
             placeholder="Password"
+            v-model="password"
             required
           />
         </div>
@@ -118,7 +119,11 @@
           <label for="remember_checkbox"> Remember Me </label>
         </div>
         <div class="login-buttons">
-          <button type="submit" class="btn btn-success btn-block btn-lg" @click="handleOk">
+          <button
+            type="submit"
+            class="btn btn-success btn-block btn-lg"
+            @click="handleOk"
+          >
             Sign me in
           </button>
         </div>
@@ -183,7 +188,24 @@ export default {
     },
     login() {
       // Exit when the form isn't valid
-      console.log("WAW");
+      const body = {
+        username: this.username,
+        password: this.password,
+      };
+
+      console.log(body)
+      this.$axios
+        .post("/login", body, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       this.$nextTick(() => {
         this.$bvModal.hide("loginDialog");
       });

@@ -1,7 +1,11 @@
 import Vue from 'vue'
 import VueX from 'vuex'
+
+import cookie from 'js-cookie'
+
 import router from './router'
 // import routes from './config/PageRoutes'
+import store from './store/store'
 
 // plugins
 import VueRouter from 'vue-router'
@@ -101,17 +105,15 @@ let axiosOptoins = {
 
 Vue.prototype.$axios = axios.create(axiosOptoins);
 
-// if (cookie.getJSON('userdata') !== undefined) {
-//   let auth = cookie.getJSON('userdata')
-//   store.commit('SET_LOGIN', auth) 
-//   axiosOptoins.headers.Authorization = 'Bearer ' + auth.access_token
-// }
+if (cookie.getJSON('userdata') !== undefined) {
+  let auth = cookie.getJSON('userdata')
+  store.commit('set_login', auth) 
+  axiosOptoins.headers.Authorization = 'Bearer ' + auth.access_token
+}
 
-// const router = new VueRouter({
-// 	routes
-// })
 
 new Vue({
   render: h => h(App),
-  router
+  router,
+  store
 }).$mount('#app')

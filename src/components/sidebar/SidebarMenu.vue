@@ -1,6 +1,7 @@
 <script>
 const sidebarMenu = [
-  { path: "/dashboard", icon: "fa fa-th", title: "Home" },
+  { path: "/", icon: "fa fa-th", title: "Home" },
+  { path: "/report", icon: "fa fa-th", title: "Home" },
   { path: "/user", icon: "fa fa-users", title: "User" },
   { path: "/lab", icon: "fa fa-flask", title: "Lab" },
   { path: "/area", icon: "fa fa-warehouse", title: "Area" },

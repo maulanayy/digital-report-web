@@ -1,5 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
+// import auth from '@/auth/authService'
+import store from './store/store'
 
 Vue.use(Router);
 
@@ -7,13 +9,18 @@ const router = new Router({
   mode: "history",
   routes: [
     {
+      path: "/",
+      name: "dashboard",
+      component: () => import("./pages/home/Dashboard"),
+    },
+    {
       path : "/login",
       name: "login",
       component: () => import("./pages/auth/login"),
     },
     {
-      path: "/dashboard",
-      name: "dashboard",
+      path: "/report",
+      name: "report",
       component: () => import("./pages/home/Dashboard"),
     },
     {
@@ -25,6 +32,9 @@ const router = new Router({
       path: "/user",
       name: "user",
       component: () => import("./pages/user/data"),
+      meta : {
+        requireAuth: true
+      }
     },
     {
       path: "/user/add",
@@ -153,5 +163,19 @@ const router = new Router({
     }
   ],
 });
+
+router.beforeEach((to,from,next) => {
+  console.log(to)
+  if (to.matched.some(record => record.meta.requireAuth)) {
+		// this route requires auth, check if logged in
+		// if not, redirect to login page.
+		if (store.state.userdata == null) {
+			next('/')
+		}
+	} 
+  next()
+
+})
+
 
 export default router;

@@ -135,8 +135,10 @@
 <script>
 import PageOptions from "../../config/PageOptions.vue";
 import HeaderMegaMenu from "./HeaderMegaMenu.vue";
+import cookie from 'js-cookie'
 
 export default {
+  
   name: "Header",
   components: {
     HeaderMegaMenu,
@@ -172,10 +174,6 @@ export default {
       this.pageOptions.pageRightSidebarCollapsed = !this.pageOptions
         .pageRightSidebarCollapsed;
     },
-    checkForm: function (e) {
-      e.preventDefault();
-      this.$router.push({ path: "/extra/search" });
-    },
     resetModal() {
       this.name = "";
       this.nameState = null;
@@ -202,12 +200,35 @@ export default {
         })
         .then((res) => {
           console.log(res);
+
+          this.setAuthLogin(res.data.data)
         })
         .catch((err) => {
           console.log(err);
         });
       this.$nextTick(() => {
         this.$bvModal.hide("loginDialog");
+      });
+    },
+    setAuthLogin(user) {
+      this.$axios.get('/user/'+user.id,{
+        headers: {
+          Authorization: 'Bearer ' + user.access_token
+        }
+      }).then( response => {
+        console.log(response)
+         let userdata = response.data.data
+          userdata.access_token =  user.token
+          // userdata.first_login = user.first_login
+          this.$store.commit('set_login', userdata)
+          cookie.set('userdata', userdata, { expires: 1 })
+          window.location.reload()
+      }).catch( (error) => {
+        if (error.response) {
+          if(error.response.data){
+            this.errorMessage = error.response.data.message
+          }
+        }
       });
     },
   },

@@ -85,7 +85,7 @@
           },
           {
             label: "Role",
-            field: "txtroles",
+            field: "txtRoles",
           },
           {
             label: "Created At",
@@ -129,7 +129,7 @@
             console.log(this.data);
           })
           .catch((error) => {
-            this.err.push(error);
+            console.log(error)
           });
       },
       deleteData() {

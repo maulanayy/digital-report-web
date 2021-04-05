@@ -14,6 +14,11 @@ const router = new Router({
       component: () => import("./pages/home/Dashboard"),
     },
     {
+      path: "/home",
+      name: "dashboard",
+      component: () => import("./pages/home/Dashboard"),
+    },
+    {
       path : "/login",
       name: "login",
       component: () => import("./pages/auth/login"),
@@ -21,7 +26,12 @@ const router = new Router({
     {
       path: "/report",
       name: "report",
-      component: () => import("./pages/home/Dashboard"),
+      component: () => import("./pages/home/report"),
+    },
+    {
+      path: "/report/:id",
+      name: "report detail",
+      component: () => import("./pages/home/report"),
     },
     {
       path: "/dashboard/graph/:id",
@@ -152,6 +162,26 @@ const router = new Router({
       component: () => import("./pages/setting/parameter-add"),
     },
     {
+      path: "/setting/form",
+      name: "setting-form",
+      component: () => import("./pages/setting/form-data"),
+    },
+    {
+      path: "/setting/form/add",
+      name: "setting-form-add",
+      component: () => import("./pages/setting/form-add"),
+    },
+    {
+      path: "/form",
+      name: "form",
+      component: () => import("./pages/form/data"),
+    },
+    {
+      path: "/form/add",
+      name: "form-add",
+      component: () => import("./pages/form/add"),
+    },
+    {
       path: "/tutorial/form-element",
       name: "form-element",
       component: () => import("./pages/Form-elements"),
@@ -165,11 +195,10 @@ const router = new Router({
 });
 
 router.beforeEach((to,from,next) => {
-  console.log(to)
   if (to.matched.some(record => record.meta.requireAuth)) {
 		// this route requires auth, check if logged in
 		// if not, redirect to login page.
-		if (store.state.userdata == null) {
+    if (store.state.userdata == null) {
 			next('/')
 		}
 	} 

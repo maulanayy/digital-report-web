@@ -18,12 +18,13 @@
       <div class="col-xl-12">
         <div class="widget-chart with-sidebar">
           <div id="chart" class="widget-chart-content bg-white">
-            <apexchart
+            <line-chart class="height-sm"></line-chart>
+            <!-- <apexchart
               type="area"
               height="350"
               :options="chartOptions"
               :series="series"
-            ></apexchart>
+            ></apexchart> -->
           </div>
         </div>
       </div>
@@ -73,7 +74,12 @@
 </template>
 
 <script>
+import LineChart from '../../components/vue-chartjs/LineChart'
+
 export default {
+  components: {
+    LineChart
+  },
   name: "dashboard-graph",
   data() {
     return {

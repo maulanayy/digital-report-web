@@ -74,15 +74,15 @@
           },
           {
             label: "Name",
-            field: "txtname",
+            field: "txtName",
           },
           {
             label: "Lab",
-            field: "labtxtname",
+            field: "labTxtName",
           },
           {
             label: "Created At",
-            field: "dtmcreatedat",
+            field: "dtmCreatedAt",
             type: "date",
             dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
             dateOutputFormat: "dd-MM-yyyy",
@@ -119,7 +119,7 @@
             this.data = response.data.data.data;
             this.meta = response.data.data.meta;
             // console.log(this.meta)
-            // console.log(this.data);
+            console.log(this.data);
           })
           .catch((error) => {
             this.err.push(error);

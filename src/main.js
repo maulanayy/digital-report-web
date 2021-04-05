@@ -104,11 +104,10 @@ let axiosOptoins = {
 }
 
 Vue.prototype.$axios = axios.create(axiosOptoins);
-
 if (cookie.getJSON('userdata') !== undefined) {
   let auth = cookie.getJSON('userdata')
-  store.commit('set_login', auth) 
-  axiosOptoins.headers.Authorization = 'Bearer ' + auth.access_token
+  store.commit('set_login', auth)
+   
 }
 
 

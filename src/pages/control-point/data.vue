@@ -74,15 +74,15 @@
           },
           {
             label: "Name",
-            field: "txtname",
+            field: "txtName",
           },
           {
             label: "Area",
-            field: "areatxtname",
+            field: "areaTxtName",
           },
           {
             label: "Created At",
-            field: "dtmcreatedat",
+            field: "dtmCreatedAt",
             type: "date",
             dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
             dateOutputFormat: "dd-MM-yyyy",

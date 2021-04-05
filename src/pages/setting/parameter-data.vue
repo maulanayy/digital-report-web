@@ -73,19 +73,23 @@
           },
           {
             label: "Name",
-            field: "txtname",
+            field: "txtName",
+          },
+          {
+            label : "Tipe",
+            field : "txtTipe",
           },
           {
             label: "Topic",
-            field: "txttopic",
+            field: "txtTopic",
           },
           {
             label: "Control Point",
-            field: "controlpointtxtname",
+            field: "ControlPointTxtName",
           },
           {
             label: "Created At",
-            field: "dtmcreatedat",
+            field: "dtmCreatedAt",
             type: "date",
             dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
             dateOutputFormat: "dd-MM-yyyy",
@@ -121,7 +125,7 @@
           .then((response) => {
             this.data = response.data.data.data;
             this.meta = response.data.data.meta;
-            // console.log(this.meta)
+            console.log(this.meta)
           })
           .catch((error) => {
             console.log(error);

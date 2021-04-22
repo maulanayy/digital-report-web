@@ -7,11 +7,11 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Add Control Point</h1>
+    <h1 class="page-header">Edit Control Point</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Add Control Point">
+    <panel title="Edit Control Point">
       <form>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Name</label>

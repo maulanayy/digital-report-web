@@ -123,7 +123,11 @@
             console.log(this.data);
           })
           .catch((error) => {
-            this.err.push(error);
+            this.$notify({
+              title: `Update Data Failed : ${error}`,
+              text: `Error`,
+              type: "error",
+            });
           });
       },
       deleteData() {

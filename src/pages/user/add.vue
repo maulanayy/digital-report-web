@@ -70,19 +70,6 @@
           </div>
         </div>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Age</label>
-          <div class="col-md-5">
-            <input
-              type="number"
-              class="form-control m-b-5"
-              placeholder="Enter Age"
-              name="age"
-              min="0"
-              v-model="age"
-            />
-          </div>
-        </div>
-        <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Birth Date</label>
           <div class="col-md-5">
             <b-form-datepicker

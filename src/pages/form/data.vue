@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     getData() {
-      const url = "/form";
+      const url = "/form-data";
       this.$axios
         .get(url)
         .then((response) => {
@@ -112,7 +112,11 @@ export default {
           console.log(this.data);
         })
         .catch((error) => {
-          this.err.push(error);
+          this.$notify({
+              title: `Update Data Failed : ${error}`,
+              text: `Error`,
+              type: "error",
+            });
         });
     },
   },

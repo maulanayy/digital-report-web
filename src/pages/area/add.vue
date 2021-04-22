@@ -7,11 +7,11 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Add Lab Area</h1>
+    <h1 class="page-header">Edit Lab Area</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Add Lab Area">
+    <panel title="Edit Lab Area">
       <form>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Name</label>

@@ -16,7 +16,7 @@
       <div class="col-md-3" v-for="cp in data" :key="cp.id">
         <!-- begin widget-card -->
         <a
-          :href="'/dashboard/graph/'+cp.id"
+          :href="'/dashboard/graph/'+cp.ID"
           class="widget-card widget-card-rounded m-b-20"
           data-id="widget"
         >
@@ -70,7 +70,6 @@ export default {
         .get(url)
         .then((response) => {
           this.data = response.data.data.data;
-          console.log(this.data);
         })
         .catch((error) => {
           console.log(error);

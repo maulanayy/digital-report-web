@@ -7,6 +7,7 @@ const sidebarMenuByRole = {
     { path: "/lab", icon: "fa fa-flask", title: "Lab" },
     { path: "/area", icon: "fa fa-warehouse", title: "Area" },
     { path: "/control_point", icon: "fa fa-sliders-h", title: "Control Point" },
+    { path: "/product", icon: "fas fa-flask", title: "Product" },
     { path: "/form", icon: "fa fa-file", title: "Form" },
     {
       path: "/setting",
@@ -15,8 +16,7 @@ const sidebarMenuByRole = {
       children: [
         { path: "/setting/ewon", title: "Ewon" },
         { path: "/setting/parameter", title: "Parameter" },
-        { path: "/setting/form", title: "Form" },
-        { path: "/setting/role", title: "Role" },
+        { path: "/setting/form-parameter", title: "Form Parameter" },
       ],
     },
   ],

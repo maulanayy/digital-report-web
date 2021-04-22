@@ -18,16 +18,18 @@
             <div class="col-xl-6">
                 <div class="widget-chart with-sidebar">
                     <div id="chart" class="widget-chart-content bg-white">
-                        <apexchart type="line" height="350" width="500" :options="chartDosingKadarAir"
+                        <a :href="'/report/1'">
+                        <apexchart type="line" height="350"  :options="chartDosingKadarAir"
                             :series="seriesDosingKadarAir">
                         </apexchart>
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="col-xl-6">
                 <div class="widget-chart with-sidebar">
                     <div id="chart" class="widget-chart-content bg-white">
-                        <apexchart type="line" height="350" width="500" :options="chartWaktuKadarAir"
+                        <apexchart type="line" height="350"  :options="chartWaktuKadarAir"
                             :series="seriesWaktuKadarAir">
                         </apexchart>
                     </div>
@@ -40,7 +42,7 @@
             <div class="col-xl-6">
                 <div class="widget-chart with-sidebar">
                     <div id="chart" class="widget-chart-content bg-white">
-                        <apexchart type="bar" height="350" width="500" :options="chartWeight" :series="seriesWeight">
+                        <apexchart type="bar" height="350"  :options="chartWeight" :series="seriesWeight">
                         </apexchart>
                     </div>
                 </div>
@@ -48,7 +50,7 @@
             <div class="col-xl-6">
                 <div class="widget-chart with-sidebar">
                     <div id="chart" class="widget-chart-content bg-white">
-                        <apexchart type="bar" height="350" width="500" :options="chartWeightLessAlufo" :series="seriesWeightLessAlufo">
+                        <apexchart type="bar" height="350"  :options="chartWeightLessAlufo" :series="seriesWeightLessAlufo">
                         </apexchart>
                     </div>
                 </div>
@@ -62,7 +64,7 @@
             <div class="col-xl-6">
                 <div class="widget-chart with-sidebar">
                     <div id="chart" class="widget-chart-content bg-white">
-                        <apexchart type="bar" height="350" width="500" :options="chartWeightFoldingBox" :series="seriesWeightFoldingBox">
+                        <apexchart type="bar" height="350"  :options="chartWeightFoldingBox" :series="seriesWeightFoldingBox">
                         </apexchart>
                     </div>
                 </div>
@@ -71,7 +73,7 @@
             <div class="col-xl-6">
                 <div class="widget-chart with-sidebar">
                     <div id="chart" class="widget-chart-content bg-white">
-                        <apexchart type="line" height="350" width="500" :options="chartFluxing" :series="seriesFluxing">
+                        <apexchart type="line" height="350"  :options="chartFluxing" :series="seriesFluxing">
                         </apexchart>
                     </div>
                 </div>
@@ -85,7 +87,7 @@
             <div class="col-xl-6">
                 <div class="widget-chart with-sidebar">
                     <div id="chart" class="widget-chart-content bg-white">
-                        <apexchart type="bar" height="350" width="500" :options="chartFlusingBar" :series="seriesFlusingBar">
+                        <apexchart type="bar" height="350"  :options="chartFlusingBar" :series="seriesFlusingBar">
                         </apexchart>
                     </div>
                 </div>

@@ -15,7 +15,7 @@ const router = new Router({
     },
     {
       path: "/home",
-      name: "dashboard",
+      name: "home",
       component: () => import("./pages/home/Dashboard"),
     },
     {
@@ -31,7 +31,7 @@ const router = new Router({
     {
       path: "/report/:id",
       name: "report detail",
-      component: () => import("./pages/home/report"),
+      component: () => import("./pages/home/detail_report"),
     },
     {
       path: "/dashboard/graph/:id",
@@ -102,6 +102,21 @@ const router = new Router({
       component: () => import("./pages/control-point/add"),
     },
     {
+      path: "/product",
+      name: "product",
+      component: () => import("./pages/product/data"),
+    },
+    {
+      path: "/product/add",
+      name: "product-add",
+      component: () => import("./pages/product/add"),
+    },
+    {
+      path: "/product/edit/:id",
+      name: "product-edit",
+      component: () => import("./pages/product/add"),
+    },
+    {
       path: "/setting/role",
       name: "role",
       component: () => import("./pages/setting/role-data"),
@@ -162,13 +177,28 @@ const router = new Router({
       component: () => import("./pages/setting/parameter-add"),
     },
     {
-      path: "/setting/form",
+      path: "/setting/form-parameter",
       name: "setting-form",
       component: () => import("./pages/setting/form-data"),
     },
     {
-      path: "/setting/form/add",
+      path: "/setting/form-parameter/add",
       name: "setting-form-add",
+      component: () => import("./pages/setting/form-add"),
+    },
+    {
+      path: "/setting/form-parameter/edit/:id",
+      name: "setting-form-edit",
+      component: () => import("./pages/setting/form-add"),
+    },
+    {
+      path: "/setting/form-custom",
+      name: "setting-form-custom",
+      component: () => import("./pages/setting/form-data"),
+    },
+    {
+      path: "/setting/form-custom/add",
+      name: "setting-form-custom-add",
       component: () => import("./pages/setting/form-add"),
     },
     {

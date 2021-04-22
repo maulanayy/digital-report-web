@@ -119,7 +119,7 @@
         this.confirmation = true
       },
       getData() {
-        const url = "/setting/parameter";
+        const url = "/parameter";
         this.$axios
           .get(url)
           .then((response) => {
@@ -132,7 +132,7 @@
           });
       },
       deleteData() {
-        const url = "/setting/parameter/" + this.parameterID;
+        const url = "/parameter/" + this.parameterID;
         this.$axios
           .delete(url, {})
           .then(() => {

@@ -3,17 +3,16 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb float-xl-right">
       <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
-      <li class="breadcrumb-item"><a href="javascript:;">Setting</a></li>
-      <li class="breadcrumb-item active">Ewon</li>
+      <li class="breadcrumb-item active">Product</li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Setting Ewon</h1>
+    <h1 class="page-header">Product</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Data Ewon">
-      <b-button class="mb-3" variant="primary" :to="'/setting/ewon/add'">Create</b-button>
+    <panel title="Data Product">
+      <b-button class="mb-3" variant="primary" :to="'/product/add'">Create</b-button>
       <vue-good-table :columns="columns" :rows="data" :pagination-options="{
           enabled: true,
           mode: 'records',
@@ -21,7 +20,7 @@
           position: 'bottom',
           perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
-          setCurrentPage: 2,
+          setCurrentPage: 1,
           nextLabel: 'next',
           prevLabel: 'prev',
           rowsPerPageLabel: 'Rows per page',
@@ -31,8 +30,7 @@
         }">
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
-            <b-button variant="primary" class="mr-2" :to="'/seeting/ewon/edit/' + props.row.id">Edit</b-button>
-            
+            <b-button variant="primary" class="mr-2" :to="'/product/edit/' + props.row.id">Edit</b-button>
             <b-button variant="danger" class="mr-2" @click="confirm(props.row.id)">Delete</b-button>
           </span>
           <span v-else>
@@ -63,10 +61,10 @@
   import PageOptions from "../../config/PageOptions.vue";
 
   export default {
-    name: "data-ewon",
+    name: "data-product",
     data() {
       return {
-        ewonID: "",
+        productID: "",
         confirmation: false,
         columns: [{
             label: "ID",
@@ -74,16 +72,8 @@
             type: "number",
           },
           {
-            label: "Topic",
-            field: "txtTopic",
-          },
-          {
-            label: "Type Topic",
-            field: "txtTypeTopic",
-          },
-          {
-            label: "Status",
-            field: "txtStatus",
+            label: "Name",
+            field: "txtName",
           },
           {
             label: "Created At",
@@ -113,25 +103,27 @@
         this.confirmation = false
       },
       confirm(id) {
-        this.ewonID = id
+        this.productID = id
         this.confirmation = true
       },
       getData() {
-        const url = "/setting/ewon";
+        const url = "/product";
         this.$axios
           .get(url)
           .then((response) => {
             this.data = response.data.data.data;
             this.meta = response.data.data.meta;
-            // console.log(this.meta)
-            console.log(this.data);
           })
           .catch((error) => {
-            console.log(error);
+             this.$notify({
+              title: `GET Data Failed : ${error}`,
+              text: `Error`,
+              type: "error",
+            });
           });
       },
       deleteData() {
-        const url = "/setting/ewon/" + this.ewonID;
+        const url = "/product/" + this.productID;
         this.$axios
           .delete(url, {})
           .then(() => {

@@ -3,57 +3,35 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb float-xl-right">
       <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
-      <li class="breadcrumb-item"><a href="javascript:;">Setting</a></li>
-      <li class="breadcrumb-item active">Ewon</li>
+      <li class="breadcrumb-item active">Create Product</li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Add Ewon Setting</h1>
+    <h1 class="page-header">Create Product</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Add Ewon">
+    <panel title="Create Product">
       <form>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Topic</label>
-          <div class="col-md-10">
+          <label class="col-form-label col-md-3">Name</label>
+          <div class="col-md-9">
             <input
               type="input"
               class="form-control m-b-5"
-              placeholder="Enter Topic"
-              name="topic"
-              v-model="topic"
+              placeholder="Enter Name Product"
+              name="name"
+              v-model="name"
             />
           </div>
         </div>
-        <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Type Topic</label>
-          <div class="col-md-10">
-            <v-select
-              :options="data_types"
-              v-model="tipe_data"
-              placeholder="Select Type Data Topic"
-            >
-            </v-select>
-          </div>
-        </div>
-        <b-button
-          class="float-right mb-3"
-          variant="primary"
-          @click="create()"
-          v-if="url == 'add'"
-          >Create</b-button
-        >
-        <b-button
-          class="float-right mb-3"
-          variant="primary"
-          @click="create()"
-          v-else
-          >Edit</b-button
-        >
+        <b-button class="float-right mb-3" variant="primary" @click="create()" v-if="url == 'add'">Create</b-button>
+        <b-button class="float-right mb-3" variant="primary" @click="create()" v-else>Edit</b-button>
       </form>
     </panel>
     <!-- end panel -->
+
+    <notifications position="top right" class="mt-3 ml-3" :speed="500" />
   </div>
 </template>
 
@@ -61,21 +39,18 @@
 import PageOptions from "../../config/PageOptions.vue";
 
 export default {
-  name: "add-ewon",
+  name: "add-product",
   data() {
     return {
-      topic: "",
-      type_topic: "",
-      data_types: ["text", "number"],
+      name: "",
+      labId: "",
       url: "",
-      tipe_data: "",
-      topicID: "",
     };
   },
-  created() {
+  created: function () {
     var currentUrl = this.$route.path.split("/");
-    this.topicID = currentUrl[4];
-    this.url = currentUrl[3];
+    this.labId = currentUrl[3];
+    this.url = currentUrl[2];
     PageOptions.pageWithFooter = true;
   },
   beforeRouteLeave(to, from, next) {
@@ -85,13 +60,12 @@ export default {
   methods: {
     create() {
       const body = {
-        topic: this.topic,
-        type_topic: this.tipe_data,
+        name: this.name,
       };
 
       if (this.url == "add") {
         this.$axios
-          .post("/setting/ewon", body, {
+          .post("/product", body, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -104,7 +78,7 @@ export default {
             });
 
             setTimeout(() => {
-              this.$router.push("/setting/ewon");
+              this.$router.push("/product");
             }, 1500);
           })
           .catch((err) => {
@@ -116,7 +90,7 @@ export default {
           });
       } else {
         this.$axios
-          .put("/setting/ewon/" + this.topicID, body, {
+          .put("/product/" + this.labId, body, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -129,10 +103,11 @@ export default {
             });
 
             setTimeout(() => {
-              this.$router.push("/setting/ewon");
+              this.$router.push("/product");
             }, 1500);
           })
           .catch((err) => {
+            console.log(err)
             this.$notify({
               title: `Update Data Failed : ${err}`,
               text: `Error`,
@@ -142,13 +117,13 @@ export default {
       }
     },
     getData() {
+      console.log(this.url);
       if (this.url == "edit") {
-        const url = "/setting/ewon/" + this.topicID;
+        const url = "/product/" + this.labId;
         this.$axios
           .get(url)
           .then((response) => {
-            this.topic = response.data.data.txtTopic;
-            this.type_topic = response.data.data.txtTypeTopic;
+            this.name = response.data.data.txtName;
           })
           .catch((error) => {
             console.log(error);

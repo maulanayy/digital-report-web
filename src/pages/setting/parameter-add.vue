@@ -17,44 +17,157 @@
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Name</label>
           <div class="col-md-10">
-            <input type="input" class="form-control m-b-5" placeholder="Enter Parameter" name="parameter"
-              v-model="parameter" />
+            <input
+              type="input"
+              class="form-control m-b-5"
+              placeholder="Enter Parameter"
+              v-model="name"
+            />
           </div>
         </div>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Tipe</label>
           <div class="col-md-10">
-            <v-select :options="types" name="tipe" v-model="tipe">
+            <v-select
+              :options="types"
+              v-model="tipe"
+              placeholder="Select Type Parameter"
+            >
             </v-select>
           </div>
         </div>
         <div class="form-group row m-b-15">
+          <label class="col-form-label col-md-2">Tipe Data</label>
+          <div class="col-md-10">
+            <v-select
+              :options="data_types"
+              v-model="tipe_data"
+              placeholder="Select Type Data Parameter"
+            >
+            </v-select>
+          </div>
+        </div>
+        <div class="form-group row m-b-15" v-if="tipe == 'mesin'">
           <label class="col-form-label col-md-2">Topic</label>
           <div class="col-md-10">
-            <v-select :options="topics" name="topic_id" v-model="topic_id">
+            <v-select
+              :options="topics"
+              name="topic_id"
+              v-model="topic_id"
+              placeholder="Select Topic Ewon"
+            >
+            </v-select>
+          </div>
+        </div>
+        <div class="form-group row m-b-15" v-if="tipe == 'oracle'">
+          <label class="col-form-label col-md-2">Oracle Parameter</label>
+          <div class="col-md-10">
+            <v-select
+              :options="oracles"
+              name="topic_id"
+              v-model="oracle_id"
+              placeholder="Select Oracle Parameter"
+            >
             </v-select>
           </div>
         </div>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Control Point</label>
           <div class="col-md-10">
-            <v-select :options="contorlPoint" name="cp_id" placeholder="Enter Control Point" v-model="cp_id">
+            <v-select
+              :options="contorlPoint"
+              name="cp_id"
+              placeholder="Enter Control Point"
+              v-model="cp_id"
+            >
             </v-select>
           </div>
         </div>
-        <div class="form-group row m-b-15">
+        <div class="form-group row m-b-15" v-if="tipe_data == 'text'">
+          <label class="col-form-label col-md-2">Standard</label>
+          <div class="col-md-10">
+            <input
+              type="input"
+              class="form-control m-b-5"
+              placeholder="Enter Standard"
+              v-model="txtStandard"
+            />
+          </div>
+        </div>
+        <div class="form-group row m-b-15" v-if="tipe_data == 'number'">
+          <label class="col-form-label col-md-2">Standar Minimum</label>
+          <div class="col-md-10">
+            <input
+              type="number"
+              class="form-control m-b-5"
+              placeholder="Enter Standard Minimum"
+              v-model="numStandarMin"
+              min="0"
+            />
+          </div>
+        </div>
+        <div class="form-group row m-b-15" v-if="tipe_data == 'number'">
+          <label class="col-form-label col-md-2">Standar Maximum</label>
+          <div class="col-md-10">
+            <input
+              type="number"
+              class="form-control m-b-5"
+              placeholder="Enter Standard Maximum"
+              v-model="numStandarMax"
+              min="0"
+            />
+          </div>
+        </div>
+        <div class="form-group row m-b-15" v-if="tipe == 'formula'">
           <label class="col-form-label col-md-2">Formula</label>
-          <div class="col-md-3">
-            <v-select :options="parameters" name="pr_id_1" v-model="pr_id_1" placeholder="Parameter 1">
+          <div class="col-md-4">
+            <v-select
+              :options="parameters"
+              v-model="pr_1"
+              placeholder="Parameter"
+            >
             </v-select>
           </div>
           <div class="col-md-3">
-            <v-select :options="operator" name="operator" v-model="operator" placeholder="Operator">
+            <v-select
+              :options="list_operator"
+              v-model="operator"
+              placeholder="Operator"
+            >
             </v-select>
           </div>
           <div class="col-md-3">
-            <v-select :options="parameters" name="pr_id_2" v-model="pr_id_2" placeholder="Parameter 2">
+            <b-button variant="primary" @click="addParameter()"
+              >Add Parameter</b-button
+            >
+          </div>
+        </div>
+        <div
+          class="form-group row m-b-15"
+          v-for="(param, counter) in params"
+          v-bind:key="counter"
+        >
+          <label class="col-form-label col-md-2">Formula</label>
+          <div class="col-md-4">
+            <v-select
+              :options="parameters"
+              v-model="param.parameter"
+              placeholder="Parameter"
+            >
             </v-select>
+          </div>
+          <div class="col-md-3">
+            <v-select
+              :options="list_operator"
+              v-model="param.operator"
+              placeholder="Operator"
+            >
+            </v-select>
+          </div>
+          <div class="col-md-3">
+            <b-button variant="danger" @click="deleteParameter(counter)"
+              >Delete Parameter</b-button
+            >
           </div>
         </div>
         <!-- <div class="form-group row m-b-15">
@@ -63,8 +176,20 @@
             <input type="file" class="form-control m-b-5" placeholder="Input File Images" name="file" />
           </div>
         </div> -->
-        <b-button class="float-right mb-3" variant="primary" @click="create()" v-if="url == 'add'">Create</b-button>
-        <b-button class="float-right mb-3" variant="primary" @click="create()" v-else>Edit</b-button>
+        <b-button
+          class="float-right mb-3"
+          variant="primary"
+          @click="create()"
+          v-if="url == 'add'"
+          >Create</b-button
+        >
+        <b-button
+          class="float-right mb-3"
+          variant="primary"
+          @click="create()"
+          v-else
+          >Edit</b-button
+        >
       </form>
     </panel>
     <!-- end panel -->
@@ -72,172 +197,220 @@
 </template>
 
 <script>
-  import PageOptions from "../../config/PageOptions.vue";
+import PageOptions from "../../config/PageOptions.vue";
 
-  export default {
-    name: "add-parameter",
-    data() {
-      return {
-        parameter: "",
-        topic_id: "",
-        types : ["manual","mesin","oracle"],
-        tipe : "",
-        topics: [],
-        contorlPoint: [],
-        parameters : [],
-        operator : ["+","-","*","/"],
-        cp_id: "",
-        url: "",
-        formula : "",
-        parameterID: "",
-        pr_1 : "",
-        pr_2 : ""
+export default {
+  name: "add-parameter",
+  data() {
+    return {
+      parameter : {},
+      name: "",
+      topic_id: "",
+      types: ["manual", "mesin", "oracle", "formula"],
+      tipe: "",
+      topics: [],
+      contorlPoint: [],
+      parameters: [],
+      params: [],
+      oracles : [],
+      oracle_id : "",
+      list_operator: ["plus", "minus", "multiple", "devide"],
+      data_types: ["text", "number"],
+      operator: "",
+      cp_id: "",
+      url: "",
+      formula: "",
+      parameterID: "",
+      tipe_data: "",
+      pr_1: "",
+      txtStandard: "",
+      numStandarMin: 0,
+      numStandarMax: 0,
+    };
+  },
+  created() {
+    var currentUrl = this.$route.path.split("/");
+    this.parameterID = currentUrl[4];
+    this.url = currentUrl[3];
+    console.log(this.url)
+    PageOptions.pageWithFooter = true;
+  },
+  beforeRouteLeave(to, from, next) {
+    PageOptions.pageWithFooter = false;
+    next();
+  },
+  methods: {
+    create() {
+      let newFormulas = [];
+      const topicID = this.topic_id.value ? this.topic_id.value : 0;
+
+      if (this.tipe == "formula") {
+        newFormulas.push(
+          {
+            parameter: this.pr_1.value,
+            operator: this.operator,
+          },
+        );
+        for (let x = 0; x < this.params.length; x++) {
+          const element = this.params[x];
+          const operator = element.operator != "" ? element.operator.value : "";
+          newFormulas.push({
+            parameter: element.parameter.value,
+            operator: operator,
+          });
+        }
+      }
+
+      const body = {
+        name: this.name,
+        tipe: this.tipe,
+        cp_id: this.cp_id.value,
+        topic_id: topicID,
+        formula: newFormulas,
+        tipe_data: this.tipe_data,
+        txtStandard: this.txtStandard,
+        numStandarMin: this.numStandarMin,
+        numStandarMax: this.numStandarMax,
       };
-    },
-    created() {
-      var currentUrl = this.$route.path.split("/");
-      this.parameterID = currentUrl[4];
-      this.url = currentUrl[3];
-      PageOptions.pageWithFooter = true;
-    },
-    beforeRouteLeave(to, from, next) {
-      PageOptions.pageWithFooter = false;
-      next();
-    },
-    methods: {
-      create() {
 
-        const topicID = this.topic_id.value ? this.topic_id.value : 0
-        const body = {
-          name: this.parameter,
-          tipe: this.tipe,
-          cp_id: this.cp_id.value,
-          topic_id: topicID,
-          formula : this.formula
-        };
-
-        console.log(body)
-        if (this.url == "add") {
-          this.$axios
-            .post("/setting/parameter", body, {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            })
-            .then(() => {
-              this.$notify({
-                title: `Insert Data Success`,
-                text: `Success`,
-                type: "success",
-              });
-
-              setTimeout(() => {
-                this.$router.push("/setting/parameter");
-              }, 1500);
-            })
-            .catch((err) => {
-              this.$notify({
-                title: `Insert Data Failed : ${err}`,
-                text: `Error`,
-                type: "error",
-              });
-            });
-        } else {
-          this.$axios
-            .put("/setting/parameter/" + this.parameterID, body, {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            })
-            .then(() => {
-              this.$notify({
-                title: `Update Data Success`,
-                text: `Success`,
-                type: "success",
-              });
-
-              setTimeout(() => {
-                this.$router.push("/setting/parameter");
-              }, 1500);
-            })
-            .catch((err) => {
-              this.$notify({
-                title: `Update Data Failed : ${err}`,
-                text: `Error`,
-                type: "error",
-              });
-            });
-        }
-      },
-      getData() {
-        if (this.url == "edit") {
-          const url = "/setting/parameter/" + this.parameterID;
-          this.$axios
-            .get(url)
-            .then((response) => {
-              console.log(response.data.data)
-              this.parameter = response.data.data.txtName;
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        }
-      },
-      getTopics() {
-        const url = "/setting/ewon/code";
+      if (this.url == "add") {
         this.$axios
-          .get(url)
-          .then((response) => {
-            this.topics = response.data.data.data.map((x) => {
-              return {
-                label: x.txtTopic,
-                value: x.id,
-              };
-            });
+          .post("/parameter", body, {
+            headers: {
+              "Content-Type": "application/json",
+            },
           })
-          .catch((error) => {
-            console.log(error);
-          });
-      },
-      getCP() {
-        const url = "/control-point/code";
-        this.$axios
-          .get(url)
-          .then((response) => {
-            this.contorlPoint = response.data.data.data.map((x) => {
-              return {
-                label: x.txtName,
-                value: x.id,
-              };
+          .then(() => {
+            this.$notify({
+              title: `Insert Data Success`,
+              text: `Success`,
+              type: "success",
             });
+
+            setTimeout(() => {
+              this.$router.push("/setting/parameter");
+            }, 1500);
           })
-          .catch((error) => {
-            console.log(error);
+          .catch((err) => {
+            this.$notify({
+              title: `Insert Data Failed : ${err}`,
+              text: `Error`,
+              type: "error",
+            });
           });
-      },
-      getParameter(){
-         const url = "/setting/parameter";
+      } else {
+        this.$axios
+          .put("/parameter/" + this.parameterID, body, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then(() => {
+            this.$notify({
+              title: `Update Data Success`,
+              text: `Success`,
+              type: "success",
+            });
+
+            setTimeout(() => {
+              this.$router.push("/setting/parameter");
+            }, 1500);
+          })
+          .catch((err) => {
+            this.$notify({
+              title: `Update Data Failed : ${err}`,
+              text: `Error`,
+              type: "error",
+            });
+          });
+      }
+    },
+    getData() {
+      if (this.url == "edit") {
+        const url = "/parameter/" + this.parameterID;
         this.$axios
           .get(url)
           .then((response) => {
-            console.log(response.data.data.data)
-            this.parameters = response.data.data.data.map((x) => {
-              return {
-                label: x.txtname,
-                value: x.id,
-              };
-            });
+            const data = response.data.data
+            console.log(response.data.data)
+            this.name = data.txtName;
+            this.tipe = data.txtTipe
+            this.tipe_data = data.txtTipeData
+            // this.topic_id = data.intEwonSubsSettingID
+            this.numStandarMin = data.IntStandarMin
+            this.numStandarMax = data.IntStandarMax
+            this.txtStandard = data.txtStandardText
+            // this.cp_id = data.intControlPointID
+            console.log(this.parameter)
           })
           .catch((error) => {
             console.log(error);
           });
       }
     },
-    mounted() {
-      this.getData();
-      this.getCP();
-      this.getTopics();
-      this.getParameter();
+    getTopics() {
+      const url = "/setting/ewon/code";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.topics = response.data.data.data.map((x) => {
+            return {
+              label: x.txtTopic,
+              value: x.id,
+            };
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
-  };
+    getCP() {
+      const url = "/control-point/code";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.contorlPoint = response.data.data.data.map((x) => {
+            return {
+              label: x.txtName,
+              value: x.id,
+            };
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getParameter() {
+      const url = "/parameter";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.parameters = response.data.data.data.map((x) => {
+            return {
+              label: x.txtName,
+              value: x.id,
+            };
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    addParameter() {
+      this.params.push({
+        parameter: "",
+        operator: "",
+      });
+    },
+    deleteParameter(counter) {
+      this.params.splice(counter, 1);
+    },
+  },
+  mounted() {
+    this.getData();
+    this.getCP();
+    this.getTopics();
+    this.getParameter();
+  },
+};
 </script>

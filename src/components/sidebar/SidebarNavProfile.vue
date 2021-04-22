@@ -6,10 +6,15 @@
 				<div class="image">
 					<img src="@/assets/img/user/user-13.jpg" alt="">
 				</div>
-				<div class="info">
+				<div class="info" v-if="this.$store.state.userdata != null">
 					<b class="caret pull-right"></b>
-					Maulana Yusuf
-					<small>Superadmin</small>
+					{{this.$store.state.userdata.txtUsername}}
+					<small>{{this.$store.state.userdata.role}}</small>
+				</div>
+				<div class="info" v-else>
+					<b class="caret pull-right"></b>
+					Login
+					<small></small>
 				</div>
 			</a>
 		</li>

@@ -12,7 +12,10 @@
 
     <!-- begin panel -->
     <panel title="Data Form">
-      <b-button class="mb-3" variant="primary" :to="'/setting/form/add'"
+      <b-button
+        class="mb-3"
+        variant="primary"
+        :to="'/setting/form-parameter/add'"
         >Create</b-button
       >
       <vue-good-table
@@ -34,9 +37,50 @@
           allLabel: 'All',
         }"
       >
+        <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field == 'btn'">
+            <b-button
+              variant="primary"
+              class="mr-2"
+              :to="'/setting/form-parameter/edit/' + props.row.id"
+              >Edit</b-button
+            >
+            <b-button
+              variant="danger"
+              class="mr-2"
+              @click="confirm(props.row.id)"
+              >Delete</b-button
+            >
+          </span>
+          <span v-else>
+            {{ props.formattedRow[props.column.field] }}
+          </span>
+        </template>
       </vue-good-table>
     </panel>
     <!-- end panel -->
+    <b-overlay :show="confirmation" no-wrap>
+      <template #overlay>
+        <div
+          ref="dialog"
+          tabindex="-1"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="form-confirm-label"
+          class="text-center p-3"
+        >
+          <p><strong id="form-confirm-label">Are you sure?</strong></p>
+          <div class="d-flex">
+            <b-button variant="outline-danger" class="mr-3" @click="onCancel">
+              Cancel
+            </b-button>
+            <b-button variant="outline-success" @click="deleteData"
+              >OK</b-button
+            >
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </div>
 </template>
 
@@ -47,6 +91,8 @@ export default {
   name: "data-control-point",
   data() {
     return {
+      formID: "",
+      confirmation: false,
       columns: [
         {
           label: "ID",
@@ -55,22 +101,23 @@ export default {
         },
         {
           label: "Name",
-          field: "txtName",
+          field: "txtFormName",
         },
         {
-          label : "Product",
-          field : "txtProductName"
+          label: "Product",
+          field: "txtNameProduct",
         },
         {
           label: "No Document",
           field: "txtNoDok",
         },
         {
-          label : "Production Date",
-          field: "dtmProductionDate",
-          type: "date",
-          dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
-          dateOutputFormat: "dd-MM-yyyy",
+          label: "OKP",
+          field: "txtOkp",
+        },
+        {
+          label: "Control Point",
+          field: "txtNameCP",
         },
         {
           label: "Created At",
@@ -79,16 +126,13 @@ export default {
           dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
           dateOutputFormat: "dd-MM-yyyy",
         },
-        {
-          label : "Approval",
-          field : "txtApprovedBy"
-        },
+
         {
           label: "Action",
           field: "btn",
         },
       ],
-      
+
       data: [],
       meta: {},
     };
@@ -101,8 +145,15 @@ export default {
     next();
   },
   methods: {
+    onCancel() {
+      this.confirmation = false;
+    },
+    confirm(id) {
+      this.formID = id;
+      this.confirmation = true;
+    },
     getData() {
-      const url = "/form";
+      const url = "/form-parameter";
       this.$axios
         .get(url)
         .then((response) => {
@@ -112,9 +163,36 @@ export default {
           console.log(this.data);
         })
         .catch((error) => {
-          this.err.push(error);
+          this.$notify({
+            title: `Update Data Failed : ${error}`,
+            text: `Error`,
+            type: "error",
+          });
         });
     },
+    deleteData() {
+        const url = "/form-parameter" + this.formID;
+        this.$axios
+          .delete(url, {})
+          .then(() => {
+            this.$notify({
+              title: `Delete Data Success`,
+              text: `Success`,
+              type: "success",
+            });
+
+            setTimeout(() => {
+              location.reload();
+            }, 1500);
+          })
+          .catch((err) => {
+            this.$notify({
+              title: `Delete Data Failed : ${err}`,
+              text: `Error`,
+              type: "error",
+            });
+          });
+      },
   },
   mounted() {
     this.getData();

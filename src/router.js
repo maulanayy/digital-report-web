@@ -9,6 +9,16 @@ const router = new Router({
   mode: "history",
   routes: [
     {
+      path: "/dashboard",
+      name: "dashboard",
+      component: () => import("./pages/Dashboard-v1"),
+    },
+    {
+      path : "/icon",
+      name: "icon",
+      component: () => import("./pages/UI-icons"),
+    },
+    {
       path: "/",
       name: "dashboard",
       component: () => import("./pages/home/Dashboard"),

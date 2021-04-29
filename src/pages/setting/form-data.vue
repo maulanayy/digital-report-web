@@ -2,12 +2,12 @@
   <div>
     <!-- begin breadcrumb -->
     <ol class="breadcrumb float-xl-right">
-      <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
-      <li class="breadcrumb-item active">Page with Footer</li>
+      <li class="breadcrumb-item">Home</li>
+      <li class="breadcrumb-item active"><a href="javascript:;">Form Parameter</a></li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Form</h1>
+    <h1 class="page-header">Form Parameter</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->

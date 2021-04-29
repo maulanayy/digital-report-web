@@ -12,46 +12,102 @@
       <small>Digital Quality Management System</small>
     </h1>
     <!-- end page-header -->
-    <div class="row">
-      <div class="col-md-3" v-for="cp in data" :key="cp.id">
-        <!-- begin widget-card -->
-        <a
-          :href="'/dashboard/graph/'+cp.ID"
-          class="widget-card widget-card-rounded m-b-20"
-          data-id="widget"
-        >
-          <div class="widget-card-cover"></div>
-          <div class="widget-card-content">
-            <h5
-              class="f-s-12 text-black-transparent-7"
-              data-id="widget-elm"
-              data-light-class="f-s-12 text-black-transparent-7"
-              data-dark-class="f-s-12 text-white-transparent-7"
-            >
-              <b>{{cp.txtName}}</b>
-            </h5>
-            <div
-              class="widget-img widget-img-lg rounded bg-inverse pull-left m-r-10 m-b-5"
-              style="
-                background-image: url(../assets/img/gallery/gallery-22-thumb.jpg);
-              "
-            ></div>
-            <h3
-              class="f-lg-12 text-black-transparent-7 pl-10"
-              data-id="widget-elm"
-              data-light-class="f-s-12 text-black-transparent-7"
-              data-dark-class="f-s-12 text-white-transparent-7"
-            >
-              <b>TOTAL</b>
-            </h3>
-            <h4 class="f-lg-11 text-black-transparent-7" data-id="widget-elm">
-              <b>{{cp.total_parameter}} PARAMETER</b>
-            </h4>
-          </div>
-        </a>
-      </div>
 
+    <!-- begin row -->
+    <div class="row">
+      <!-- begin col-3 -->
+      <div class="col-xl-3 col-md-6">
+        <div class="widget widget-stats bg-green">
+          <div class="stats-icon">
+            12<i class="fas fa-lg fa-fw m-r-10 fa-angle-up"></i>
+          </div>
+          <div class="stats-info">
+            <p>35 Lots</p>
+            <p>450 Ton</p>
+          </div>
+          <div class="stats-link">
+            <a href="javascript:;"
+              >View Detail <i class="fa fa-arrow-alt-circle-right"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+      <!-- end col-3 -->
+      <!-- begin col-3 -->
+      <div class="col-xl-3 col-md-6">
+        <div class="widget widget-stats bg-orange">
+          <div class="stats-icon">
+            1<i class="fas fa-lg fa-fw m-r-10 fa-angle-down"></i>
+          </div>
+          <div class="stats-info">
+            <p>6 Lots</p>
+            <p>23 Ton</p>
+          </div>
+          <div class="stats-link">
+            <a href="javascript:;"
+              >View Detail <i class="fa fa-arrow-alt-circle-right"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+      <!-- end col-3 -->
+      <!-- begin col-3 -->
+      <div class="col-xl-3 col-md-6">
+        <div class="widget widget-stats bg-red">
+          <div class="stats-icon">
+            3<i class="fas fa-lg fa-fw m-r-10 fa-angle-down"></i>
+          </div>
+          <div class="stats-info">
+            <p>3 Lots</p>
+            <p>12 Ton</p>
+          </div>
+          <div class="stats-link">
+            <a href="javascript:;"
+              >View Detail <i class="fa fa-arrow-alt-circle-right"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+      <!-- end col-3 -->
+      <!-- begin col-3 -->
+      <div class="col-xl-3 col-md-6">
+        <div class="widget widget-stats bg-black-lighter">
+          <div class="stats-info">
+            <p>44 Lots</p>
+            <p>485 Ton</p>
+          </div>
+          <div class="stats-link">
+            <a href="javascript:;"
+              >View Detail <i class="fa fa-arrow-alt-circle-right"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+      <!-- end col-3 -->
     </div>
+    <!-- end row -->
+    <panel title="Data Lots">
+      <vue-good-table
+        :columns="columns"
+        :rows="data"
+        :pagination-options="{
+          enabled: true,
+          mode: 'records',
+          perPage: this.meta.perPage,
+          position: 'bottom',
+          perPageDropdown: [3, 7, 9],
+          dropdownAllowAll: false,
+          setCurrentPage: 1,
+          nextLabel: 'next',
+          prevLabel: 'prev',
+          rowsPerPageLabel: 'Rows per page',
+          ofLabel: 'of',
+          pageLabel: 'page', // for 'pages' mode
+          allLabel: 'All',
+        }"
+      >
+      </vue-good-table>
+    </panel>
   </div>
 </template>
 
@@ -61,6 +117,53 @@ export default {
   data() {
     return {
       data: [],
+      columns: [
+        {
+          label: "OKP",
+          field: "okp",
+        },
+        {
+          label: "Item",
+          field: "item",
+        },
+        {
+          label: "Item Description",
+          field: "item_desc",
+        },
+        {
+          label: "Primary UOM",
+          field: "primary_uom",
+        },
+        {
+          label: "On Hand",
+          field: "on_hand",
+        },
+        {
+          label: "Secondary On hand",
+          field: "secondary_hand",
+        },
+        {
+          label: "Secondary UOM",
+          field: "secondary_uom",
+        },
+        {
+          label: "Lot",
+          field: "lot",
+        },
+        {
+          label: "Lot Expire Date",
+          field: "expire_date",
+        },
+        {
+          label: "Origination Date",
+          field: "origination_date",
+        },
+        {
+          label: "Quarantine /hari",
+          field: "quarantine",
+        },
+      ],
+      meta: {},
     };
   },
   methods: {
@@ -77,7 +180,7 @@ export default {
     },
   },
   mounted() {
-    this.getData();
+    // this.getData();
   },
 };
 </script>

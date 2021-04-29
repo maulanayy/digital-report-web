@@ -25,10 +25,10 @@
             <input
               type="input"
               class="form-control m-b-5"
-              placeholder="Enter Product Name"
-              name="name"
+              placeholder="Enter OKP Name"
+              name="okp"
               v-model="okp"
-              disabled
+              dd
             />
           </div>
         </div>
@@ -40,7 +40,7 @@
               type="input"
               class="form-control m-b-5"
               placeholder="Enter Product Name"
-              name="name"
+              name="product_name"
               v-model="product_name"
               disabled
             />
@@ -52,7 +52,7 @@
               type="input"
               class="form-control m-b-5"
               placeholder="Enter No Document"
-              name="name"
+              name="no_doc"
               v-model="no_doc"
               disabled
             />
@@ -65,7 +65,7 @@
             <b-form-datepicker
               id="birth-date"
               v-model="product_date"
-              name="birth_date"
+              name="product_date"
               class="form-control m-b-5"
             />
           </div>
@@ -82,50 +82,40 @@
         </div>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-1">Product Description</label>
-          <div class="col-md-4">
-            <input
-              type="input"
+          <div class="col-md-9">
+            <b-form-textarea
+              rows="5"
               class="form-control m-b-5"
               placeholder="Enter Product Name"
-              name="name"
+              name="product_desc"
               v-model="product_desc"
             />
           </div>
-
-          <label class="col-form-label col-md-1">{{ this.variable_name }}</label>
-          <div class="col-md-4">
-            <input
-              type="input"
-              class="form-control m-b-5"
-              placeholder="Enter Variable Value"
-              name="name"
-              v-model="variable"
-            />
-          </div>
         </div>
-        <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-1">Parameter Name</label>
-          <div class="col-md-4">
-            <v-select
-              :options="parameters"
-              name="form_name"
-              v-model="parameter_name"
-            >
-            </v-select>
-          </div>
 
-          <label class="col-form-label col-md-1">Parameter Value</label>
-          <div class="col-md-4">
-            <input
-              type="input"
-              class="form-control m-b-5"
-              placeholder="Enter Parameter Value"
-              name="name"
-              v-model="parameter_value"
-            />
-          </div>
-        </div>
         <vue-good-table :columns="columns" :rows="data" :line-numbers="true">
+          <template slot="table-row" slot-scope="props">
+            <span v-if="props.column.field == 'btn'">
+              <b-button
+                variant="primary"
+                class="mr-2"
+                @click="saveParameter(props.row.originalIndex)"
+                >Save</b-button
+              >
+            </span>
+            <span v-else>
+              <input
+                type="input"
+                class="form-control m-b-5"
+                placeholder="Enter Parameter Name"
+                v-model="props.row[props.column.label].value"
+                :disabled="
+                  props.row[props.column.label].type != 'manual' ||
+                  props.row[props.column.label].disable == true
+                "
+              />
+            </span>
+          </template>
         </vue-good-table>
 
         <b-button class="float-right mt-3" variant="primary" @click="create()"
@@ -157,9 +147,7 @@ export default {
       expired_date: "",
       product_desc: "",
       variable: "",
-      variable_name : "",
-      parameters: [],
-      parameter_name: "",
+      variable_name: "",
       parameter_value: "",
       formName: [],
       columns: [],
@@ -180,7 +168,6 @@ export default {
   watch: {
     form_name(value) {
       this.getDataForm(value.value);
-      this.getDataParameter()
     },
   },
   methods: {
@@ -242,7 +229,6 @@ export default {
       }
     },
     getData() {
-      console.log(this.url);
       if (this.url == "edit") {
         const url = "/form-name";
         this.$axios
@@ -261,7 +247,6 @@ export default {
         .get(url)
         .then((response) => {
           this.formName = response.data.data.data.map((x) => {
-            console.log(x);
             return {
               label: x.txtFormName,
               value: x.id,
@@ -272,38 +257,86 @@ export default {
           console.log(error);
         });
     },
-    getDataForm() {
-      console.log("WAW");
-      const url = "/form-parameter/"+this.form_name.value;
-      this.$axios
-        .get(url)
-        .then((response) => {
-          const data = response.data.data
-          this.name = data.txtName;
-          this.okp = data.okp;
-          this.no_doc = data.txtNoDoc
-          this.product_name = data.txtProductName
-          this.variable_name = data.txtVariableName
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    getDataParameter(){
-      const url = "/form-parameter/"+this.form_name.value+"/parameter";
-      this.$axios
-        .get(url)
-        .then((response) => {
-          this.parameters = response.data.data.data.map((x) => {
-            return {
-              label: x.txtParameterName,
-              value: x.intParameterID,
+    getDataForm(value) {
+      if (value) {
+        const url = "/form-parameter/" + value;
+        const urlParameter = "/form-parameter/" + value + "/parameter";
+        let parameter = {};
+        this.$axios
+          .get(url)
+          .then((response) => {
+            const data = response.data.data;
+            this.name = data.txtName;
+            this.okp = data.txtOKP;
+            this.no_doc = data.txtNoDok;
+            this.product_name = data.txtProductName;
+
+            this.variable_name = data.variable
+              ? data.variable.txtVariableName
+              : "";
+
+            this.columns.unshift({
+              label: this.variable_name,
+              field: "input-txt",
+              html: true,
+            });
+
+            parameter[this.variable_name] = {
+              value: "variabel",
+              type: "manual",
             };
+
+            this.data.push(parameter);
+          })
+          .catch((error) => {
+            console.log(error);
           });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+
+        this.$axios
+          .get(urlParameter)
+          .then((response) => {
+            const data = response.data.data.data;
+            for (let x = 0; x < data.length; x++) {
+              const element = data[x];
+              this.columns.push({
+                label: element.txtParameterName,
+                field: "input-txt",
+                html: true,
+              });
+
+              parameter[element.txtParameterName] = {
+                value: "parameter" + (x + 1),
+                type: element.txtTipe,
+              };
+            }
+
+            this.columns.push({
+              label: "Action",
+              field: "btn",
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+
+    saveParameter(index) {
+      const keys = Object.keys(this.data[index]);
+      let parameter = {};
+      keys.forEach((element) => {
+        this.data[index][element]["disable"] = true;
+
+        const typeParameter = this.data[index][element]["type"];
+
+        parameter[element] = {
+          value: "variabel",
+          type: typeParameter,
+        };
+      });
+
+      console.log(parameter);
+      this.data.push(parameter);
     }
   },
   mounted() {

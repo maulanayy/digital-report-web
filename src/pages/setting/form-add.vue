@@ -8,7 +8,7 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Create New Form</h1>
+    <h1 class="page-header">Create New Form Setting</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
@@ -222,9 +222,7 @@ export default {
         remark: this.remark,
         dataParameter: this.dataTable,
       };
-
-      console.log(body);
-      console.log(this.url)
+ 
       if (this.url == "add") {
         this.$axios
           .post("/form-parameter", body, {

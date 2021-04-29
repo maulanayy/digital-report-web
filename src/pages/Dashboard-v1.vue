@@ -42,11 +42,11 @@
 			<!-- end col-3 -->
 			<!-- begin col-3 -->
 			<div class="col-xl-3 col-md-6">
-				<div class="widget widget-stats bg-grey-darker">
-					<div class="stats-icon"><i class="fa fa-users"></i></div>
+				<div class="widget widget-stats bg-green">
+					<div class="stats-icon">12<i class="fas fa-lg fa-fw m-r-10 fa-angle-up"></i></div>
 					<div class="stats-info">
-						<h4>UNIQUE VISITORS</h4>
-						<p>1,291,922</p>	
+						<p>35 Lots </p>
+						<p>450 Ton</p>	
 					</div>
 					<div class="stats-link">
 						<a href="javascript:;">View Detail <i class="fa fa-arrow-alt-circle-right"></i></a>

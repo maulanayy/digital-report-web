@@ -352,7 +352,7 @@ export default {
       }
     },
     deleteData(index) {
-      this.data.splice(index, 1);
+      this.dataTable.splice(index, 1);
     },
   },
   mounted() {

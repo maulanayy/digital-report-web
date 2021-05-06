@@ -36,24 +36,24 @@
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
-            <b-button
+            <!-- <b-button
               variant="primary"
               class="mr-2"
               @click="confirmApproval(props.row.id)"
               >Approve</b-button
-            >
+            > -->
             <b-button
               variant="primary"
               class="mr-2"
               :to="'/form/edit/' + props.row.id"
               >Edit</b-button
             >
-            <b-button
+            <!-- <b-button
               variant="danger"
               class="mr-2"
               @click="confirm(props.row.id)"
               >Delete</b-button
-            >
+            > -->
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}

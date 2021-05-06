@@ -65,7 +65,11 @@
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Gender</label>
           <div class="col-md-5">
-            <v-select :options="['Male', 'Female']" name="gender" v-model="gender">
+            <v-select
+              :options="['Male', 'Female']"
+              name="gender"
+              v-model="gender"
+            >
             </v-select>
           </div>
         </div>
@@ -83,23 +87,13 @@
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Lab</label>
           <div class="col-md-5">
-            <v-select
-              :options="labs"
-              name="lab"
-              v-model="lab"
-            >
-            </v-select>
+            <v-select :options="labs" name="lab" v-model="lab"> </v-select>
           </div>
         </div>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Role</label>
           <div class="col-md-5">
-            <v-select
-              :options="roles"
-              name="role"
-              v-model="role"
-            >
-            </v-select>
+            <v-select :options="roles" name="role" v-model="role"> </v-select>
           </div>
         </div>
         <b-button class="float-right mb-3" variant="primary" @click="create()"
@@ -124,16 +118,16 @@ export default {
       userID: "",
       url: "",
       labs: [],
-      contorlPoint : [],
-      roles : [],
+      contorlPoint: [],
+      roles: [],
       role: "",
-      lab : "",
-      password : "",
-      username : "",
-      department : "",
-      gender : "",
-      age : 0,
-      birth_date : "",
+      lab: "",
+      password: "",
+      username: "",
+      department: "",
+      gender: "",
+      age: 0,
+      birth_date: "",
     };
   },
   created() {
@@ -150,14 +144,14 @@ export default {
     create() {
       const body = {
         name: this.name,
-        username : this.name,
-        password : this.password,
-        department : this.department,
-        gender : this.gender,
-        age : this.age,
-        birth_date : this.birth_date,
-        role : this.role.value,
-        lab : this.lab.value,
+        username: this.name,
+        password: this.password,
+        department: this.department,
+        gender: this.gender,
+        age: this.age,
+        birth_date: this.birth_date,
+        role: this.role.value,
+        lab: this.lab.value,
       };
       if (this.url == "add") {
         this.$axios
@@ -217,7 +211,7 @@ export default {
         this.$axios
           .get(url)
           .then((response) => {
-            console.log(response.data.data)
+            console.log(response.data.data);
             this.name = response.data.data.txtName;
             this.username = response.data.data.txtUsername;
             this.age = response.data.data.intAge;
@@ -230,39 +224,107 @@ export default {
           });
       }
     },
-    
+
     getLab() {
       const url = "/lab/code";
       this.$axios
         .get(url)
         .then((response) => {
-          this.labs = response.data.data.data.map(x => {
+          this.labs = response.data.data.data.map((x) => {
             return {
-              label : x.txtName,
-              value : x.id
-            }
-          })
+              label: x.txtName,
+              value: x.id,
+            };
+          });
         })
         .catch((error) => {
           console.log(error);
         });
     },
     getRole() {
-      const url = "/role/code";
-      this.$axios
-        .get(url)
-        .then((response) => {
-          this.roles = response.data.data.data.map(x => {
-            return {
-              label : x.txtName,
-              value : x.id
-            }
-          })
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+      console.log(this.$store.state.userdata);
+      const role = this.$store.state.userdata.role;
+
+      switch (role) {
+        case "superadmin":
+          this.roles = [
+            {
+              label: "admin",
+              value: 2,
+            },
+            {
+              label: "supervisor",
+              value: 3,
+            },
+            {
+              label: "inspector",
+              value: 4,
+            },
+            {
+              label: "leader",
+              value: 5,
+            },
+          ];
+          break;
+        case "supervisor":
+          this.roles = [
+            {
+              label: "admin",
+              value: 2,
+            },
+            {
+              label: "supervisor",
+              value: 3,
+            },
+            {
+              label: "inspector",
+              value: 4,
+            },
+            {
+              label: "leader",
+              value: 5,
+            },
+          ];
+          break;
+        case "leader":
+          this.roles = [
+            {
+              label: "inspector",
+              value: 4,
+            },
+          ];
+          break;
+        case "admin":
+          this.roles = [
+            {
+              label: "inspector",
+              value: 4,
+            },
+          ];
+          break;
+        default:
+          this.roles = [
+            {
+              label: "inspector",
+              value: 4,
+            },
+          ];
+          break;
+      }
+      //   this.$axios
+      //     .get(url)
+      //     .then((response) => {
+      //       this.roles = response.data.data.data.map((x) => {
+      //         return {
+      //           label: x.txtName,
+      //           value: x.id,
+      //         };
+      //       });
+      //     })
+      //     .catch((error) => {
+      //       console.log(error);
+      //     });
+    },
   },
   mounted() {
     this.getData();

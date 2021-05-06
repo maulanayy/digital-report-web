@@ -95,7 +95,7 @@
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [3, 7, 9],
+          perPageDropdown: [5, 10, 15],
           dropdownAllowAll: false,
           setCurrentPage: 1,
           nextLabel: 'next',
@@ -116,7 +116,76 @@ export default {
   name: "dashboard",
   data() {
     return {
-      data: [],
+      data: [{
+        okp : 'PD-3728 TES',
+        item : 'KFP2-GCPP01000',
+        item_desc : 'CHIL GO POWERDER 1 + VANILLA 300G',
+        primary_uom : 'CB',
+        on_hand : 571,
+        secondary_hand : 2055.6,
+        secondary_uom : 'kg',
+        lot : '20Z2902EK',
+        expire_date : '05-jan-22',
+        origination_date : '05-jan-21',
+        quarantine : 22
+
+      },
+      {
+        okp : 'PD-3728 TES',
+        item : 'KFP2-GCPP01000',
+        item_desc : 'CHIL GO POWERDER 1 + VANILLA 300G',
+        primary_uom : 'CB',
+        on_hand : 571,
+        secondary_hand : 2055.6,
+        secondary_uom : 'kg',
+        lot : '20Z2902EK',
+        expire_date : '05-jan-22',
+        origination_date : '05-jan-21',
+        quarantine : 22
+
+      },
+      {
+        okp : 'PD-3728 TES',
+        item : 'KFP2-GCPP01000',
+        item_desc : 'CHIL GO POWERDER 1 + VANILLA 300G',
+        primary_uom : 'CB',
+        on_hand : 571,
+        secondary_hand : 2055.6,
+        secondary_uom : 'kg',
+        lot : '20Z2902EK',
+        expire_date : '05-jan-22',
+        origination_date : '05-jan-21',
+        quarantine : 22
+
+      },
+      {
+        okp : 'PD-3728 TES',
+        item : 'KFP2-GCPP01000',
+        item_desc : 'CHIL GO POWERDER 1 + VANILLA 300G',
+        primary_uom : 'CB',
+        on_hand : 571,
+        secondary_hand : 2055.6,
+        secondary_uom : 'kg',
+        lot : '20Z2902EK',
+        expire_date : '05-jan-22',
+        origination_date : '05-jan-21',
+        quarantine : 22
+
+      },
+      {
+        okp : 'PD-3728 TES',
+        item : 'KFP2-GCPP01000',
+        item_desc : 'CHIL GO POWERDER 1 + VANILLA 300G',
+        primary_uom : 'CB',
+        on_hand : 571,
+        secondary_hand : 2055.6,
+        secondary_uom : 'kg',
+        lot : '20Z2902EK',
+        expire_date : '05-jan-22',
+        origination_date : '05-jan-21',
+        quarantine : 22
+
+      }],
       columns: [
         {
           label: "OKP",

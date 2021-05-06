@@ -28,7 +28,6 @@
               placeholder="Enter OKP Name"
               name="okp"
               v-model="okp"
-              dd
             />
           </div>
         </div>
@@ -73,7 +72,7 @@
           <label class="col-form-label col-md-1">Expired Date</label>
           <div class="col-md-4">
             <b-form-datepicker
-              id="birth-date"
+              id="expired-date"
               v-model="expired_date"
               name="birth_date"
               class="form-control m-b-5"
@@ -86,7 +85,7 @@
             <b-form-textarea
               rows="5"
               class="form-control m-b-5"
-              placeholder="Enter Product Name"
+              placeholder="Enter Product Description"
               name="product_desc"
               v-model="product_desc"
             />
@@ -100,6 +99,9 @@
                 variant="primary"
                 class="mr-2"
                 @click="saveParameter(props.row.originalIndex)"
+                v-if="
+                  props.row['button']['button-' + (props.row.originalIndex + 1)]
+                "
                 >Save</b-button
               >
             </span>
@@ -107,8 +109,10 @@
               <input
                 type="input"
                 class="form-control m-b-5"
-                placeholder="Enter Parameter Name"
-                v-model="props.row[props.column.label].value"
+                placeholder="Enter Value"
+                v-model="
+                  data[props.row.originalIndex][props.column.label].value
+                "
                 :disabled="
                   props.row[props.column.label].type != 'manual' ||
                   props.row[props.column.label].disable == true
@@ -136,6 +140,7 @@ export default {
   name: "add-control-point",
   data() {
     return {
+      formData: {},
       name: "",
       cpId: "",
       url: "",
@@ -167,18 +172,41 @@ export default {
   },
   watch: {
     form_name(value) {
-      this.getDataForm(value.value);
+      if (value) {
+        this.getDataForm(value.value);
+      } else {
+        this.name = "";
+        this.okp = "";
+        this.no_doc = "";
+        this.product_name = "";
+        this.data = [];
+        this.columns = [];
+      }
     },
   },
   methods: {
     create() {
+      const formID = !this.form_name.value
+        ? this.formName.find((x) => {
+            return x.label == this.form_name;
+          })
+        : this.form_name;
+      this.data.pop();
       const body = {
-        name: this.name,
+        form: formID.value,
+        form_name: formID.label,
+        okp: this.okp,
+        product_name: this.product_name,
+        no_doc: this.no_doc,
+        product_date: this.product_date,
+        expired_date: this.expired_date,
+        product_desc: this.product_desc,
+        parameter_value: this.data,
       };
 
       if (this.url == "add") {
         this.$axios
-          .post("/form", body, {
+          .post("/form-data", body, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -203,7 +231,7 @@ export default {
           });
       } else {
         this.$axios
-          .put("/form/" + this.cpId, body, {
+          .post("/form-data/", body, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -230,11 +258,62 @@ export default {
     },
     getData() {
       if (this.url == "edit") {
-        const url = "/form-name";
+        const url = "/form-data/" + this.cpId;
+        let parameter = {};
+
         this.$axios
           .get(url)
           .then((response) => {
-            this.name = response.data.data.txtName;
+            const data = response.data.data;
+            console.log(data);
+            this.form_name = data.txtFormName;
+            this.okp = data.txtOkp;
+            this.no_doc = data.txtNoDok;
+            this.product_name = data.txtNameProduct;
+            this.product_desc = data.txtProductDesc;
+            this.product_date = data.dtmProductionDate;
+            this.expired_date = data.dtmDateExpired;
+
+            const parameters = data.parameter;
+            this.variable_name = data.variable
+              ? data.variable.txtVariableName
+              : "";
+            this.columns.unshift({
+              label: this.variable_name,
+              field: "input-txt",
+              html: true,
+            });
+
+            parameter[this.variable_name] = {
+              value: "",
+              type: "manual",
+            };
+
+            for (let x = 0; x < parameters.length; x++) {
+              const element = parameters[x];
+              this.columns.push({
+                label: element.txtParameterName,
+                field: "input-txt",
+                html: true,
+              });
+              parameter[element.txtParameterName] = {
+                value: "",
+                type: element.txtTipe,
+              };
+            }
+
+            this.columns.push({
+              label: "Action",
+              field: "btn",
+            });
+
+            const button = "button-" + (this.data.length + 1);
+            parameter["button"] = {
+              type: "button",
+            };
+            parameter["button"][button] = true;
+
+            this.data.push(parameter);
           })
           .catch((error) => {
             console.log(error);
@@ -260,7 +339,6 @@ export default {
     getDataForm(value) {
       if (value) {
         const url = "/form-parameter/" + value;
-        const urlParameter = "/form-parameter/" + value + "/parameter";
         let parameter = {};
         this.$axios
           .get(url)
@@ -269,12 +347,11 @@ export default {
             this.name = data.txtName;
             this.okp = data.txtOKP;
             this.no_doc = data.txtNoDok;
-            this.product_name = data.txtProductName;
-
+            this.product_name = data.txtName;
+            const parameters = data.parameter;
             this.variable_name = data.variable
               ? data.variable.txtVariableName
               : "";
-
             this.columns.unshift({
               label: this.variable_name,
               field: "input-txt",
@@ -282,30 +359,21 @@ export default {
             });
 
             parameter[this.variable_name] = {
-              value: "variabel",
+              id : data.variable.id,
+              value: "",
               type: "manual",
             };
 
-            this.data.push(parameter);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
-        this.$axios
-          .get(urlParameter)
-          .then((response) => {
-            const data = response.data.data.data;
-            for (let x = 0; x < data.length; x++) {
-              const element = data[x];
+            for (let x = 0; x < parameters.length; x++) {
+              const element = parameters[x];
               this.columns.push({
                 label: element.txtParameterName,
                 field: "input-txt",
                 html: true,
               });
-
               parameter[element.txtParameterName] = {
-                value: "parameter" + (x + 1),
+                id : element.intParameterID,
+                value: "",
                 type: element.txtTipe,
               };
             }
@@ -314,6 +382,14 @@ export default {
               label: "Action",
               field: "btn",
             });
+
+            const button = "button-" + (this.data.length + 1);
+            parameter["button"] = {
+              type: "button",
+            };
+            parameter["button"][button] = true;
+
+            this.data.push(parameter);
           })
           .catch((error) => {
             console.log(error);
@@ -325,19 +401,25 @@ export default {
       const keys = Object.keys(this.data[index]);
       let parameter = {};
       keys.forEach((element) => {
+        const button = "button-";
         this.data[index][element]["disable"] = true;
-
+        this.data[index][element][button + this.data.length] = false;
         const typeParameter = this.data[index][element]["type"];
-
-        parameter[element] = {
-          value: "variabel",
-          type: typeParameter,
-        };
+        if (element != "button") {
+          parameter[element] = {
+            value: "",
+            type: typeParameter,
+          };
+        } else {
+          parameter["button"] = {
+            type: "button",
+          };
+          parameter["button"][button + (this.data.length + 1)] = true;
+        }
       });
 
-      console.log(parameter);
       this.data.push(parameter);
-    }
+    },
   },
   mounted() {
     this.getData();

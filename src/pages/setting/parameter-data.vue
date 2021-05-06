@@ -125,7 +125,6 @@
           .then((response) => {
             this.data = response.data.data.data;
             this.meta = response.data.data.meta;
-            console.log(this.meta)
           })
           .catch((error) => {
             console.log(error);

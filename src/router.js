@@ -222,6 +222,11 @@ const router = new Router({
       component: () => import("./pages/form/add"),
     },
     {
+      path: "/form/edit/:id",
+      name: "form-add",
+      component: () => import("./pages/form/add"),
+    },
+    {
       path: "/tutorial/form-element",
       name: "form-element",
       component: () => import("./pages/Form-elements"),

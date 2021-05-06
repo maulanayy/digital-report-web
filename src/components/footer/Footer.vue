@@ -1,7 +1,7 @@
 <template>
 	<!-- begin #footer -->
 	<div id="footer" class="footer">
-		&copy; 2020 Color Admin Responsive Admin Template - Sean Ngu All Rights Reserved
+		&copy; 2021 Digital Quality Management System - PT. Morinaga Kalbe Indonesia
 	</div>
 	<!-- end #footer -->
 </template>

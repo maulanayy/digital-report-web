@@ -28,16 +28,24 @@
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Lab</label>
           <div class="col-md-9">
-            <v-select
-              :options="lab_category"
-              name="lab_id"
-              v-model="lab_id"
-            >
+            <v-select :options="lab_category" name="lab_id" v-model="lab_id">
             </v-select>
           </div>
         </div>
-        <b-button class="float-right mb-3" variant="primary" @click="create()" v-if="url == 'add'">Create</b-button>
-        <b-button class="float-right mb-3" variant="primary" @click="create()" v-else>Edit</b-button>
+        <b-button
+          class="float-right mb-3"
+          variant="primary"
+          @click="create()"
+          v-if="url == 'add'"
+          >Create</b-button
+        >
+        <b-button
+          class="float-right mb-3"
+          variant="primary"
+          @click="create()"
+          v-else
+          >Edit</b-button
+        >
       </form>
     </panel>
     <!-- end panel -->
@@ -64,7 +72,6 @@ export default {
     var currentUrl = this.$route.path.split("/");
     this.areaId = currentUrl[3];
     this.url = currentUrl[2];
-    console.log("AREA : ",this.areaId)
     PageOptions.pageWithFooter = true;
   },
   beforeRouteLeave(to, from, next) {
@@ -73,12 +80,19 @@ export default {
   },
   methods: {
     create() {
-      const body = {
+      const labID = !this.lab_id.value
+        ? this.lab_category.find((x) => {
+            return x.label == this.lab_id;
+          })
+        : this.lab_id;
+
+      let body = {
         name: this.name,
-        lab_id: this.lab_id.value,
+        lab_id: labID.value,
       };
 
       if (this.url == "add") {
+
         this.$axios
           .post("/area", body, {
             headers: {
@@ -137,6 +151,10 @@ export default {
           .get(url)
           .then((response) => {
             this.name = response.data.data.txtName;
+            const lab = this.lab_category.find((x) => {
+              return x.value == response.data.data.intLabID;
+            });
+            this.lab_id = lab;
           })
           .catch((error) => {
             console.log(error);
@@ -148,12 +166,12 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
-          this.lab_category = response.data.data.data.map(x => {
+          this.lab_category = response.data.data.data.map((x) => {
             return {
-              label : x.txtName,
-              value : x.id
-            }
-          })
+              label: x.txtName,
+              value: x.id,
+            };
+          });
         })
         .catch((error) => {
           console.log(error);

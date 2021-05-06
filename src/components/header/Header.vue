@@ -15,7 +15,7 @@
           <span class="icon-bar"></span>
         </button>
         <router-link to="/dashboard" class="navbar-brand"
-          ><span class="navbar-logo"></span> <b>Digital</b> Report
+          ><span class="navbar-logo"></span> <b>Digital Quality</b> Management System
         </router-link>
         <button
           type="button"

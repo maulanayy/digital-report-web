@@ -92,17 +92,6 @@
           </div>
         </div>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Control Point</label>
-          <div class="col-md-5">
-            <v-select
-              :options="contorlPoint"
-              name="control_point"
-              v-model="control_point"
-            >
-            </v-select>
-          </div>
-        </div>
-        <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Role</label>
           <div class="col-md-5">
             <v-select
@@ -145,7 +134,6 @@ export default {
       gender : "",
       age : 0,
       birth_date : "",
-      control_point : ""
     };
   },
   created() {
@@ -170,7 +158,6 @@ export default {
         birth_date : this.birth_date,
         role : this.role.value,
         lab : this.lab.value,
-        control_point : this.control_point.value,
       };
       if (this.url == "add") {
         this.$axios
@@ -243,22 +230,7 @@ export default {
           });
       }
     },
-    getCP() {
-      const url = "/control-point/code";
-      this.$axios
-        .get(url)
-        .then((response) => {
-          this.contorlPoint = response.data.data.data.map((x) => {
-            return {
-              label: x.txtName,
-              value: x.id,
-            };
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+    
     getLab() {
       const url = "/lab/code";
       this.$axios
@@ -294,7 +266,6 @@ export default {
   },
   mounted() {
     this.getData();
-    this.getCP();
     this.getLab();
     this.getRole();
   },

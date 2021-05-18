@@ -17,6 +17,7 @@ const sidebarMenuByRole = {
         { path: "/setting/ewon", title: "Ewon" },
         { path: "/setting/parameter", title: "Parameter" },
         { path: "/setting/form-parameter", title: "Form Parameter" },
+        {path : "/" , title : "Formuula Parameter"}
       ],
     },
   ],
@@ -26,14 +27,15 @@ const sidebarMenuByRole = {
     { path: "/user", icon: "fa fa-users", title: "User" },
     { path: "/area", icon: "fa fa-warehouse", title: "Area" },
     { path: "/control_point", icon: "fa fa-sliders-h", title: "Control Point" },
-    { path: "/form", title: "Form" },
+    { path: "/product", icon: "fas fa-flask", title: "Product" },
+    { path: "/form", icon: "fa fa-file", title: "Form" },
     {
       path: "/setting",
       icon: "fa fa-cog",
       title: "Setting",
       children: [
         { path: "/setting/parameter", title: "Parameter" },
-        { path: "/setting/form", title: "Form" },
+        { path: "/setting/form-parameter", title: "Form" },
       ],
     },
   ],

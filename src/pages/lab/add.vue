@@ -118,6 +118,7 @@ export default {
     },
     getData() {
       console.log(this.url);
+      console.log(this.$store.state.userdata)
       if (this.url == "edit") {
         const url = "/lab/" + this.labId;
         this.$axios

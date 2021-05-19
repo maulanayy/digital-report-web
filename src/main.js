@@ -96,22 +96,28 @@ Vue.component("apexchart", VueApexCharts);
 Vue.component("date-range-picker", DateRangePicker);
 Vue.component(VueCountdown.name, VueCountdown);
 
-let auth = cookie.getJSON("userdata");
+let auth = cookie.getJSON("userdata") !== undefined ? cookie.getJSON("userdata") : {};
+const token = cookie.getJSON("userdata") !== undefined ? auth.access_token : "";
 
+let headers = {}
+
+if (token !== "") {
+  headers = {
+    "Content-type": "application/json",
+    Authorization: `Bearer ${token}`,
+  }
+}
 let axiosOptoins = {
   baseURL: "http://localhost:1337",
   timeout: 180000, // 3 menit
-  headers: {
-    "Content-type": "application/json",
-    Authorization: `Bearer ${auth.access_token}`,
-  },
+  headers: headers,
 };
 
 Vue.prototype.$axios = axios.create(axiosOptoins);
 if (cookie.getJSON("userdata") !== undefined) {
- 
+
   store.commit("set_login", auth);
-  
+
 }
 
 new Vue({

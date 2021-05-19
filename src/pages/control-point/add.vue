@@ -16,36 +16,20 @@
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Name</label>
           <div class="col-md-9">
-            <input
-              type="input"
-              class="form-control m-b-5"
-              placeholder="Enter Name Control Point"
-              name="name"
-              v-model="name"
-            />
+            <input type="input" class="form-control m-b-5" placeholder="Enter Name Control Point" name="name"
+              v-model="name" />
           </div>
         </div>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Area</label>
           <div class="col-md-9">
-            <v-select :options="areas" name="area_id" v-model="area_id">
+            <v-select v-model="area_id" tag-placeholder="Add this as new tag" placeholder="Search or add a tag"
+              label="name" track-by="code" :options="areas" :multiple="true">
             </v-select>
           </div>
         </div>
-        <b-button
-          class="float-right mb-3"
-          variant="primary"
-          @click="create()"
-          v-if="url == 'add'"
-          >Create</b-button
-        >
-        <b-button
-          class="float-right mb-3"
-          variant="primary"
-          @click="create()"
-          v-else
-          >Edit</b-button
-        >
+        <b-button class="float-right mb-3" variant="primary" @click="create()" v-if="url == 'add'">Create</b-button>
+        <b-button class="float-right mb-3" variant="primary" @click="create()" v-else>Edit</b-button>
       </form>
     </panel>
     <!-- end panel -->
@@ -55,128 +39,151 @@
 </template>
 
 <script>
-import PageOptions from "../../config/PageOptions.vue";
+  import PageOptions from "../../config/PageOptions.vue";
 
-export default {
-  name: "add-control-point",
-  data() {
-    return {
-      name: "",
-      cpId: "",
-      url: "",
-      areas: [],
-      area_id: "",
-    };
-  },
-  created() {
-    var currentUrl = this.$route.path.split("/");
-    this.cpId = currentUrl[3];
-    this.url = currentUrl[2];
-    PageOptions.pageWithFooter = true;
-  },
-  beforeRouteLeave(to, from, next) {
-    PageOptions.pageWithFooter = false;
-    next();
-  },
-  methods: {
-    create() {
-      const areaID = !this.area_id.value
-        ? this.areas.find((x) => {
-            return x.label == this.area_id;
-          })
-        : this.area_id;
-
-      let body = {
-        name: this.name,
-        area_id: areaID.value,
+  export default {
+    name: "add-control-point",
+    data() {
+      return {
+        name: "",
+        cpId: "",
+        url: "",
+        areas: [],
+        area_id: [],
+        options: [{
+            name: 'Vue.js',
+            code: 'vu'
+          },
+          {
+            name: 'Javascript',
+            code: 'js'
+          },
+          {
+            name: 'Open Source',
+            code: 'os'
+          }
+        ]
       };
-
-      if (this.url == "add") {
-        this.$axios
-          .post("/control-point", body, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then(() => {
-            this.$notify({
-              title: `Insert Data Success`,
-              text: `Success`,
-              type: "success",
-            });
-            setTimeout(() => {
-              this.$router.push("/control_point");
-            }, 1500);
-          })
-          .catch((err) => {
-            this.$notify({
-              title: `Insert Data Failed : ${err}`,
-              text: `Error`,
-              type: "error",
-            });
-          });
-      } else {
-        console.log(body);
-        this.$axios
-          .put("/control-point/" + this.cpId, body, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then(() => {
-            this.$notify({
-              title: `Update Data Success`,
-              text: `Success`,
-              type: "success",
-            });
-
-            setTimeout(() => {
-              this.$router.push("/control_point");
-            }, 1500);
-          })
-          .catch((err) => {
-            this.$notify({
-              title: `Update Data Failed : ${err}`,
-              text: `Error`,
-              type: "error",
-            });
-          });
-      }
     },
-    getData() {
-      if (this.url == "edit") {
-        const url = "/control-point/" + this.cpId;
+    created() {
+      var currentUrl = this.$route.path.split("/");
+      this.cpId = currentUrl[3];
+      this.url = currentUrl[2];
+      PageOptions.pageWithFooter = true;
+    },
+    beforeRouteLeave(to, from, next) {
+      PageOptions.pageWithFooter = false;
+      next();
+    },
+    methods: {
+      create() {
+        const areaID = this.area_id.length > 0 ?
+          this.area_id.map((x) => {
+            return x.code;
+          }) : [];
+        console.log(areaID)
+
+        if (areaID.length == 0) {
+          this.$notify({
+            title: `AREA is empty`,
+            text: `Warning`,
+            type: "warn",
+          });
+        } else {
+          let body = {
+            name: this.name,
+            area_id: areaID,
+          };
+
+          if (this.url == "add") {
+            this.$axios
+              .post("/control-point", body, {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              })
+              .then(() => {
+                this.$notify({
+                  title: `Insert Data Success`,
+                  text: `Success`,
+                  type: "success",
+                });
+                setTimeout(() => {
+                  this.$router.push("/control_point");
+                }, 1500);
+              })
+              .catch((err) => {
+                this.$notify({
+                  title: `Insert Data Failed : ${err}`,
+                  text: `Error`,
+                  type: "error",
+                });
+              });
+          } else {
+            
+            this.$axios
+              .put("/control-point/" + this.cpId, body, {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              })
+              .then(() => {
+                this.$notify({
+                  title: `Update Data Success`,
+                  text: `Success`,
+                  type: "success",
+                });
+
+                setTimeout(() => {
+                  this.$router.push("/control_point");
+                }, 1500);
+              })
+              .catch((err) => {
+                this.$notify({
+                  title: `Update Data Failed : ${err}`,
+                  text: `Error`,
+                  type: "error",
+                });
+              });
+          }
+        }
+
+
+      },
+      getData() {
+        if (this.url == "edit") {
+          const url = "/control-point/" + this.cpId;
+          this.$axios
+            .get(url)
+            .then((response) => {
+              this.name = response.data.data.txtName;
+              this.area_id = response.data.data.areaTxtName;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      },
+      getAreaCode() {
+        const url = "/area/code";
         this.$axios
           .get(url)
           .then((response) => {
-            this.name = response.data.data.txtName;
-            this.area_id = response.data.data.areaTxtName;
+            this.areas = response.data.data.data.map((x) => {
+              return {
+                name: x.txtName,
+                code: x.id,
+              };
+            });
           })
           .catch((error) => {
             console.log(error);
           });
-      }
+      },
     },
-    getAreaCode() {
-      const url = "/area/code";
-      this.$axios
-        .get(url)
-        .then((response) => {
-          this.areas = response.data.data.data.map((x) => {
-            return {
-              label: x.txtName,
-              value: x.id,
-            };
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    mounted() {
+      this.getData();
+      this.getAreaCode();
     },
-  },
-  mounted() {
-    this.getData();
-    this.getAreaCode();
-  },
-};
+  };
 </script>

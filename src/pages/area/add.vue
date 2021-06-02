@@ -7,11 +7,11 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Edit Lab Area</h1>
+    <h1 class="page-header">{{label}}</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Edit Lab Area">
+    <panel :title="label">
       <form>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Name</label>
@@ -66,6 +66,7 @@ export default {
       url: "",
       lab_category: [],
       lab_id: "",
+      label : "",
     };
   },
   created() {
@@ -146,19 +147,23 @@ export default {
     },
     getData() {
       if (this.url == "edit") {
+        this.label = "Edit Area"
         const url = "/area/" + this.areaId;
         this.$axios
           .get(url)
           .then((response) => {
             this.name = response.data.data.txtName;
             const lab = this.lab_category.find((x) => {
-              return x.value == response.data.data.intLabID;
+              return x.label == response.data.data.labTxtName;
             });
-            this.lab_id = lab;
+            console.log("LAB :",lab)
+            this.lab_id = response.data.data.labTxtName;
           })
           .catch((error) => {
             console.log(error);
           });
+      }else{
+        this.label = "Add Area"
       }
     },
     getLabCode() {

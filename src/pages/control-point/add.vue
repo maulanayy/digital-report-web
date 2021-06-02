@@ -7,11 +7,11 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Form Control Point</h1>
+    <h1 class="page-header">{{label}}</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Form Control Point">
+    <panel :title="label">
       <form>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Name</label>
@@ -23,7 +23,7 @@
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Area</label>
           <div class="col-md-9">
-            <v-select v-model="area_id" tag-placeholder="Add this as new tag" placeholder="Search or add a tag"
+            <v-select v-model="area_id" tag-placeholder="Enter Name Area" placeholder="Enter Name Area"
               label="name" track-by="code" :options="areas" :multiple="true">
             </v-select>
           </div>
@@ -50,19 +50,7 @@
         url: "",
         areas: [],
         area_id: [],
-        options: [{
-            name: 'Vue.js',
-            code: 'vu'
-          },
-          {
-            name: 'Javascript',
-            code: 'js'
-          },
-          {
-            name: 'Open Source',
-            code: 'os'
-          }
-        ]
+        label : "",
       };
     },
     created() {
@@ -81,7 +69,6 @@
           this.area_id.map((x) => {
             return x.code;
           }) : [];
-        console.log(areaID)
 
         if (areaID.length == 0) {
           this.$notify({
@@ -152,6 +139,7 @@
       },
       getData() {
         if (this.url == "edit") {
+          this.label = "Edit Control Point"
           const url = "/control-point/" + this.cpId;
           this.$axios
             .get(url)
@@ -162,6 +150,8 @@
             .catch((error) => {
               console.log(error);
             });
+        }else{
+          this.label = "Add Control Point"
         }
       },
       getAreaCode() {

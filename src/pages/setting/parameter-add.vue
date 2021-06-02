@@ -118,58 +118,6 @@
             />
           </div>
         </div>
-        <div class="form-group row m-b-15" v-if="tipe == 'formula'">
-          <label class="col-form-label col-md-2">Formula</label>
-          <div class="col-md-4">
-            <v-select
-              :options="parameters"
-              v-model="pr_1"
-              placeholder="Parameter"
-            >
-            </v-select>
-          </div>
-          <div class="col-md-3">
-            <v-select
-              :options="list_operator"
-              v-model="operator"
-              placeholder="Operator"
-            >
-            </v-select>
-          </div>
-          <div class="col-md-3">
-            <b-button variant="primary" @click="addParameter()"
-              >Add Parameter</b-button
-            >
-          </div>
-        </div>
-        <div
-          class="form-group row m-b-15"
-          v-for="(param, counter) in params"
-          v-bind:key="counter"
-        >
-          <label class="col-form-label col-md-2">Formula</label>
-          <div class="col-md-4">
-            <v-select
-              :options="parameters"
-              v-model="param.parameter"
-              placeholder="Parameter"
-            >
-            </v-select>
-          </div>
-          <div class="col-md-3">
-            <v-select
-              :options="list_operator"
-              v-model="param.operator"
-              placeholder="Operator"
-            >
-            </v-select>
-          </div>
-          <div class="col-md-3">
-            <b-button variant="danger" @click="deleteParameter(counter)"
-              >Delete Parameter</b-button
-            >
-          </div>
-        </div>
         <!-- <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Upload Image</label>
           <div class="col-md-10">
@@ -206,7 +154,7 @@ export default {
       parameter : {},
       name: "",
       topic_id: "",
-      types: ["manual", "mesin", "oracle", "formula"],
+      types: ["mesin", "oracle", "formula"],
       tipe: "",
       topics: [],
       contorlPoint: [],
@@ -219,7 +167,6 @@ export default {
       operator: "",
       cp_id: "",
       url: "",
-      formula: "",
       parameterID: "",
       tipe_data: "",
       pr_1: "",
@@ -241,32 +188,13 @@ export default {
   },
   methods: {
     create() {
-      let newFormulas = [];
       const topicID = this.topic_id.value ? this.topic_id.value : 0;
-
-      if (this.tipe == "formula") {
-        newFormulas.push(
-          {
-            parameter: this.pr_1.value,
-            operator: this.operator,
-          },
-        );
-        for (let x = 0; x < this.params.length; x++) {
-          const element = this.params[x];
-          const operator = element.operator != "" ? element.operator.value : "";
-          newFormulas.push({
-            parameter: element.parameter.value,
-            operator: operator,
-          });
-        }
-      }
 
       const body = {
         name: this.name,
         tipe: this.tipe,
         cp_id: this.cp_id.value,
         topic_id: topicID,
-        formula: newFormulas,
         tipe_data: this.tipe_data,
         txtStandard: this.txtStandard,
         numStandarMin: this.numStandarMin,

@@ -78,7 +78,7 @@
           },
           {
             label: "Area",
-            field: "areaTxtName",
+            field: "txtAreaName",
           },
           {
             label: "Created At",

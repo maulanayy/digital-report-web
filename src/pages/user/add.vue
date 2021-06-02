@@ -7,11 +7,11 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Add User</h1>
+    <h1 class="page-header">{{label}}</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Add User" class="col-md-10">
+    <panel :title="label" class="col-md-10">
       <form>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Username</label>
@@ -49,17 +49,6 @@
               name="name"
               v-model="name"
             />
-          </div>
-        </div>
-        <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Department</label>
-          <div class="col-md-5">
-            <v-select
-              :options="['Lab Inline', 'Lab Micro']"
-              name="department"
-              v-model="department"
-            >
-            </v-select>
           </div>
         </div>
         <div class="form-group row m-b-15">
@@ -124,10 +113,10 @@ export default {
       lab: "",
       password: "",
       username: "",
-      department: "",
       gender: "",
       age: 0,
       birth_date: "",
+      label : ""
     };
   },
   created() {
@@ -146,7 +135,7 @@ export default {
         name: this.name,
         username: this.name,
         password: this.password,
-        department: this.department,
+        department: this.lab.label,
         gender: this.gender,
         age: this.age,
         birth_date: this.birth_date,
@@ -206,11 +195,14 @@ export default {
       }
     },
     getData() {
+      
       if (this.url == "edit") {
+        this.label = "Edit User"
         const url = "/user/" + this.userID;
         this.$axios
           .get(url)
           .then((response) => {
+            // const roles = this.roles;
             console.log(response.data.data);
             this.name = response.data.data.txtName;
             this.username = response.data.data.txtUsername;
@@ -218,10 +210,17 @@ export default {
             this.birth_date = response.data.data.dtmBirtDate;
             this.gender = response.data.data.txtSex;
             this.department = response.data.data.txtDepartment;
+            
+            this.lab = response.data.data.intLabID;
+            // this.role = roles.find(x => {
+            //   return x 
+            // });
           })
           .catch((error) => {
             console.log(error);
           });
+      }else{
+        this.label = "Add User"
       }
     },
 
@@ -242,11 +241,10 @@ export default {
         });
     },
     getRole() {
-      console.log(this.$store.state.userdata);
-      const role = this.$store.state.userdata.role;
+      const role = this.$store.state.userdata.intRoleID;
 
       switch (role) {
-        case "superadmin":
+        case 1:
           this.roles = [
             {
               label: "admin",
@@ -261,16 +259,24 @@ export default {
               value: 4,
             },
             {
-              label: "leader",
+              label: "guest",
               value: 5,
+            },
+             {
+              label: "leader",
+              value: 6,
             },
           ];
           break;
-        case "supervisor":
+        case 3:
           this.roles = [
             {
               label: "admin",
               value: 2,
+            },
+            {
+              label: "leader",
+              value: 6,
             },
             {
               label: "supervisor",
@@ -281,49 +287,32 @@ export default {
               value: 4,
             },
             {
-              label: "leader",
+              label: "guest",
               value: 5,
             },
           ];
           break;
-        case "leader":
+        case 2:
           this.roles = [
             {
               label: "inspector",
               value: 4,
             },
-          ];
-          break;
-        case "admin":
-          this.roles = [
             {
-              label: "inspector",
-              value: 4,
+              label: "guest",
+              value: 5,
             },
           ];
           break;
-        default:
+          default:
           this.roles = [
             {
-              label: "inspector",
-              value: 4,
+              label: "guest",
+              value: 5,
             },
           ];
           break;
       }
-      //   this.$axios
-      //     .get(url)
-      //     .then((response) => {
-      //       this.roles = response.data.data.data.map((x) => {
-      //         return {
-      //           label: x.txtName,
-      //           value: x.id,
-      //         };
-      //       });
-      //     })
-      //     .catch((error) => {
-      //       console.log(error);
-      //     });
     },
   },
   mounted() {

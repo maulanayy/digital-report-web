@@ -32,7 +32,7 @@
           </div>
           <label class="col-form-label col-md-1">OKP</label>
           <div class="col-md-4">
-            <v-select :options="parameters" v-model="okp" placeholder="Enter Name OKP">
+            <v-select :options="okps" v-model="okp" placeholder="Enter Name OKP">
             </v-select>
           </div>
         </div>
@@ -107,17 +107,19 @@
         effective_date: "",
         product_name: "",
         okp: "",
-        columns: [{
-            label: "Parameter ID",
-            field: "parameterID",
-          },
+        okps : [],
+        columns: [
           {
             label: "Paramater Name",
-            field: "parameter",
+            field: "SPEC_NAME",
           },
           {
-            label: "Parameter Type",
-            field: "typeParameter",
+            label: "MIN VALUE",
+            field: "MIN_VALUE"
+          },
+          {
+            label: "MIN VALUE",
+            field: "MAX_VALUE"
           },
         ],
         products: [],
@@ -239,11 +241,11 @@
           });
       },
       getParameter() {
-        console.log("CONTROL POINT : ", this.cp_id);
         const url = "/parameter/" + this.cp_id.value + "/control-point";
         this.$axios
           .get(url)
           .then((response) => {
+            console.log(response.data.data.data)
             this.parameters = response.data.data.data.map((x) => {
               return {
                 label: x.parameter_name,
@@ -255,22 +257,39 @@
             console.log(error);
           });
       },
-      addValueByOKP() {
-        const url = "/parameter/" + this.okp + "/okp";
+      getOKP() {
+        const url = "/parameter/okp";
         this.$axios
           .get(url)
           .then((response) => {
-            const data = response.data.data.data
-            const parameter = data.parameter
+            console.log(response.data.data.data)            
+            this.okps = response.data.data.data.map((x) => {
+              return {
+                label: x.BATCH_NUMBER,
+                value: x.BATCH_NUMBER,
+              };
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      },
+      addValueByOKP() {
+        const url = "/parameter/" + this.okp + "/okp-parameter";
+        this.$axios
+          .get(url)
+          .then((response) => {
+            console.log(response.data.data.data)
+            const parameter = response.data.data.data
             parameter.forEach(element => {
               this.dataTable.push({
-                parameterID: element.id,
-                parameter: element.parameter,
-                typeParameter : element.type
+                SPEC_NAME: element.SPEC_NAME,
+                MIN_VALUE: element.MIN_VALUE,
+                MAX_VALUE: element.MAX_VALUE
               });
             });
-            this.product_name = data.product;
-            this.no_doc = data.no_doc;
+            this.product_name = "";
+            this.no_doc = "";
           })
           .catch((error) => {
             console.log(error);
@@ -280,7 +299,7 @@
     mounted() {
       this.getData();
       this.getCP();
-      this.getProduct();
+      this.getOKP();
     },
   };
 </script>

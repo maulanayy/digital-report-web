@@ -13,7 +13,7 @@
 
     <!-- begin panel -->
     <panel title="Data Roles">
-      <b-button class="mb-3" variant="primary" :to="'/seeting/role/add'">Create</b-button>
+      <b-button class="mb-3" variant="primary" :to="'/setting/role/add'">Create</b-button>
       <vue-good-table :columns="columns" :rows="data" :pagination-options="{
           enabled: true,
           mode: 'records',
@@ -31,7 +31,7 @@
         }">
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
-            <b-button variant="primary" class="mr-2" :to="'/seeting/role/edit/' + props.row.id">Edit</b-button>
+            <b-button variant="primary" class="mr-2" :to="'/setting/role/edit/' + props.row.id">Edit</b-button>
             <b-button variant="danger" class="mr-2" @click="confirm(props.row.id)">Delete</b-button>
           </span>
           <span v-else>

@@ -26,7 +26,7 @@
             />
           </div>
         </div>
-        <div class="form-group row m-b-15">
+        <div class="form-group row m-b-15" v-if="url != 'edit'">
           <label class="col-form-label col-md-2">Password</label>
           <div class="col-md-5">
             <input
@@ -35,7 +35,6 @@
               placeholder="Enter Password"
               name="password"
               v-model="password"
-              :disabled="url == 'edit' ? true : false"
             />
           </div>
         </div>
@@ -131,10 +130,10 @@ export default {
   },
   methods: {
     create() {
-      const body = {
+
+      let body = {
         name: this.name,
         username: this.name,
-        password: this.password,
         department: this.lab.label,
         gender: this.gender,
         age: this.age,
@@ -142,7 +141,9 @@ export default {
         role: this.role.value,
         lab: this.lab.value,
       };
+
       if (this.url == "add") {
+        body.password = this.password
         this.$axios
           .post("/user", body, {
             headers: {
@@ -203,18 +204,13 @@ export default {
           .get(url)
           .then((response) => {
             // const roles = this.roles;
-            console.log(response.data.data);
+            
             this.name = response.data.data.txtName;
             this.username = response.data.data.txtUsername;
             this.age = response.data.data.intAge;
             this.birth_date = response.data.data.dtmBirtDate;
             this.gender = response.data.data.txtSex;
             this.department = response.data.data.txtDepartment;
-            
-            this.lab = response.data.data.intLabID;
-            // this.role = roles.find(x => {
-            //   return x 
-            // });
           })
           .catch((error) => {
             console.log(error);

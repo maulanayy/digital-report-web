@@ -14,6 +14,7 @@ const sidebarMenuByRole = {
       title: "Setting",
       children: [
         { path: "/setting/ewon", title: "Ewon" },
+        { path: "/setting/oracle", title: "Oracle" },
         { path: "/setting/parameter", title: "Parameter" },
         { path: "/setting/form-parameter", title: "Form Parameter" },
       ],

@@ -116,104 +116,27 @@ export default {
   name: "dashboard",
   data() {
     return {
-      data: [{
-        okp : 'PD-3728 TES',
-        item : 'KFP2-GCPP01000',
-        item_desc : 'CHIL GO POWERDER 1 + VANILLA 300G',
-        primary_uom : 'CB',
-        on_hand : 571,
-        secondary_hand : 2055.6,
-        secondary_uom : 'kg',
-        lot : '20Z2902EK',
-        expire_date : '05-jan-22',
-        origination_date : '05-jan-21',
-        quarantine : 22
-
-      },
-      {
-        okp : 'PD-3728 TES',
-        item : 'KFP2-GCPP01000',
-        item_desc : 'CHIL GO POWERDER 1 + VANILLA 300G',
-        primary_uom : 'CB',
-        on_hand : 571,
-        secondary_hand : 2055.6,
-        secondary_uom : 'kg',
-        lot : '20Z2902EK',
-        expire_date : '05-jan-22',
-        origination_date : '05-jan-21',
-        quarantine : 22
-
-      },
-      {
-        okp : 'PD-3728 TES',
-        item : 'KFP2-GCPP01000',
-        item_desc : 'CHIL GO POWERDER 1 + VANILLA 300G',
-        primary_uom : 'CB',
-        on_hand : 571,
-        secondary_hand : 2055.6,
-        secondary_uom : 'kg',
-        lot : '20Z2902EK',
-        expire_date : '05-jan-22',
-        origination_date : '05-jan-21',
-        quarantine : 22
-
-      },
-      {
-        okp : 'PD-3728 TES',
-        item : 'KFP2-GCPP01000',
-        item_desc : 'CHIL GO POWERDER 1 + VANILLA 300G',
-        primary_uom : 'CB',
-        on_hand : 571,
-        secondary_hand : 2055.6,
-        secondary_uom : 'kg',
-        lot : '20Z2902EK',
-        expire_date : '05-jan-22',
-        origination_date : '05-jan-21',
-        quarantine : 22
-
-      },
-      {
-        okp : 'PD-3728 TES',
-        item : 'KFP2-GCPP01000',
-        item_desc : 'CHIL GO POWERDER 1 + VANILLA 300G',
-        primary_uom : 'CB',
-        on_hand : 571,
-        secondary_hand : 2055.6,
-        secondary_uom : 'kg',
-        lot : '20Z2902EK',
-        expire_date : '05-jan-22',
-        origination_date : '05-jan-21',
-        quarantine : 22
-
-      }],
+      data: [],
       columns: [
         {
           label: "OKP",
-          field: "okp",
+          field: "BATCH_ID",
         },
         {
           label: "Item",
-          field: "item",
+          field: "ITEM_CODE",
         },
         {
           label: "Item Description",
-          field: "item_desc",
+          field: "DESCRIPTION",
         },
         {
           label: "Primary UOM",
           field: "primary_uom",
         },
         {
-          label: "On Hand",
-          field: "on_hand",
-        },
-        {
           label: "Secondary On hand",
-          field: "secondary_hand",
-        },
-        {
-          label: "Secondary UOM",
-          field: "secondary_uom",
+          field: "SECONDARY_TRANSACTION_QUANTITY",
         },
         {
           label: "Lot",
@@ -221,23 +144,30 @@ export default {
         },
         {
           label: "Lot Expire Date",
-          field: "expire_date",
+          field: "EXPIRATION_DATE",
         },
         {
           label: "Origination Date",
           field: "origination_date",
-        },
-        {
-          label: "Quarantine /hari",
-          field: "quarantine",
-        },
+        }
       ],
       meta: {},
     };
   },
   methods: {
     getData() {
-      const url = "/control-point/parameter";
+      const url = "/dashboard";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.data = response.data.data.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getDataCount() {
+      const url = "/dashboard/group";
       this.$axios
         .get(url)
         .then((response) => {
@@ -249,7 +179,8 @@ export default {
     },
   },
   mounted() {
-    // this.getData();
+    this.getData();
+    this.getDataCount();  
   },
 };
 </script>

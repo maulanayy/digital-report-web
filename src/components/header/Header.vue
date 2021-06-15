@@ -167,6 +167,7 @@
         });
       },
       setAuthLogin(user) {
+        console.log(user.token)
         this.$axios
           .get("/user/" + user.id, {
             headers :{
@@ -176,6 +177,7 @@
           })
           .then((response) => {
             let userdata = response.data.data;
+            console.log(userdata)
             userdata.access_token = user.token;
             this.$axios("/role/" + userdata.intRoleID).then((role) => {
               console.log(role.data);

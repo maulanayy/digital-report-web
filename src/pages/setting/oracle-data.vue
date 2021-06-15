@@ -13,7 +13,7 @@
 
     <!-- begin panel -->
     <panel title="Oracle Setting">
-      <b-button class="mb-3" variant="primary" :to="'/seeting/oracle/add'"
+      <b-button class="mb-3" variant="primary" :to="'/setting/oracle/add'"
         >Create</b-button
       >
       <vue-good-table
@@ -40,7 +40,7 @@
             <b-button
               variant="primary"
               class="mr-2"
-              :to="'/seeting/oracle/edit/' + props.row.id"
+              :to="'/setting/oracle/edit/' + props.row.id"
               >Edit</b-button
             >
             <b-button variant="danger" class="mr-2" @click="confirm(props.row.id)">Delete</b-button>

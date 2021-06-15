@@ -17,6 +17,7 @@ const sidebarMenuByRole = {
         { path: "/setting/oracle", title: "Oracle" },
         { path: "/setting/parameter", title: "Parameter" },
         { path: "/setting/form-parameter", title: "Form Parameter" },
+        { path: "/setting/shift", title: "Jadwal Shift" }
       ],
     },
   ],
@@ -33,7 +34,8 @@ const sidebarMenuByRole = {
       title: "Setting",
       children: [
         { path: "/setting/parameter", title: "Parameter" },
-        { path: "/setting/form-parameter", title: "Form" },
+        { path: "/setting/form-parameter", title: "Form Parameter" },
+        { path: "/setting/shift", title: "Jadwal Shift" }
       ],
     },
   ],

@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 // import auth from '@/auth/authService'
-import store from './store/store'
+import store from "./store/store";
 
 Vue.use(Router);
 
@@ -14,7 +14,7 @@ const router = new Router({
       component: () => import("./pages/Dashboard-v1"),
     },
     {
-      path : "/icon",
+      path: "/icon",
       name: "icon",
       component: () => import("./pages/UI-icons"),
     },
@@ -29,7 +29,7 @@ const router = new Router({
       component: () => import("./pages/home/Dashboard"),
     },
     {
-      path : "/login",
+      path: "/login",
       name: "login",
       component: () => import("./pages/auth/login"),
     },
@@ -52,9 +52,9 @@ const router = new Router({
       path: "/user",
       name: "user",
       component: () => import("./pages/user/data"),
-      meta : {
-        requireAuth: true
-      }
+      meta: {
+        requireAuth: true,
+      },
     },
     {
       path: "/user/add",
@@ -212,6 +212,26 @@ const router = new Router({
       component: () => import("./pages/setting/form-add"),
     },
     {
+      path: "/setting/shift",
+      name: "setting-shift",
+      component: () => import("./pages/setting/shift-data"),
+    },
+    {
+      path: "/setting/shift/add",
+      name: "setting-shift-add",
+      component: () => import("./pages/setting/shift-add"),
+    },
+    {
+      path: "/setting/shift/edit/:id",
+      name: "setting-shift-add",
+      component: () => import("./pages/setting/shift-add"),
+    },
+    {
+      path: "/history",
+      name: "history",
+      componenet: () => import("./pages/history/data"),
+    },
+    {
       path: "/form",
       name: "form",
       component: () => import("./pages/form/data"),
@@ -233,23 +253,21 @@ const router = new Router({
     },
     {
       path: "/ui/modal-notification",
-      name:"modal-notification",
-      component : () => import("./pages/UI-modal-notification")
-    }
+      name: "modal-notification",
+      component: () => import("./pages/UI-modal-notification"),
+    },
   ],
 });
 
-router.beforeEach((to,from,next) => {
-  if (to.matched.some(record => record.meta.requireAuth)) {
-		// this route requires auth, check if logged in
-		// if not, redirect to login page.
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requireAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
     if (store.state.userdata == null) {
-			next('/')
-		}
-	} 
-  next()
-
-})
-
+      next("/");
+    }
+  }
+  next();
+});
 
 export default router;

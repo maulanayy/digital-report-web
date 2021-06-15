@@ -31,7 +31,7 @@
         }">
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
-            <b-button variant="primary" class="mr-2" :to="'/seeting/ewon/edit/' + props.row.id">Edit</b-button>
+            <b-button variant="primary" class="mr-2" :to="'/setting/ewon/edit/' + props.row.id">Edit</b-button>
             
             <b-button variant="danger" class="mr-2" @click="confirm(props.row.id)">Delete</b-button>
           </span>

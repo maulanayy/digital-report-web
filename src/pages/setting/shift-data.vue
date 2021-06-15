@@ -4,16 +4,16 @@
     <ol class="breadcrumb float-xl-right">
       <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
       <li class="breadcrumb-item"><a href="javascript:;">Setting</a></li>
-      <li class="breadcrumb-item active">Role</li>
+      <li class="breadcrumb-item active">Jadwal Shift</li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Setting Role</h1>
+    <h1 class="page-header">Setting Shift</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
     <panel title="Data Roles">
-      <b-button class="mb-3" variant="primary" :to="'/setting/role/add'">Create</b-button>
+      <b-button class="mb-3" variant="primary" :to="'/setting/shift/add'">Create</b-button>
       <vue-good-table :columns="columns" :rows="data" :pagination-options="{
           enabled: true,
           mode: 'records',
@@ -31,7 +31,7 @@
         }">
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
-            <b-button variant="primary" class="mr-2" :to="'/setting/role/edit/' + props.row.id">Edit</b-button>
+            <b-button variant="primary" class="mr-2" :to="'/setting/shift/edit/' + props.row.id">Edit</b-button>
             <b-button variant="danger" class="mr-2" @click="confirm(props.row.id)">Delete</b-button>
           </span>
           <span v-else>
@@ -76,6 +76,14 @@
             field: "txtName",
           },
           {
+            label: "Shift Start",
+            field: "dtmTimeStart"
+          },
+          {
+            label: "Shift End",
+            field: "dtmTimeEnd"
+          },
+          {
             label: "Created At",
             field: "dtmCreatedAt",
             type: "date",
@@ -85,37 +93,6 @@
           {
             label: "Action",
             field: "btn",
-          },
-        ],
-        rows: [{
-            id: 1,
-            name: "superadmin",
-            createdAt: "2021-01-31",
-          },
-          {
-            id: 2,
-            name: "admin",
-            createdAt: "2021-01-31",
-          },
-          {
-            id: 3,
-            name: "coordinator",
-            createdAt: "2021-01-30",
-          },
-          {
-            id: 4,
-            name: "inspector",
-            createdAt: "2021-01-11",
-          },
-          {
-            id: 5,
-            name: "development",
-            createdAt: "2021-01-21",
-          },
-          {
-            id: 6,
-            name: "CP-6",
-            createdAt: "2021-01-31",
           },
         ],
         data: [],
@@ -138,7 +115,7 @@
         this.confirmation = true
       },
       getData() {
-        const url = "/role";
+        const url = "/shift";
         this.$axios
           .get(url)
           .then((response) => {
@@ -155,7 +132,7 @@
           });
       },
       deleteData() {
-        const url = "/role/" + this.roleID;
+        const url = "/shift/" + this.roleID;
         this.$axios
           .delete(url, {})
           .then(() => {

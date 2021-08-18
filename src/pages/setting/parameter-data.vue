@@ -33,6 +33,7 @@
           <span v-if="props.column.field == 'btn'">
             <b-button variant="primary" class="mr-2" :to="'/setting/parameter/edit/' + props.row.id">Edit</b-button>
             <b-button variant="danger" class="mr-2" @click="confirm(props.row.id)">Delete</b-button>
+            <b-button v-if="props.row.txtTipe == 'mesin'" variant="primary" class="mr-2" :to="'/setting/parameter/' + props.row.id + '/graph'">Detail Ewon</b-button>
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -84,15 +85,8 @@
             field: "txtTopic",
           },
           {
-            label: "Control Point",
-            field: "ControlPointTxtName",
-          },
-          {
             label: "Created At",
             field: "dtmCreatedAt",
-            type: "date",
-            dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
-            dateOutputFormat: "dd-MM-yyyy",
           },
           {
             label: "Action",
@@ -124,6 +118,7 @@
           .get(url)
           .then((response) => {
             this.data = response.data.data.data;
+            console.log(this.data)
             this.meta = response.data.data.meta;
           })
           .catch((error) => {

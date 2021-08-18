@@ -12,16 +12,16 @@
 
     <!-- begin panel -->
     <panel :title=label>
-      <form>
+      <b-form @submit="create">
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Name</label>
           <div class="col-md-9">
             <input type="input" class="form-control m-b-5" placeholder="Enter Name Lab" name="name" v-model="name" />
           </div>
         </div>
-        <b-button class="float-right mb-3" variant="primary" @click="create()" v-if="url == 'add'">Create</b-button>
-        <b-button class="float-right mb-3" variant="primary" @click="create()" v-else>Edit</b-button>
-      </form>
+        <b-button type="submit" class="float-right mb-3" variant="primary" v-if="url == 'add'" >Create</b-button>
+        <b-button type="submit" class="float-right mb-3" variant="primary" v-else>Edit</b-button>
+      </b-form>
     </panel>
     <!-- end panel -->
 
@@ -53,11 +53,12 @@
       next();
     },
     methods: {
-      create() {
+      create(event) {
+        event.preventDefault()
         const body = {
           name: this.name,
         };
-
+        
         if (this.url == "add") {
           this.$axios
             .post("/lab", body, {
@@ -112,9 +113,6 @@
         }
       },
       getData() {
-        console.log(this.url);
-        console.log(this.$store.state.userdata)
-
         if (this.url == "edit") {
           this.label = "Edit Lab"
           const url = "/lab/" + this.labId;

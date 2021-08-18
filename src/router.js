@@ -177,6 +177,11 @@ const router = new Router({
       component: () => import("./pages/setting/parameter-data"),
     },
     {
+      path: "/setting/parameter/:id/graph",
+      name: "parameter-graph",
+      component: () => import("./pages/setting/parameter-graph"),
+    },
+    {
       path: "/setting/parameter/add",
       name: "parameter-add",
       component: () => import("./pages/setting/parameter-add"),

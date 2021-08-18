@@ -103,9 +103,6 @@ export default {
         {
           label: "Created At",
           field: "dtmCreatedAt",
-          type: "date",
-          dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
-          dateOutputFormat: "dd-MM-yyyy",
         },
         {
           label: "Action",

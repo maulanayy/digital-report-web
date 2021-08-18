@@ -7,46 +7,29 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">{{label}}</h1>
+    <h1 class="page-header">{{ label }}</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
     <panel :title="label">
-      <form>
+      <b-form @submit="create">
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Name</label>
           <div class="col-md-9">
-            <input
-              type="input"
-              class="form-control m-b-5"
-              placeholder="Enter Name Lab Area  "
-              name="name"
-              v-model="name"
-            />
+            <input type="input" class="form-control m-b-5" placeholder="Enter Name Lab Area  " name="name"
+              v-model="name" />
           </div>
         </div>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Lab</label>
           <div class="col-md-9">
-            <v-select :options="lab_category" name="lab_id" v-model="lab_id">
-            </v-select>
+            <b-form-select :options="lab_category" name="lab_id" v-model="lab_id">
+            </b-form-select>
           </div>
         </div>
-        <b-button
-          class="float-right mb-3"
-          variant="primary"
-          @click="create()"
-          v-if="url == 'add'"
-          >Create</b-button
-        >
-        <b-button
-          class="float-right mb-3"
-          variant="primary"
-          @click="create()"
-          v-else
-          >Edit</b-button
-        >
-      </form>
+        <b-button type="submit" class="float-right mb-3" variant="primary" v-if="url == 'add'">Create</b-button>
+        <b-button type="submit" class="float-right mb-3" variant="primary" v-else>Edit</b-button>
+      </b-form>
     </panel>
     <!-- end panel -->
 
@@ -55,137 +38,129 @@
 </template>
 
 <script>
-import PageOptions from "../../config/PageOptions.vue";
+  import PageOptions from "../../config/PageOptions.vue";
 
-export default {
-  name: "add-area",
-  data() {
-    return {
-      name: "",
-      areaId: "",
-      url: "",
-      lab_category: [],
-      lab_id: "",
-      label : "",
-    };
-  },
-  created() {
-    var currentUrl = this.$route.path.split("/");
-    this.areaId = currentUrl[3];
-    this.url = currentUrl[2];
-    PageOptions.pageWithFooter = true;
-  },
-  beforeRouteLeave(to, from, next) {
-    PageOptions.pageWithFooter = false;
-    next();
-  },
-  methods: {
-    create() {
-      const labID = !this.lab_id.value
-        ? this.lab_category.find((x) => {
-            return x.label == this.lab_id;
-          })
-        : this.lab_id;
-
-      let body = {
-        name: this.name,
-        lab_id: labID.value,
+  export default {
+    name: "add-area",
+    data() {
+      return {
+        name: "",
+        areaId: "",
+        url: "",
+        lab_category: [],
+        lab_id: "",
+        label: "",
       };
-
-      if (this.url == "add") {
-
-        this.$axios
-          .post("/area", body, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then(() => {
-            this.$notify({
-              title: `Insert Data Success`,
-              text: `Success`,
-              type: "success",
-            });
-
-            setTimeout(() => {
-              this.$router.push("/area");
-            }, 1500);
-          })
-          .catch((err) => {
-            this.$notify({
-              title: `Insert Data Failed : ${err}`,
-              text: `Error`,
-              type: "error",
-            });
-          });
-      } else {
-        this.$axios
-          .put("/area/" + this.areaId, body, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then(() => {
-            this.$notify({
-              title: `Update Data Success`,
-              text: `Success`,
-              type: "success",
-            });
-
-            setTimeout(() => {
-              this.$router.push("/area");
-            }, 1500);
-          })
-          .catch((err) => {
-            this.$notify({
-              title: `Update Data Failed : ${err}`,
-              text: `Error`,
-              type: "error",
-            });
-          });
-      }
     },
-    getData() {
-      if (this.url == "edit") {
-        this.label = "Edit Area"
-        const url = "/area/" + this.areaId;
+    created() {
+      var currentUrl = this.$route.path.split("/");
+      this.areaId = currentUrl[3];
+      this.url = currentUrl[2];
+      PageOptions.pageWithFooter = true;
+    },
+    beforeRouteLeave(to, from, next) {
+      PageOptions.pageWithFooter = false;
+      next();
+    },
+    methods: {
+      create(event) {
+        event.preventDefault()
+        
+        let body = {
+          name: this.name,
+          lab_id: this.lab_id,
+        };
+        
+        if (this.url == "add") {
+          this.$axios
+            .post("/area", body, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+            .then(() => {
+              this.$notify({
+                title: `Insert Data Success`,
+                text: `Success`,
+                type: "success",
+              });
+
+              setTimeout(() => {
+                this.$router.push("/area");
+              }, 1500);
+            })
+            .catch((err) => {
+              this.$notify({
+                title: `Insert Data Failed : ${err}`,
+                text: `Error`,
+                type: "error",
+              });
+            });
+        } else {
+          this.$axios
+            .put("/area/" + this.areaId, body, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+            .then(() => {
+              this.$notify({
+                title: `Update Data Success`,
+                text: `Success`,
+                type: "success",
+              });
+
+              setTimeout(() => {
+                this.$router.push("/area");
+              }, 1500);
+            })
+            .catch((err) => {
+              this.$notify({
+                title: `Update Data Failed : ${err}`,
+                text: `Error`,
+                type: "error",
+              });
+            });
+        }
+      },
+      getData() {
+        if (this.url == "edit") {
+          this.label = "Edit Area";
+          const url = "/area/" + this.areaId;
+          this.$axios
+            .get(url)
+            .then((response) => {
+              this.name = response.data.data.txtName;
+              
+              this.lab_id = response.data.data.labTxtName;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          this.label = "Add Area";
+        }
+      },
+      getLabCode() {
+        const url = "/lab/code";
         this.$axios
           .get(url)
           .then((response) => {
-            this.name = response.data.data.txtName;
-            const lab = this.lab_category.find((x) => {
-              return x.label == response.data.data.labTxtName;
+            this.lab_category = response.data.data.data.map((x) => {
+              return {
+                text: x.txtName,
+                value: x.id,
+              };
             });
-            console.log("LAB :",lab)
-            this.lab_id = response.data.data.labTxtName;
           })
           .catch((error) => {
             console.log(error);
           });
-      }else{
-        this.label = "Add Area"
-      }
+      },
     },
-    getLabCode() {
-      const url = "/lab/code";
-      this.$axios
-        .get(url)
-        .then((response) => {
-          this.lab_category = response.data.data.data.map((x) => {
-            return {
-              label: x.txtName,
-              value: x.id,
-            };
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    mounted() {
+      this.getLabCode();
+      this.getData();
     },
-  },
-  mounted() {
-    this.getLabCode();
-    this.getData();
-  },
-};
+  };
 </script>

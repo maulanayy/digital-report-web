@@ -15,14 +15,15 @@
     <panel title="Add Parameter" class="col-md-8">
       <form>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Name</label>
+          <label class="col-form-label col-md-2">Parameter</label>
           <div class="col-md-10">
-            <input
-              type="input"
-              class="form-control m-b-5"
-              placeholder="Enter Parameter"
-              v-model="name"
-            />
+            <v-select
+              :options="oracles"
+              name="oracle_id"
+              v-model="oracle_id"
+              placeholder="Select Parameter"
+            >
+            </v-select>
           </div>
         </div>
         <div class="form-group row m-b-15">
@@ -59,71 +60,6 @@
             </v-select>
           </div>
         </div>
-        <div class="form-group row m-b-15" v-if="tipe == 'oracle'">
-          <label class="col-form-label col-md-2">Oracle Parameter</label>
-          <div class="col-md-10">
-            <v-select
-              :options="oracles"
-              name="topic_id"
-              v-model="oracle_id"
-              placeholder="Select Oracle Parameter"
-            >
-            </v-select>
-          </div>
-        </div>
-        <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Control Point</label>
-          <div class="col-md-10">
-            <v-select
-              :options="contorlPoint"
-              name="cp_id"
-              placeholder="Enter Control Point"
-              v-model="cp_id"
-            >
-            </v-select>
-          </div>
-        </div>
-        <div class="form-group row m-b-15" v-if="tipe_data == 'text'">
-          <label class="col-form-label col-md-2">Standard</label>
-          <div class="col-md-10">
-            <input
-              type="input"
-              class="form-control m-b-5"
-              placeholder="Enter Standard"
-              v-model="txtStandard"
-            />
-          </div>
-        </div>
-        <div class="form-group row m-b-15" v-if="tipe_data == 'number'">
-          <label class="col-form-label col-md-2">Standar Minimum</label>
-          <div class="col-md-10">
-            <input
-              type="number"
-              class="form-control m-b-5"
-              placeholder="Enter Standard Minimum"
-              v-model="numStandarMin"
-              min="0"
-            />
-          </div>
-        </div>
-        <div class="form-group row m-b-15" v-if="tipe_data == 'number'">
-          <label class="col-form-label col-md-2">Standar Maximum</label>
-          <div class="col-md-10">
-            <input
-              type="number"
-              class="form-control m-b-5"
-              placeholder="Enter Standard Maximum"
-              v-model="numStandarMax"
-              min="0"
-            />
-          </div>
-        </div>
-        <!-- <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Upload Image</label>
-          <div class="col-md-10">
-            <input type="file" class="form-control m-b-5" placeholder="Input File Images" name="file" />
-          </div>
-        </div> -->
         <b-button
           class="float-right mb-3"
           variant="primary"
@@ -151,35 +87,27 @@ export default {
   name: "add-parameter",
   data() {
     return {
-      parameter : {},
+      parameter: {},
       name: "",
       topic_id: "",
       types: ["mesin", "oracle", "formula"],
       tipe: "",
       topics: [],
-      contorlPoint: [],
-      parameters: [],
       params: [],
-      oracles : [],
-      oracle_id : "",
+      oracles: [],
+      oracle_id: "",
       list_operator: ["plus", "minus", "multiple", "devide"],
       data_types: ["text", "number"],
       operator: "",
-      cp_id: "",
       url: "",
       parameterID: "",
       tipe_data: "",
-      pr_1: "",
-      txtStandard: "",
-      numStandarMin: 0,
-      numStandarMax: 0,
     };
   },
   created() {
     var currentUrl = this.$route.path.split("/");
     this.parameterID = currentUrl[4];
     this.url = currentUrl[3];
-    console.log(this.url)
     PageOptions.pageWithFooter = true;
   },
   beforeRouteLeave(to, from, next) {
@@ -191,14 +119,10 @@ export default {
       const topicID = this.topic_id.value ? this.topic_id.value : 0;
 
       const body = {
-        name: this.name,
+        oracle_id: this.oracle_id.label,
         tipe: this.tipe,
-        cp_id: this.cp_id.value,
         topic_id: topicID,
         tipe_data: this.tipe_data,
-        txtStandard: this.txtStandard,
-        numStandarMin: this.numStandarMin,
-        numStandarMax: this.numStandarMax,
       };
 
       if (this.url == "add") {
@@ -259,17 +183,11 @@ export default {
         this.$axios
           .get(url)
           .then((response) => {
-            const data = response.data.data
-            console.log(response.data.data)
+            const data = response.data.data;
             this.name = data.txtName;
-            this.tipe = data.txtTipe
-            this.tipe_data = data.txtTipeData
-            // this.topic_id = data.intEwonSubsSettingID
-            this.numStandarMin = data.IntStandarMin
-            this.numStandarMax = data.IntStandarMax
-            this.txtStandard = data.txtStandardText
-            // this.cp_id = data.intControlPointID
-            console.log(this.parameter)
+            this.tipe = data.txtTipe;
+            this.tipe_data = data.txtTipeData;
+            this.topic_id = data.intEwonSubsSettingID;
           })
           .catch((error) => {
             console.log(error);
@@ -293,11 +211,11 @@ export default {
         });
     },
     getCP() {
-      const url = "/control-point/code";
+      const url = "/lab/code";
       this.$axios
         .get(url)
         .then((response) => {
-          this.contorlPoint = response.data.data.data.map((x) => {
+          this.labs = response.data.data.data.map((x) => {
             return {
               label: x.txtName,
               value: x.id,
@@ -308,37 +226,28 @@ export default {
           console.log(error);
         });
     },
-    getParameter() {
-      const url = "/parameter";
+    getOracleParameter() {
+      const url = "/parameter/oracle";
       this.$axios
         .get(url)
         .then((response) => {
-          this.parameters = response.data.data.data.map((x) => {
+          this.oracles = response.data.data.data.map((x) => {
             return {
-              label: x.txtName,
-              value: x.id,
+              label: x.TEST_DESC,
+              value: x.TEST_DESC,
             };
           });
         })
         .catch((error) => {
           console.log(error);
         });
-    },
-    addParameter() {
-      this.params.push({
-        parameter: "",
-        operator: "",
-      });
-    },
-    deleteParameter(counter) {
-      this.params.splice(counter, 1);
     },
   },
   mounted() {
     this.getData();
     this.getCP();
     this.getTopics();
-    this.getParameter();
+    this.getOracleParameter();
   },
 };
 </script>

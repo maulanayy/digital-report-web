@@ -105,7 +105,7 @@ export default {
         },
         {
           label: "Product",
-          field: "txtNameProduct",
+          field: "txtProductName",
         },
         {
           label: "No Document",
@@ -122,9 +122,6 @@ export default {
         {
           label: "Created At",
           field: "dtmCreatedAt",
-          type: "date",
-          dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
-          dateOutputFormat: "dd-MM-yyyy",
         },
 
         {
@@ -160,7 +157,7 @@ export default {
           this.data = response.data.data.data;
           this.meta = response.data.data.meta;
           // console.log(this.meta)
-          console.log(this.data);
+          // console.log(this.data);
         })
         .catch((error) => {
           this.$notify({

@@ -12,7 +12,7 @@
 
     <!-- begin panel -->
     <panel :title="label">
-      <form>
+      <b-form @submit="create">
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-3">Name</label>
           <div class="col-md-9">
@@ -28,9 +28,9 @@
             </v-select>
           </div>
         </div>
-        <b-button class="float-right mb-3" variant="primary" @click="create()" v-if="url == 'add'">Create</b-button>
-        <b-button class="float-right mb-3" variant="primary" @click="create()" v-else>Edit</b-button>
-      </form>
+        <b-button type="submit" class="float-right mb-3" variant="primary"  v-if="url == 'add'">Create</b-button>
+        <b-button type="submit" class="float-right mb-3" variant="primary"  v-else>Edit</b-button>
+      </b-form>
     </panel>
     <!-- end panel -->
 
@@ -64,7 +64,8 @@
       next();
     },
     methods: {
-      create() {
+      create(event) {
+        event.preventDefault();
         const areaID = this.area_id.length > 0 ?
           this.area_id.map((x) => {
             return x.code;

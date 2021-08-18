@@ -2,7 +2,6 @@
 const sidebarMenuByRole = {
   superadmin: [
     { path: "/home", icon: "fa fa-th", title: "Home" },
-    { path: "/report", icon: "fa fa-th", title: "Report" },
     { path: "/user", icon: "fa fa-users", title: "User" },
     { path: "/lab", icon: "fa fa-flask", title: "Lab" },
     { path: "/area", icon: "fa fa-warehouse", title: "Area" },
@@ -23,7 +22,6 @@ const sidebarMenuByRole = {
   ],
   supervisor: [
     { path: "/home", icon: "fa fa-th", title: "Home" },
-    { path: "/report", icon: "fa fa-th", title: "Report" },
     { path: "/user", icon: "fa fa-users", title: "User" },
     { path: "/area", icon: "fa fa-warehouse", title: "Area" },
     { path: "/control_point", icon: "fa fa-sliders-h", title: "Control Point" },

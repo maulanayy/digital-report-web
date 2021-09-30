@@ -7,7 +7,7 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">{{label}}</h1>
+    <h1 class="page-header">{{ label }}</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
@@ -57,6 +57,7 @@
               :options="['Male', 'Female']"
               name="gender"
               v-model="gender"
+              placeholder="Enter Gender"
             >
             </v-select>
           </div>
@@ -75,17 +76,44 @@
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Lab</label>
           <div class="col-md-5">
-            <v-select :options="labs" name="lab" v-model="lab"> </v-select>
+            <v-select
+              :options="labs"
+              name="lab"
+              v-model="lab"
+              placeholder="Enter Name Lab"
+            >
+            </v-select>
+          </div>
+        </div>
+        <div class="form-group row m-b-15">
+          <label class="col-form-label col-md-2">Control Point</label>
+          <div class="col-md-5">
+            <v-select
+              v-model="cp_id"
+              tag-placeholder="Enter Name Control Point"
+              placeholder="Enter Name Control Point"
+              label="name"
+              track-by="code"
+              :options="contorlPoints"
+              :multiple="true"
+            >
+            </v-select>
           </div>
         </div>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Role</label>
           <div class="col-md-5">
-            <v-select :options="roles" name="role" v-model="role"> </v-select>
+            <v-select
+              :options="roles"
+              name="role"
+              v-model="role"
+              placeholder="Enter Name Role"
+            >
+            </v-select>
           </div>
         </div>
         <b-button class="float-right mb-3" variant="primary" @click="create()"
-          >Create</b-button
+          >{{label_button}}</b-button
         >
       </form>
     </panel>
@@ -106,7 +134,8 @@ export default {
       userID: "",
       url: "",
       labs: [],
-      contorlPoint: [],
+      contorlPoints: [],
+      cp_id: [],
       roles: [],
       role: "",
       lab: "",
@@ -115,13 +144,15 @@ export default {
       gender: "",
       age: 0,
       birth_date: "",
-      label : ""
+      label: "",
+      label_button : "Create",
     };
   },
   created() {
     var currentUrl = this.$route.path.split("/");
     this.userID = currentUrl[3];
     this.url = currentUrl[2];
+    this.label_button = this.url == "edit" ? "Edit" : "Create"
     PageOptions.pageWithFooter = true;
   },
   beforeRouteLeave(to, from, next) {
@@ -130,6 +161,31 @@ export default {
   },
   methods: {
     create() {
+      const cpID =
+        this.cp_id.length > 0
+          ? this.cp_id.map((x) => {
+              return x.code;
+            })
+          : [];
+
+      if (cpID.length == 0) {
+        this.$notify({
+          title: `Please Insert Control Point`,
+          text: `Warning`,
+          type: "warn",
+        });
+
+        return;
+      }
+      if (this.name == "") {
+        this.$notify({
+          title: `Please Insert Username`,
+          text: `Warning`,
+          type: "warn",
+        });
+
+        return;
+      }
 
       let body = {
         name: this.name,
@@ -140,10 +196,11 @@ export default {
         birth_date: this.birth_date,
         role: this.role.value,
         lab: this.lab.value,
-      };
-
+        cp_id: cpID,
+      };  
+      
       if (this.url == "add") {
-        body.password = this.password
+        body.password = this.password;
         this.$axios
           .post("/user", body, {
             headers: {
@@ -196,30 +253,62 @@ export default {
       }
     },
     getData() {
-      
       if (this.url == "edit") {
-        this.label = "Edit User"
+        this.label = "Edit User";
         const url = "/user/" + this.userID;
         this.$axios
           .get(url)
           .then((response) => {
-            // const roles = this.roles;
+            const data = response.data.data
+            // console.log(data)
+            const roleID = this.roles.find(x => {
+              return x.value == data.intRoleID
+            })
             
-            this.name = response.data.data.txtName;
-            this.username = response.data.data.txtUsername;
-            this.age = response.data.data.intAge;
-            this.birth_date = response.data.data.dtmBirtDate;
-            this.gender = response.data.data.txtSex;
-            this.department = response.data.data.txtDepartment;
+            const labID = this.labs.find(x => {
+              return x.value == data.intLabID
+            })
+
+            this.name = data.txtName;
+            this.username = data.txtUsername;
+            this.age = data.intAge;
+            this.birth_date = data.dtmBirtDate;
+            this.gender = data.txtSex;
+            this.department = data.txtDepartment;
+            this.role = roleID;
+            this.lab = labID;
+            
+            for (let x = 0; x < data.cp.length; x++) {
+              const element = data.cp[x];
+              this.cp_id.push({
+                name : element.txtName,
+                code : element.id
+              })
+            }
           })
           .catch((error) => {
             console.log(error);
           });
-      }else{
-        this.label = "Add User"
+      } else {
+        this.label = "Add User";
       }
     },
-
+    getCP() {
+      const url = "/control-point/code";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          this.contorlPoints = response.data.data.data.map((x) => {
+            return {
+              name: x.txtName,
+              code: x.id,
+            };
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     getLab() {
       const url = "/lab/code";
       this.$axios
@@ -243,6 +332,10 @@ export default {
         case 1:
           this.roles = [
             {
+              label: "superadmin",
+              value: 1,
+            },
+            {
               label: "admin",
               value: 2,
             },
@@ -258,7 +351,7 @@ export default {
               label: "guest",
               value: 5,
             },
-             {
+            {
               label: "leader",
               value: 6,
             },
@@ -300,7 +393,7 @@ export default {
             },
           ];
           break;
-          default:
+        default:
           this.roles = [
             {
               label: "guest",
@@ -312,9 +405,11 @@ export default {
     },
   },
   mounted() {
-    this.getData();
+   
     this.getLab();
     this.getRole();
+    this.getCP();
+     this.getData();
   },
 };
 </script>

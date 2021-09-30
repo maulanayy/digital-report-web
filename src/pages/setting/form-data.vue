@@ -3,7 +3,9 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb float-xl-right">
       <li class="breadcrumb-item">Home</li>
-      <li class="breadcrumb-item active"><a href="javascript:;">Form Parameter</a></li>
+      <li class="breadcrumb-item active">
+        <a href="javascript:;">Form Parameter</a>
+      </li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
@@ -15,18 +17,20 @@
       <b-button
         class="mb-3"
         variant="primary"
-        :to="'/setting/form-parameter/add'"
+        :to="'/setting/form/add'"
         >Create</b-button
       >
       <vue-good-table
         :columns="columns"
         :rows="data"
+        :isLoading.sync="isLoading"
+        :totalRows="meta.total"
         :pagination-options="{
           enabled: true,
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [3, 7, 9],
+          perPageDropdown: [5, 10, 15],
           dropdownAllowAll: false,
           setCurrentPage: 2,
           nextLabel: 'next',
@@ -36,13 +40,14 @@
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
         }"
+        @on-page-change="onPageChange"
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
             <b-button
               variant="primary"
               class="mr-2"
-              :to="'/setting/form-parameter/edit/' + props.row.id"
+              :to="'/setting/form/edit/' + props.row.id"
               >Edit</b-button
             >
             <b-button
@@ -91,6 +96,7 @@ export default {
   name: "data-control-point",
   data() {
     return {
+      isLoading: false,
       formID: "",
       confirmation: false,
       columns: [
@@ -102,18 +108,6 @@ export default {
         {
           label: "Name",
           field: "txtFormName",
-        },
-        {
-          label: "Product",
-          field: "txtProductName",
-        },
-        {
-          label: "No Document",
-          field: "txtNoDok",
-        },
-        {
-          label: "OKP",
-          field: "txtOkp",
         },
         {
           label: "Control Point",
@@ -142,6 +136,14 @@ export default {
     next();
   },
   methods: {
+    onPageChange(params) {
+      const query = {
+        page: params.currentPage,
+        limit: params.currentPerPage,
+      };
+
+      this.getData(query);
+    },
     onCancel() {
       this.confirmation = false;
     },
@@ -149,10 +151,10 @@ export default {
       this.formID = id;
       this.confirmation = true;
     },
-    getData() {
+    getData(query) {
       const url = "/form-parameter";
       this.$axios
-        .get(url)
+        .get(url, { params: query })
         .then((response) => {
           this.data = response.data.data.data;
           this.meta = response.data.data.meta;
@@ -168,31 +170,35 @@ export default {
         });
     },
     deleteData() {
-        const url = "/form-parameter" + this.formID;
-        this.$axios
-          .delete(url, {})
-          .then(() => {
-            this.$notify({
-              title: `Delete Data Success`,
-              text: `Success`,
-              type: "success",
-            });
-
-            setTimeout(() => {
-              location.reload();
-            }, 1500);
-          })
-          .catch((err) => {
-            this.$notify({
-              title: `Delete Data Failed : ${err}`,
-              text: `Error`,
-              type: "error",
-            });
+      const url = "/form-parameter" + this.formID;
+      this.$axios
+        .delete(url, {})
+        .then(() => {
+          this.$notify({
+            title: `Delete Data Success`,
+            text: `Success`,
+            type: "success",
           });
-      },
+
+          setTimeout(() => {
+            location.reload();
+          }, 1500);
+        })
+        .catch((err) => {
+          this.$notify({
+            title: `Delete Data Failed : ${err}`,
+            text: `Error`,
+            type: "error",
+          });
+        });
+    },
   },
   mounted() {
-    this.getData();
+    const query = {
+      page: 1,
+      limit: 5,
+    };
+    this.getData(query);
   },
 };
 </script>

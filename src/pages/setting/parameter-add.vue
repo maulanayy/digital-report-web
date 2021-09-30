@@ -37,17 +37,6 @@
             </v-select>
           </div>
         </div>
-        <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Tipe Data</label>
-          <div class="col-md-10">
-            <v-select
-              :options="data_types"
-              v-model="tipe_data"
-              placeholder="Select Type Data Parameter"
-            >
-            </v-select>
-          </div>
-        </div>
         <div class="form-group row m-b-15" v-if="tipe == 'mesin'">
           <label class="col-form-label col-md-2">Topic</label>
           <div class="col-md-10">
@@ -97,11 +86,9 @@ export default {
       oracles: [],
       oracle_id: "",
       list_operator: ["plus", "minus", "multiple", "devide"],
-      data_types: ["text", "number"],
       operator: "",
       url: "",
       parameterID: "",
-      tipe_data: "",
     };
   },
   created() {
@@ -121,8 +108,8 @@ export default {
       const body = {
         oracle_id: this.oracle_id.label,
         tipe: this.tipe,
+        test_oracle_id : "01",
         topic_id: topicID,
-        tipe_data: this.tipe_data,
       };
 
       if (this.url == "add") {
@@ -186,7 +173,6 @@ export default {
             const data = response.data.data;
             this.name = data.txtName;
             this.tipe = data.txtTipe;
-            this.tipe_data = data.txtTipeData;
             this.topic_id = data.intEwonSubsSettingID;
           })
           .catch((error) => {
@@ -199,6 +185,7 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
+          console.log(response.data.data)
           this.topics = response.data.data.data.map((x) => {
             return {
               label: x.txtTopic,
@@ -210,31 +197,15 @@ export default {
           console.log(error);
         });
     },
-    getCP() {
-      const url = "/lab/code";
-      this.$axios
-        .get(url)
-        .then((response) => {
-          this.labs = response.data.data.data.map((x) => {
-            return {
-              label: x.txtName,
-              value: x.id,
-            };
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
     getOracleParameter() {
-      const url = "/parameter/oracle";
+      const url = "/parameter/oracle-code";
       this.$axios
         .get(url)
         .then((response) => {
           this.oracles = response.data.data.data.map((x) => {
             return {
-              label: x.TEST_DESC,
-              value: x.TEST_DESC,
+              label: x.TEST_CODE,
+              value: x.TEST_CODE,
             };
           });
         })
@@ -245,7 +216,6 @@ export default {
   },
   mounted() {
     this.getData();
-    this.getCP();
     this.getTopics();
     this.getOracleParameter();
   },

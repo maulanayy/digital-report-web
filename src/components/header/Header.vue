@@ -10,7 +10,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <router-link to="/dashboard" class="navbar-brand"><span class="navbar-logo"></span> <b>Digital Quality</b>
+        <router-link to="/home" class="navbar-brand"><span class="navbar-logo"></span> <b>Digital Quality</b>
           Management System
         </router-link>
         <button type="button" class="navbar-toggle pt-0 pb-0 mr-0 collapsed" v-on:click="toggleMobileTopMenu"
@@ -81,11 +81,13 @@
         <div class="checkbox checkbox-css m-b-20">
           <input type="checkbox" id="remember_checkbox" />
           <label for="remember_checkbox"> Remember Me </label>
+          <router-link to="/reset-password" class="ml-1 navbar-brand" @click.native="closeDialog">Reset Password</router-link>
         </div>
         <div class="login-buttons">
           <button type="submit" class="btn btn-success btn-block btn-lg" @click="handleOk">
             Sign me in
           </button>
+          
         </div>
       </form>
     </b-modal>
@@ -110,6 +112,9 @@
       };
     },
     methods: {
+      closeDialog (){
+        this.$bvModal.hide("loginDialog");
+      },
       toggleMobileSidebar() {
         this.pageOptions.pageMobileSidebarToggled = !this.pageOptions
           .pageMobileSidebarToggled;

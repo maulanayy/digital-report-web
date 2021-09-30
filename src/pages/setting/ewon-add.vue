@@ -21,9 +21,9 @@
           </div>
         </div>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-2">Type Topic</label>
+          <label class="col-form-label col-md-2">Status</label>
           <div class="col-md-10">
-            <v-select :options="data_types" v-model="tipe_data" placeholder="Select Type Data Topic">
+            <v-select :options="statuses" v-model="status" placeholder="Select Type Status">
             </v-select>
           </div>
         </div>
@@ -43,8 +43,8 @@
     data() {
       return {
         topic: "",
-        type_topic: "",
-        data_types: ["text", "number"],
+        statuses : ["offline","online"],
+        status : "",
         url: "",
         tipe_data: "",
         topicID: "",
@@ -63,9 +63,10 @@
     },
     methods: {
       create() {
+        const status = this.status == "online" ? true : false;
         const body = {
           topic: this.topic,
-          type_topic: this.tipe_data,
+          status: status
         };
 
         if (this.url == "add") {
@@ -122,19 +123,19 @@
       },
       getData() {
         if (this.url == "edit") {
-          this.label = "Edit Ewon Setting"
+          this.label = "Edit TagName"
           const url = "/setting/ewon/" + this.topicID;
           this.$axios
             .get(url)
             .then((response) => {
               this.topic = response.data.data.txtTopic;
-              this.type_topic = response.data.data.txtTypeTopic;
+              this.status = response.data.data.txtStatus;
             })
             .catch((error) => {
               console.log(error);
             });
         } else {
-          this.label = "Add Ewon Setting"
+          this.label = "Add TagName"
         }
       },
     },

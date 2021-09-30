@@ -57,6 +57,11 @@ const router = new Router({
       },
     },
     {
+      path: "/reset-password",
+      name: "user",
+      component: () => import("./pages/user/reset-password"),
+    },
+    {
       path: "/user/add",
       name: "user-add",
       component: () => import("./pages/user/add"),
@@ -127,21 +132,6 @@ const router = new Router({
       component: () => import("./pages/product/add"),
     },
     {
-      path: "/setting/role",
-      name: "role",
-      component: () => import("./pages/setting/role-data"),
-    },
-    {
-      path: "/setting/role/add",
-      name: "role-add",
-      component: () => import("./pages/setting/role-add"),
-    },
-    {
-      path: "/setting/role/edit/:id",
-      name: "role-edit",
-      component: () => import("./pages/setting/role-add"),
-    },
-    {
       path: "/setting/ewon",
       name: "ewon",
       component: () => import("./pages/setting/ewon-data"),
@@ -192,28 +182,33 @@ const router = new Router({
       component: () => import("./pages/setting/parameter-add"),
     },
     {
-      path: "/setting/form-parameter",
+      path: "/setting/master-form",
+      name: "setting-form",
+      component: () => import("./pages/setting/master-form-data"),
+    },
+    {
+      path: "/setting/master-form/add",
+      name: "setting-form-add",
+      component: () => import("./pages/setting/master-form-add"),
+    },
+    {
+      path: "/setting/master-form/edit/:id",
+      name: "setting-form-edit",
+      component: () => import("./pages/setting/master-form-add"),
+    },
+    {
+      path: "/setting/form",
       name: "setting-form",
       component: () => import("./pages/setting/form-data"),
     },
     {
-      path: "/setting/form-parameter/add",
+      path: "/setting/form/add",
       name: "setting-form-add",
       component: () => import("./pages/setting/form-add"),
     },
     {
-      path: "/setting/form-parameter/edit/:id",
+      path: "/setting/form/edit/:id",
       name: "setting-form-edit",
-      component: () => import("./pages/setting/form-add"),
-    },
-    {
-      path: "/setting/form-custom",
-      name: "setting-form-custom",
-      component: () => import("./pages/setting/form-data"),
-    },
-    {
-      path: "/setting/form-custom/add",
-      name: "setting-form-custom-add",
       component: () => import("./pages/setting/form-add"),
     },
     {
@@ -230,6 +225,21 @@ const router = new Router({
       path: "/setting/shift/edit/:id",
       name: "setting-shift-add",
       component: () => import("./pages/setting/shift-add"),
+    },
+    {
+      path: "/setting/batch-type",
+      name: "setting-batch-type",
+      component: () => import("./pages/setting/batch-type-data"),
+    },
+    {
+      path: "/setting/batch-type/add",
+      name: "setting-okp-add",
+      component: () => import("./pages/setting/batch-type-add"),
+    },
+    {
+      path: "/setting/batch-type/edit/:id",
+      name: "setting-shift-add",
+      component: () => import("./pages/setting/batch-type-add"),
     },
     {
       path: "/history",
@@ -251,6 +261,7 @@ const router = new Router({
       name: "form-add",
       component: () => import("./pages/form/add"),
     },
+    
     {
       path: "/tutorial/form-element",
       name: "form-element",

@@ -19,14 +19,14 @@
       <div class="col-xl-3 col-md-6">
         <div class="widget widget-stats bg-green">
           <div class="stats-icon">
-            12<i class="fas fa-lg fa-fw m-r-10 fa-angle-up"></i>
+            <i class="fas fa-lg fa-fw m-r-10 fa-angle-up"></i>
           </div>
           <div class="stats-info">
-            <p>35 Lots</p>
-            <p>450 Ton</p>
+            <p>{{ accept }} Lots</p>
+            <p>0 Ton</p>
           </div>
           <div class="stats-link">
-            <a href="javascript:;"
+            <a href="javascript:;" @click="test"
               >View Detail <i class="fa fa-arrow-alt-circle-right"></i
             ></a>
           </div>
@@ -37,14 +37,14 @@
       <div class="col-xl-3 col-md-6">
         <div class="widget widget-stats bg-orange">
           <div class="stats-icon">
-            1<i class="fas fa-lg fa-fw m-r-10 fa-angle-down"></i>
+            <i class="fas fa-lg fa-fw m-r-10 fa-angle-down"></i>
           </div>
           <div class="stats-info">
-            <p>6 Lots</p>
-            <p>23 Ton</p>
+            <p>{{ accept_with_condition }} Lots</p>
+            <p>0 Ton</p>
           </div>
           <div class="stats-link">
-            <a href="javascript:;"
+            <a href="javascript:;" @click="test"
               >View Detail <i class="fa fa-arrow-alt-circle-right"></i
             ></a>
           </div>
@@ -55,14 +55,14 @@
       <div class="col-xl-3 col-md-6">
         <div class="widget widget-stats bg-red">
           <div class="stats-icon">
-            3<i class="fas fa-lg fa-fw m-r-10 fa-angle-down"></i>
+            <i class="fas fa-lg fa-fw m-r-10 fa-angle-down"></i>
           </div>
           <div class="stats-info">
-            <p>3 Lots</p>
-            <p>12 Ton</p>
+            <p>{{ failed }} Lots</p>
+            <p>0 Ton</p>
           </div>
           <div class="stats-link">
-            <a href="javascript:;"
+            <a href="javascript:;" @click="test"
               >View Detail <i class="fa fa-arrow-alt-circle-right"></i
             ></a>
           </div>
@@ -73,8 +73,8 @@
       <div class="col-xl-3 col-md-6">
         <div class="widget widget-stats bg-black-lighter">
           <div class="stats-info">
-            <p>44 Lots</p>
-            <p>485 Ton</p>
+            <p>{{ total }} Lots</p>
+            <p>0 Ton</p>
           </div>
           <div class="stats-link">
             <a href="javascript:;"
@@ -90,14 +90,17 @@
       <vue-good-table
         :columns="columns"
         :rows="data"
+        :isLoading.sync="isLoading"
+        :totalRows="meta.total"
         :pagination-options="{
           enabled: true,
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [5, 10, 15],
+          perPageDropdownEnabled: false,
           dropdownAllowAll: false,
           setCurrentPage: 1,
+          perPage: 10,
           nextLabel: 'next',
           prevLabel: 'prev',
           rowsPerPageLabel: 'Rows per page',
@@ -105,6 +108,7 @@
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
         }"
+        @on-page-change="onPageChange"
       >
       </vue-good-table>
     </panel>
@@ -116,6 +120,7 @@ export default {
   name: "dashboard",
   data() {
     return {
+      isLoading: false,
       data: [],
       columns: [
         {
@@ -132,7 +137,7 @@ export default {
         },
         {
           label: "Primary UOM",
-          field: "primary_uom",
+          field: "UOM",
         },
         {
           label: "Secondary On hand",
@@ -140,7 +145,7 @@ export default {
         },
         {
           label: "Lot",
-          field: "lot",
+          field: "LOT_NUMBER",
         },
         {
           label: "Lot Expire Date",
@@ -148,19 +153,35 @@ export default {
         },
         {
           label: "Origination Date",
-          field: "origination_date",
-        }
+          field: "ACT_STR_DT",
+        },
       ],
       meta: {},
+      total : 0,
+      accept : 0,
+      failed : 0,
+      accept_with_condition : 0,
     };
   },
   methods: {
-    getData() {
+    test(){
+      console.log("WAW")
+    },
+    onPageChange(params) {
+      const query = {
+        page: params.currentPage,
+        limit: params.currentPerPage,
+      };
+
+      this.getData(query);
+    },
+    getData(query) {
       const url = "/dashboard";
       this.$axios
-        .get(url)
+        .get(url, { params: query })
         .then((response) => {
           this.data = response.data.data.data;
+          this.meta = response.data.data.meta;
         })
         .catch((error) => {
           console.log(error);
@@ -171,7 +192,11 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
-          this.data = response.data.data.data;
+          const data = response.data.data.data;
+          this.total = data.all
+          this.accept = data.accept
+          this.accept_with_condition = data.accept_with_variance
+          this.failed = data.fail
         })
         .catch((error) => {
           console.log(error);
@@ -179,8 +204,12 @@ export default {
     },
   },
   mounted() {
-    this.getData();
-    this.getDataCount();  
+    const query = {
+      page: 1,
+      limit: 20,
+    };
+    this.getData(query);
+    this.getDataCount();
   },
 };
 </script>

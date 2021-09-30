@@ -34,6 +34,8 @@
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
         }"
+        @on-page-change="onPageChange"
+        @on-per-page-change="onPageChange"
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
@@ -84,7 +86,7 @@ export default {
           field : "id",
         },
         {
-          label: "Hostname",
+          label: "Username",
           field: "txtHost",
         },
         {
@@ -112,6 +114,14 @@ export default {
     next();
   },
   methods: {
+    onPageChange(params) {
+      const query = {
+        page: params.currentPage,
+        limit: params.currentPerPage,
+      };
+
+      this.getData(query);
+    },
     onCancel() {
         this.confirmation = false
       },
@@ -119,10 +129,10 @@ export default {
         this.oracleID = id
         this.confirmation =true
       },
-    getData() {
+    getData(param) {
       const url = "/setting/oracle";
       this.$axios
-        .get(url)
+        .get(url,param)
         .then((response) => {
           this.data = response.data.data.data;
           this.meta = response.data.data.meta;
@@ -157,7 +167,12 @@ export default {
       },
   },
   mounted() {
-    this.getData();
+    const query = {
+        page: 1,
+        limit: 5,
+      };
+
+      this.getData(query);
   },
 };
 </script>

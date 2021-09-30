@@ -117,9 +117,6 @@
           {
             label: "Created At",
             field: "dtmCreatedAt",
-            type: "date",
-            dateInputFormat: "yyyy-MM-dd'T'17:00:00.000'Z'",
-            dateOutputFormat: "dd-MM-yyyy",
           },
         ],
         data: [],
@@ -135,7 +132,7 @@
     },
     methods: {
       getData() {
-        const url = "/parameter/" + this.paramID;
+        const url = "/parameter/" + this.paramID +"/detail";
         this.$axios
           .get(url)
           .then((response) => {
@@ -148,7 +145,6 @@
               }
               return res
             }) 
-            console.log(dataSeries)
             this.series = [{
               name: response.data.data.parameter.txtName,
               data: dataSeries,

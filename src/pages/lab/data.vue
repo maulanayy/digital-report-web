@@ -18,14 +18,17 @@
       <vue-good-table
         :columns="columns"
         :rows="data"
+        :totalRows="meta.total"
+        :isLoading.sync="isLoading"
         :pagination-options="{
           enabled: true,
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
+          perPageDropdownEnabled: false,
           setCurrentPage: 1,
+          perPage : 10,
           nextLabel: 'next',
           prevLabel: 'prev',
           rowsPerPageLabel: 'Rows per page',
@@ -33,6 +36,8 @@
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
         }"
+        @on-page-change="onPageChange"
+        @on-per-page-change="onPageChange"
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
@@ -89,6 +94,7 @@ export default {
   data() {
     return {
       labID: "",
+      isLoading: false,
       confirmation: false,
       columns: [
         {
@@ -121,6 +127,14 @@ export default {
     next();
   },
   methods: {
+    onPageChange(params) {
+      const query = {
+        page: params.currentPage,
+        limit: params.currentPerPage,
+      };
+
+      this.getData(query);
+    },
     onCancel() {
       this.confirmation = false;
     },
@@ -128,14 +142,15 @@ export default {
       this.labID = id;
       this.confirmation = true;
     },
-    getData() {
+    getData(query) {
       const url = "/lab";
 
       this.$axios
-        .get(url)
+        .get(url, { params: query })
         .then((response) => {
           this.data = response.data.data.data;
           this.meta = response.data.data.meta;
+          // console.log(this.meta)
         })
         .catch((error) => {
           console.log(error);
@@ -166,7 +181,11 @@ export default {
     },
   },
   mounted() {
-    this.getData();
+    const query = {
+      page: 1,
+      limit: 5,
+    };
+    this.getData(query);
   },
 };
 </script>

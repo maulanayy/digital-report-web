@@ -15,9 +15,9 @@
     <panel title="Add Control Point">
       <form>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-3">Hostname</label>
+          <label class="col-form-label col-md-3">Username</label>
           <div class="col-md-9">
-            <input type="input" class="form-control m-b-5" placeholder="Enter Hostname" name="hostname"
+            <input type="input" class="form-control m-b-5" placeholder="Enter Username" name="hostname"
               v-model="hostname" />
           </div>
         </div>

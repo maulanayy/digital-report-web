@@ -107,6 +107,7 @@ if (token !== "") {
     Authorization: `Bearer ${token}`,
   }
 }
+
 let axiosOptoins = {
   baseURL: "http://localhost:1337",
   timeout: 180000, // 3 menit
@@ -124,4 +125,5 @@ new Vue({
   render: (h) => h(App),
   router,
   store,
+  mode: 'history',
 }).$mount("#app");

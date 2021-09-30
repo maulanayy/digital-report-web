@@ -15,8 +15,8 @@
     <panel title="Create New Form">
       <form>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-1">Form Name</label>
-          <div class="col-md-5">
+          <label class="col-form-label col-md-2">Form Name</label>
+          <div class="col-md-4">
             <input
               type="input"
               class="form-control m-b-5"
@@ -24,7 +24,7 @@
               v-model="name"
             />
           </div>
-          <label class="col-form-label col-md-1">Control Point</label>
+          <label class="col-form-label col-md-2">Control Point</label>
           <div class="col-md-4">
             <v-select
               :options="contorlPoint"
@@ -35,80 +35,21 @@
             </v-select>
           </div>
         </div>
-        <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-1">LOT Number</label>
-          <div class="col-md-5">
+
+        <div class="form-group row mb-2">
+          <label class="col-form-label col-md-2">Search Parameter</label>
+          <div class="col-md-4">
             <v-select
-              :options="documents"
-              name="no_doc"
-              placeholder="Enter LOT Number"
-              v-model="no_doc"
+              :options="params"
+              name="param"
+              v-model="param"
+              placeholder="Select Parameter"
             >
             </v-select>
           </div>
-          <label class="col-form-label col-md-1">OKP</label>
+          
+          <label class="col-form-label col-md-2">Custom Parameter Name</label>
           <div class="col-md-4">
-            <v-select
-              :options="okps"
-              v-model="okp"
-              placeholder="Enter Name OKP"
-            >
-            </v-select>
-          </div>
-        </div>
-
-        <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-1">No Document</label>
-          <div class="col-md-5">
-            <input
-              type="input"
-              class="form-control m-b-5"
-              name="no_document"
-              placeholder="Enter Document Name"
-              v-model="no_document"
-            />
-          </div>
-          <label class="col-form-label col-sm-1">Variable Name</label>
-          <div class="col-md-4">
-            <input
-              type="input"
-              class="form-control m-b-5"
-              placeholder="Enter Variable Name"
-              name="variable"
-              v-model="variable"
-            />
-          </div>
-        </div>
-
-        <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-1">Product Name</label>
-          <div class="col-md-5">
-            <input
-              type="input"
-              class="form-control m-b-5"
-              placeholder="Enter Product Name"
-              v-model="product_name"
-              disabled
-            />
-          </div>
-        </div>
-
-        <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-1">Remark</label>
-          <div class="col-md-11">
-            <b-form-textarea
-              rows="5"
-              class="form-control m-b-5"
-              placeholder="Remark"
-              name="remark"
-              v-model="remark"
-            />
-          </div>
-        </div>
-
-        <div class="form-group row mb-1">
-          <label class="col-form-label col-md-1">Custom Parameter Name</label>
-          <div class="col-md-3">
             <input
               type="input"
               class="form-control mb-1"
@@ -117,41 +58,45 @@
             />
           </div>
 
-          <label class="col-form-label col-md-1">Parameter MIN Value</label>
-          <div class="col-md-3">
+          
+        </div>
+
+        <div class="form-group row mb-1">
+          <label class="col-form-label col-md-2">Parameter MIN Value</label>
+          <div class="col-md-4">
             <input
               type="input"
               class="form-control mb-1"
               placeholder="Enter Minimum Value"
-              v-model="custom_parameter_min_value"
+              v-model="min_value"
             />
           </div>
 
-          <label class="col-form-label col-md-1">Parameter MAX Value</label>
-          <div class="col-md-3">
+          <label class="col-form-label col-md-2">Parameter MAX Value</label>
+          <div class="col-md-4">
             <input
               type="input"
               class="form-control mb-1"
               placeholder="Enter Maximum Value"
-              v-model="custom_parameter_max_value"
+              v-model="max_value"
             />
           </div>
         </div>
+        <b-button class="mb-1" variant="primary" @click="addParameter()"
+          >Add Parameter</b-button
+        >
 
         <vue-good-table
+          class="mt-3"
           :columns="columns"
-          :rows="dataTable"
+          :rows="data"
           :line-numbers="true"
-          :select-options="{
-            enabled: true,
-            disableSelectInfo: true,
-          }"
           :pagination-options="{
             enabled: true,
             mode: 'records',
-            perPage: 5,
+            perPage: 10,
+            perPageDropdownEnabled: false,
             position: 'bottom',
-            perPageDropdown: [3, 7, 9],
             dropdownAllowAll: false,
             setCurrentPage: 1,
             nextLabel: 'next',
@@ -161,35 +106,28 @@
             pageLabel: 'page', // for 'pages' mode
             allLabel: 'All',
           }"
-          @on-selected-rows-change="selectionChanged"
         >
-          <template slot="table-row" slot-scope="props">
-            <span v-if="props.column.field == 'btn'">
-              <b-button
-                variant="danger"
-                class="mr-2"
-                @click="deleteData(props.row.originalIndex)"
-                >Delete</b-button
-              >
-            </span>
-            <span v-else>
-              {{ props.formattedRow[props.column.field] }}
-            </span>
-          </template>
+        <template slot="table-row" slot-scope="props">
+          <span v-if="props.column.field == 'btn'">
+            <b-button
+              variant="danger"
+              class="mr-2"
+              @click="confirm(props.index)"
+              >Delete</b-button
+            >
+          </span>
+          <span v-else>
+            {{ props.formattedRow[props.column.field] }}
+          </span>
+        </template>
         </vue-good-table>
 
         <b-button
           class="float-right mt-3 ml-2"
           variant="primary"
           @click="create()"
+          :disabled="isLoading"
           >Create</b-button
-        >
-
-        <b-button
-          class="float-right mt-3 mr-1"
-          variant="primary"
-          @click="addParameter()"
-          >Add Parameter</b-button
         >
       </form>
     </panel>
@@ -205,23 +143,20 @@ export default {
   name: "add-control-point",
   data() {
     return {
+      params: [],
+      param: "",
       no_doc: "",
       no_document: "",
       documents: [],
+      data: [],
       formID: "",
       name: "",
       remark: "",
-      variable: "",
       cp_id: "",
       url: "",
-      parameter: "",
-      effective_date: "",
-      product_name: "",
-      okp: "",
-      okps: [],
       custom_parameter_name: "",
-      custom_parameter_min_value: "",
-      custom_parameter_max_value: "",
+      min_value: "",
+      max_value: "",
       columns: [
         {
           label: "PARAMETER CODE",
@@ -232,6 +167,10 @@ export default {
           field: "TEST_DESC",
         },
         {
+          label: "TYPE PARAMETER",
+          field: "TYPE_PARAMETER",
+        },
+        {
           label: "MIN VALUE",
           field: "MIN_VALUE",
         },
@@ -239,14 +178,20 @@ export default {
           label: "MAX VALUE",
           field: "MAX_VALUE",
         },
+        {
+          label: "Action",
+          field : "btn"
+        }
       ],
-      products: [],
       dataTable: [],
       options: [],
       contorlPoint: [],
       parameters: [],
       meta: {},
       index: 1,
+      batchs : [],
+      batch_id : "",
+      isLoading : false
     };
   },
   created() {
@@ -259,34 +204,19 @@ export default {
     PageOptions.pageWithFooter = false;
     next();
   },
-  watch: {
-    okp(value) {
-      this.getLOTByOKP(value.value);
-    },
-    no_doc(doc) {
-      this.getDetailLOT(doc.value);
-      this.addValueByOKP(doc.value);
-    },
-  },
   methods: {
-    selectionChanged(params) {
-      this.parameters = params.selectedRows;
-    },
     create() {
       const body = {
         name: this.name,
         cp_id: this.cp_id.value,
+        batch_type : this.batch_id.value,
         no_doc: this.no_document,
-        lot_number : this.no_doc.value,
-        okp: this.okp.value,
-        product: this.product_name,
-        variable: this.variable,
         remark: this.remark,
-        dataParameter: this.parameters,
+        dataParameter: this.data,
       };
 
-      console.log(body);
       if (this.url == "add") {
+        this.isLoading = true
         this.$axios
           .post("/form-parameter", body, {
             headers: {
@@ -299,12 +229,13 @@ export default {
               text: `Success`,
               type: "success",
             });
-
+            this.isLoading = false
             setTimeout(() => {
-              this.$router.push("/setting/form-parameter");
+              this.$router.push("/setting/form");
             }, 1500);
           })
           .catch((err) => {
+            this.isLoading = false
             this.$notify({
               title: `Insert Data Failed : ${err}`,
               text: `Error`,
@@ -312,6 +243,7 @@ export default {
             });
           });
       } else {
+        this.isLoading = true
         this.$axios
           .put("/form-parameter/" + this.formID, body, {
             headers: {
@@ -319,6 +251,7 @@ export default {
             },
           })
           .then(() => {
+            this.isLoading = false
             this.$notify({
               title: `Update Data Success`,
               text: `Success`,
@@ -326,10 +259,11 @@ export default {
             });
 
             setTimeout(() => {
-              this.$router.push("/setting/form-parameter");
+              this.$router.push("/setting/form");
             }, 1500);
           })
           .catch((err) => {
+            this.isLoading = false
             this.$notify({
               title: `Update Data Failed : ${err}`,
               text: `Error`,
@@ -347,18 +281,24 @@ export default {
             const data = response.data.data;
             this.name = data.txtFormName;
             this.no_document = data.txtNoDok;
-            this.variable = data.variable.txtVariableName;
             this.remark = data.txtRemark;
-            this.product_name = data.txtProductName;
-            this.cp_id = data.intControlPointID;
-            this.okp = data.txtOKP;
-            this.getLOTByOKP(this.okp);
+            const CP = this.contorlPoint.find((x) => {
+              return (x.value = data.intControlPointID);
+            });
+
+            this.cp_id = CP;
             data.parameter.forEach((element) => {
-              this.dataTable.push({
+              const minValue =
+                element.intMinValue == 0 ? "not defined" : element.intMinValue;
+              const maxValue =
+                element.intMaxValue == 0 ? "not defined" : element.intMaxValue;
+
+              this.data.push({
                 TEST_CODE: element.txtParameterName,
                 TEST_DESC: element.txtParameterName,
-                MIN_VALUE: 0,
-                MAX_VALUE: 1,
+                TYPE_PARAMETER: element.txtParameterType,
+                MIN_VALUE: minValue,
+                MAX_VALUE: maxValue,
               });
             });
           })
@@ -383,66 +323,16 @@ export default {
           console.log(error);
         });
     },
-    getOKP() {
-      const url = "/parameter/okp";
+    getParameter() {
+      const url = "/parameter/oracle-code";
       this.$axios
         .get(url)
         .then((response) => {
-          this.okps = response.data.data.data.map((x) => {
+          this.params = response.data.data.data.map((x) => {
             return {
-              label: x.BATCH_NUMBER,
-              value: x.BATCH_NUMBER,
+              label: x.TEST_CODE,
+              value: x.TEST_CODE,
             };
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    getDetailLOT(lot) {
-      const url = "/parameter/" + lot + "/lot-detail";
-      this.dataTable = [];
-      this.$axios
-        .get(url)
-        .then((response) => {
-          const parameter = response.data.data.data;
-          this.product_name = parameter[0].DESCRIPTION;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    getLOTByOKP(okp) {
-      const url = "/parameter/" + okp + "/okp-lot";
-      this.$axios
-        .get(url)
-        .then((response) => {
-          this.documents = response.data.data.data.map((x) => {
-            return {
-              label: x.LOT_NUMBER,
-              value: x.LOT_NUMBER,
-            };
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    addValueByOKP(lot) {
-      const url = "/parameter/" + lot + "/okp-parameter";
-      console.log(url);
-      this.dataTable = [];
-      this.$axios
-        .get(url)
-        .then((response) => {
-          const parameter = response.data.data.data;
-          parameter.forEach((element) => {
-            this.dataTable.push({
-              TEST_CODE: element.TEST_CODE,
-              TEST_DESC: element.TEST_DESC,
-              MIN_VALUE: element.MIN_VALUE,
-              MAX_VALUE: element.MAX_VALUE,
-            });
           });
         })
         .catch((error) => {
@@ -450,20 +340,35 @@ export default {
         });
     },
     addParameter() {
-      if (this.custom_parameter_name != "") {
-        this.dataTable.push({
-          TEST_CODE: this.custom_parameter_name,
-          TEST_DESC: this.custom_parameter_name,
-          MIN_VALUE: this.custom_parameter_min_value,
-          MAX_VALUE: this.custom_parameter_max_value,
+      const parameter =
+        this.custom_parameter_name != ""
+          ? this.custom_parameter_name
+          : this.param.value;
+      const minValue =
+        this.custom_parameter_name != "" ? this.min_value : "not defined";
+      const maxValue =
+        this.custom_parameter_name != "" ? this.max_value : "not defined";
+      const typeParameter =
+        this.custom_parameter_name != "" ? "custom" : "oracle";
+      if (this.custom_parameter_name != "" || this.param.value != "") {
+        this.data.push({
+          TEST_CODE: parameter,
+          TEST_DESC: parameter,
+          TYPE_PARAMETER: typeParameter,
+          MIN_VALUE: minValue,
+          MAX_VALUE: maxValue,
         });
       }
     },
+    confirm(index){
+      console.log(index)
+      this.data.splice(index,1)
+    }
   },
   mounted() {
-    this.getData();
     this.getCP();
-    this.getOKP();
+    this.getParameter();
+    this.getData();
   },
 };
 </script>

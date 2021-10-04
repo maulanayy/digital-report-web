@@ -207,12 +207,20 @@ export default {
           field: "txtFormName",
         },
         {
+          label : "OKP",
+          field : "txtOKP",
+        },
+        {
           label: "Product",
           field: "txtNameProduct",
         },
         {
           label: "No Document",
           field: "txtNoDok",
+        },
+        {
+          label : "Lot Numbers Length",
+          field : "intLotNumberLength"
         },
         {
           label: "Production Date",

@@ -363,6 +363,7 @@ export default {
         form: formID.value,
         form_name: formID.label,
         okp: this.okp.value,
+        lot_numbers_length : this.lot_numbers.length,
         product_name: this.product_name,
         no_doc: this.no_doc,
         product_date: this.product_date,

@@ -3,16 +3,17 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb float-xl-right">
       <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
-      <li class="breadcrumb-item active">Control Point</li>
+      <li class="breadcrumb-item"><a href="javascript:;">Setting</a></li>
+      <li class="breadcrumb-item active">Type OKP DATA</li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Control Point</h1>
+    <h1 class="page-header">Type OKP</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
     <panel title="Data Control Point">
-      <b-button class="mb-3" variant="primary" :to="'/control_point/add'"
+      <b-button class="mb-3" variant="primary" :to="'/setting/type-okp/add'"
         >Create</b-button
       >
       <vue-good-table
@@ -25,9 +26,10 @@
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [5, 10, 15],
           dropdownAllowAll: false,
+          perPageDropdownEnabled: false,
           setCurrentPage: 1,
+          perPage : 10,
           nextLabel: 'next',
           prevLabel: 'prev',
           rowsPerPageLabel: 'Rows per page',
@@ -43,7 +45,7 @@
             <b-button
               variant="primary"
               class="mr-2"
-              :to="'/control_point/edit/' + props.row.id"
+              :to="'/setting/type-okp/edit/' + props.row.id"
               >Edit</b-button
             >
             <b-button
@@ -90,11 +92,11 @@
 import PageOptions from "../../config/PageOptions.vue";
 
 export default {
-  name: "data-control-point",
+  name: "setting-type-okp",
   data() {
     return {
-      cpID: "",
-      isLoading : false,
+      typeOKPID: "",
+      isLoading: false,
       confirmation: false,
       columns: [
         {
@@ -107,8 +109,8 @@ export default {
           field: "txtName",
         },
         {
-          label: "Area",
-          field: "txtAreaName",
+          label: "Control Point",
+          field: "txtControlPoint",
         },
         {
           label: "Created At",
@@ -144,11 +146,11 @@ export default {
       this.confirmation = false;
     },
     confirm(id) {
-      this.cpID = id;
+      this.typeOKPID = id;
       this.confirmation = true;
     },
     getData(query) {
-      const url = "/control-point";
+      const url = "/setting/type-okp";
       this.$axios
         .get(url, { params: query })
         .then((response) => {
@@ -164,7 +166,7 @@ export default {
         });
     },
     deleteData() {
-      const url = "/control-point/" + this.cpID;
+      const url = "/setting/type-okp/" + this.typeOKPID;
       this.$axios
         .delete(url, {})
         .then(() => {
@@ -190,7 +192,7 @@ export default {
   mounted() {
     const query = {
       page: 1,
-      limit: 5,
+      limit: 10,
     };
     this.getData(query);
   },

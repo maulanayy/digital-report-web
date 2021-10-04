@@ -183,7 +183,7 @@ export default {
   mounted() {
     const query = {
       page: 1,
-      limit: 5,
+      limit: 10,
     };
     this.getData(query);
   },

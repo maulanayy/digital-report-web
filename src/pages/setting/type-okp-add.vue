@@ -19,22 +19,22 @@
             <input
               type="input"
               class="form-control m-b-5"
-              placeholder="Enter Name Control Point"
+              placeholder="Enter Name Type OKP"
               name="name"
               v-model="name"
             />
           </div>
         </div>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-3">Area</label>
+          <label class="col-form-label col-md-3">Control Points</label>
           <div class="col-md-9">
             <v-select
-              v-model="area_id"
-              tag-placeholder="Enter Name Area"
-              placeholder="Enter Name Area"
+              v-model="cp_id"
+              tag-placeholder="Enter Name Control Point"
+              placeholder="Enter Name Control Point"
               label="name"
               track-by="code"
-              :options="areas"
+              :options="cps"
               :multiple="true"
             >
             </v-select>
@@ -44,15 +44,7 @@
           type="submit"
           class="float-right mb-3"
           variant="primary"
-          v-if="url == 'add'"
-          >Create</b-button
-        >
-        <b-button
-          type="submit"
-          class="float-right mb-3"
-          variant="primary"
-          v-else
-          >Edit</b-button
+          >{{labelBtn}}</b-button
         >
       </b-form>
     </panel>
@@ -70,17 +62,19 @@ export default {
   data() {
     return {
       name: "",
-      cpId: "",
+      typeOKPID: "",
       url: "",
-      areas: [],
-      area_id: [],
+      cps: [],
+      cp_id: [],
       label: "",
+      labelBtn : ""
     };
   },
   created() {
     var currentUrl = this.$route.path.split("/");
-    this.cpId = currentUrl[3];
-    this.url = currentUrl[2];
+    this.typeOKPID = currentUrl[4];
+    this.url = currentUrl[3];
+    this.labelBtn = this.url == "add" ? "Create" : "Edit"
     PageOptions.pageWithFooter = true;
   },
   beforeRouteLeave(to, from, next) {
@@ -90,25 +84,25 @@ export default {
   methods: {
     create(event) {
       event.preventDefault();
-      const areaID =
-        this.area_id.length > 0
-          ? this.area_id.map((x) => {
+      const controlPointID =
+        this.cp_id.length > 0
+          ? this.cp_id.map((x) => {
               return x.code;
             })
           : [];
 
       if (this.name == "" ){
         this.$notify({
-          title: `Name Control Point is Empty`,
+          title: `Name Type is Empty`,
           text: `Warning`,
           type: "warn",
         });
 
         return;
       }
-      if (areaID.length == 0) {
+      if (controlPointID.length == 0) {
         this.$notify({
-          title: `Area is empty`,
+          title: `Control Point is empty`,
           text: `Warning`,
           type: "warn",
         });
@@ -118,14 +112,14 @@ export default {
 
       let body = {
         name: this.name,
-        area_id: areaID,
+        cp_id: controlPointID,
       };
 
       console.log(body);
 
       if (this.url == "add") {
         this.$axios
-          .post("/control-point", body, {
+          .post("/setting/type-okp", body, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -137,7 +131,7 @@ export default {
               type: "success",
             });
             setTimeout(() => {
-              this.$router.push("/control_point");
+              this.$router.push("/setting/type-okp");
             }, 1500);
           })
           .catch((err) => {
@@ -150,7 +144,7 @@ export default {
       } else {
 
         this.$axios
-          .put("/control-point/" + this.cpId, body, {
+          .put("/setting/type-okp/" + this.typeOKPID, body, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -163,7 +157,7 @@ export default {
             });
 
             setTimeout(() => {
-              this.$router.push("/control_point");
+              this.$router.push("/setting/type-okp");
             }, 1500);
           })
           .catch((err) => {
@@ -177,34 +171,35 @@ export default {
     },
     getData() {
       if (this.url == "edit") {
-        this.label = "Edit Control Point";
-        const url = "/control-point/" + this.cpId;
+        this.label = "Edit Type OKP";
+        const url = "/setting/type-okp/" + this.typeOKPID;
         this.$axios
           .get(url)
           .then((response) => {
-            const data = response.data.data.data
-            const areaID = data.map(x => {
+            const data = response.data.data
+            const controlPointID = data.list_cp.map(x => {
               return {
-                name : x.txtAreaName,
-                code : x.intAreaID
+                name : x.txtName,
+                code : x.intControlPointID
               }
             }) 
-            this.name = data[0].txtName;
-            this.area_id = areaID
+            console.log(controlPointID)
+            this.name = data.txtName;
+            this.cp_id = controlPointID
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        this.label = "Add Control Point";
+        this.label = "Add Type OKP";
       }
     },
     getAreaCode() {
-      const url = "/area/code";
+      const url = "/control-point/code";
       this.$axios
         .get(url)
         .then((response) => {
-          this.areas = response.data.data.data.map((x) => {
+          this.cps = response.data.data.data.map((x) => {
             return {
               name: x.txtName,
               code: x.id,

@@ -149,8 +149,8 @@ export default {
       no_document: "",
       columns: [
         {
-          label : "FORM ID",
-          field : "form_id",
+          label: "FORM ID",
+          field: "form_id",
         },
         {
           label: "FORM NAME",
@@ -164,7 +164,7 @@ export default {
       labs: [],
       lab: "",
       index: 1,
-      isLoading : false
+      isLoading: false,
     };
   },
   created() {
@@ -190,7 +190,7 @@ export default {
       };
 
       if (this.url == "add") {
-        this.isLoading = true
+        this.isLoading = true;
         this.$axios
           .post("/master-form", body, {
             headers: {
@@ -203,13 +203,13 @@ export default {
               text: `Success`,
               type: "success",
             });
-            this.isLoading = false
+            this.isLoading = false;
             setTimeout(() => {
               this.$router.push("/setting/master-form");
             }, 1500);
           })
           .catch((err) => {
-            this.isLoading = false
+            this.isLoading = false;
             this.$notify({
               title: `Insert Data Failed : ${err}`,
               text: `Error`,
@@ -217,7 +217,7 @@ export default {
             });
           });
       } else {
-        this.isLoading = true
+        this.isLoading = true;
         this.$axios
           .put("/master-form/" + this.formID, body, {
             headers: {
@@ -225,7 +225,7 @@ export default {
             },
           })
           .then(() => {
-            this.isLoading = false
+            this.isLoading = false;
             this.$notify({
               title: `Update Data Success`,
               text: `Success`,
@@ -237,7 +237,7 @@ export default {
             }, 1500);
           })
           .catch((err) => {
-            this.isLoading = false
+            this.isLoading = false;
             this.$notify({
               title: `Update Data Failed : ${err}`,
               text: `Error`,
@@ -285,7 +285,7 @@ export default {
           .get(url)
           .then((response) => {
             const data = response.data.data;
-            console.log(data)
+            console.log(data);
             this.name = data.txtFormName;
             this.no_document = data.txtNoDok;
             this.remark = data.txtRemark;
@@ -296,8 +296,8 @@ export default {
             this.lab = lab;
             data.form_list.forEach((element) => {
               this.data.push({
-                form_id : element.id,
-                form_name : element.txtFormName
+                form_id: element.id,
+                form_name: element.txtFormName,
               });
             });
           })
@@ -307,13 +307,20 @@ export default {
       }
     },
     addParameter() {
-      this.data.push({
-        form_id : this.form.value,
-        form_name: this.form.label,
-      });
+      if (this.form != "") {
+        this.data.push({
+          form_id: this.form.value,
+          form_name: this.form.label,
+        });
+      } else {
+        this.$notify({
+          title: `Warning`,
+          text: `Form Is Empty`,
+          type: "warning",
+        });
+      }
     },
     confirm(index) {
-      console.log(index);
       this.data.splice(index, 1);
     },
   },

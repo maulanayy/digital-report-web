@@ -359,6 +359,12 @@ export default {
           MAX_VALUE: maxValue,
         });
       }
+
+      this.custom_parameter_name = ""
+      this.min_value = ""
+      this.max_value = ""
+      this.param = ""
+
     },
     confirm(index){
       console.log(index)

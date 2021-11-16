@@ -4,32 +4,37 @@
     <ol class="breadcrumb float-xl-right">
       <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
       <li class="breadcrumb-item"><a href="javascript:;">Setting</a></li>
-      <li class="breadcrumb-item active">Batch Type Control Point</li>
+      <li class="breadcrumb-item active">Parameter Value</li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Setting Batch Type Controller</h1>
+    <h1 class="page-header">Setting Parameter Value</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Batch Type Control Point Setting">
-      <b-button class="mb-3" variant="primary" :to="'/setting/batch-type/add'"
+    <panel title="Data Parameter">
+      <b-button
+        class="mb-3"
+        variant="primary"
+        :to="'/setting/form/parameter-value/add'"
         >Create</b-button
       >
       <vue-good-table
         :columns="columns"
         :rows="data"
+        :isLoading.sync="isLoading"
+        :totalRows="meta.total"
         :pagination-options="{
           enabled: true,
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
-          setCurrentPage: 2,
+          perPageDropdownEnabled: false,
+          setCurrentPage: 1,
+          perPage: 10,
           nextLabel: 'next',
           prevLabel: 'prev',
-          rowsPerPageLabel: 'Rows per page',
           ofLabel: 'of',
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
@@ -42,10 +47,15 @@
             <b-button
               variant="primary"
               class="mr-2"
-              :to="'/setting/batch-type/edit/' + props.row.id"
+              :to="'/setting/form/parameter-value/edit/' + props.row.id"
               >Edit</b-button
             >
-            <b-button variant="danger" class="mr-2" @click="confirm(props.row.id)">Delete</b-button>
+            <b-button
+              variant="danger"
+              class="mr-2"
+              @click="confirm(props.row.id)"
+              >Delete</b-button
+            >
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -56,14 +66,22 @@
     <!-- end panel -->
     <b-overlay :show="confirmation" no-wrap>
       <template #overlay>
-        <div ref="dialog" tabindex="-1" role="dialog" aria-modal="false" aria-labelledby="form-confirm-label"
-          class="text-center p-3">
+        <div
+          ref="dialog"
+          tabindex="-1"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="form-confirm-label"
+          class="text-center p-3"
+        >
           <p><strong id="form-confirm-label">Are you sure?</strong></p>
           <div class="d-flex">
             <b-button variant="outline-danger" class="mr-3" @click="onCancel">
               Cancel
             </b-button>
-            <b-button variant="outline-success" @click="deleteData">OK</b-button>
+            <b-button variant="outline-success" @click="deleteData"
+              >OK</b-button
+            >
           </div>
         </div>
       </template>
@@ -75,23 +93,28 @@
 import PageOptions from "../../config/PageOptions.vue";
 
 export default {
-  name: "data-batch-type",
+  name: "data-parameter",
   data() {
     return {
-      okpID : "",
-        confirmation: false,
+      parameterID: "",
+      confirmation: false,
+      isLoading: false,
       columns: [
         {
-          label : "ID",
-          field : "id",
+          label: "ID",
+          field: "id",
         },
         {
-          label: "Batch Type",
-          field: "txtName",
+          label: "Name",
+          field: "txtParameter",
         },
         {
-          label: "Control Points",
-          field: "control_points",
+          label: "Value",
+          field: "txtCustomValue",
+        },
+        {
+          label: "Created At",
+          field: "dtmCreatedAt",
         },
         {
           label: "Action",
@@ -119,56 +142,54 @@ export default {
       this.getData(query);
     },
     onCancel() {
-        this.confirmation = false
-      },
-      confirm(id){
-        this.okpID = id
-        this.confirmation =true
-      },
-    getData(param) {
-      const url = "/setting/batch-type";
+      this.confirmation = false;
+    },
+    confirm(id) {
+      this.parameterID = id;
+      this.confirmation = true;
+    },
+    getData(query) {
+      const url = "/parameter-value";
       this.$axios
-        .get(url,param)
+        .get(url, { param: query })
         .then((response) => {
           this.data = response.data.data.data;
           this.meta = response.data.data.meta;
-          console.log(this.data)
         })
         .catch((error) => {
           console.log(error);
         });
     },
     deleteData() {
-        const url = "/setting/batch-type/" + this.okpID;
-        this.$axios
-          .delete(url, {})
-          .then(() => {
-            this.$notify({
-              title: `Delete Data Success`,
-              text: `Success`,
-              type: "success",
-            });
-
-            setTimeout(() => {
-              location.reload();
-            }, 1500);
-          })
-          .catch((err) => {
-            this.$notify({
-              title: `Delete Data Failed : ${err}`,
-              text: `Error`,
-              type: "error",
-            });
+      const url = "/parameter-value/" + this.parameterID;
+      this.$axios
+        .delete(url, {})
+        .then(() => {
+          this.$notify({
+            title: `Delete Data Success`,
+            text: `Success`,
+            type: "success",
           });
-      },
+
+          setTimeout(() => {
+            location.reload();
+          }, 1500);
+        })
+        .catch((err) => {
+          this.$notify({
+            title: `Delete Data Failed : ${err}`,
+            text: `Error`,
+            type: "error",
+          });
+        });
+    },
   },
   mounted() {
     const query = {
-        page: 1,
-        limit: 5,
-      };
-
-      this.getData(query);
+      page: 1,
+      limit: 10,
+    };
+    this.getData(query);
   },
 };
 </script>

@@ -35,8 +35,7 @@
               v-model="password" />
           </div>
         </div>
-        <b-button class="float-right mb-3" variant="primary" @click="create()" v-if="url == 'add'">Create</b-button>
-        <b-button class="float-right mb-3" variant="primary" @click="create()" v-else>Edit</b-button>
+        <b-button class="float-right mb-3" variant="primary" @click="create()">{{label}}</b-button>
       </form>
     </panel>
     <!-- end panel -->
@@ -55,12 +54,14 @@
         password: "",
         url: "",
         oracleID: "",
+        label : "Create"
       };
     },
     created() {
       var currentUrl = this.$route.path.split("/");
       this.oracleID = currentUrl[4];
       this.url = currentUrl[3];
+      this.label = this.url == 'add' ? this.label : 'Edit'
       PageOptions.pageWithFooter = true;
     },
     beforeRouteLeave(to, from, next) {

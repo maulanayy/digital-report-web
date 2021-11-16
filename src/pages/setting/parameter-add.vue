@@ -8,11 +8,11 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Add Parameter Setting</h1>
+    <h1 class="page-header">{{label}} Parameter Setting</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Add Parameter" class="col-md-8">
+    <panel :title="label+' Parameter'" class="col-md-8">
       <form>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Parameter</label>
@@ -49,19 +49,48 @@
             </v-select>
           </div>
         </div>
+        <div class="form-group row m-b-15" v-if="tipe == 'formula'">
+          <label class="col-form-label col-md-2">Parameter Formula</label>
+          <div class="col-md-10">
+            <v-select
+              :options="oracles"
+              name="operator_parameter"
+              v-model="operator_parameter"
+              placeholder="Select Parameter Operator"
+            >
+            </v-select>
+          </div>
+        </div>
+        <div class="form-group row m-b-15" v-if="tipe == 'formula'">
+          <label class="col-form-label col-md-2">Operator</label>
+          <div class="col-md-10">
+            <v-select
+              :options="operators"
+              name="operator"
+              v-model="operator"
+              placeholder="Select Operator"
+            >
+            </v-select>
+          </div>
+        </div>
+        <div class="form-group row m-b-15" v-if="tipe == 'formula'">
+          <label class="col-form-label col-md-2">Value</label>
+          <div class="col-md-10">
+            <input
+              type="input"
+              class="form-control m-b-5"
+              placeholder="Enter Value Formula"
+              name="value_formula"
+              v-model="value_formula"
+            />
+          </div>
+        </div>
+        
         <b-button
           class="float-right mb-3"
           variant="primary"
           @click="create()"
-          v-if="url == 'add'"
-          >Create</b-button
-        >
-        <b-button
-          class="float-right mb-3"
-          variant="primary"
-          @click="create()"
-          v-else
-          >Edit</b-button
+          >{{ label }}</b-button
         >
       </form>
     </panel>
@@ -85,16 +114,27 @@ export default {
       params: [],
       oracles: [],
       oracle_id: "",
-      list_operator: ["plus", "minus", "multiple", "devide"],
+      operators: ["plus", "minus", "multiple", "devide"],
       operator: "",
+      value_formula: "",
       url: "",
       parameterID: "",
+      operator_parameter : "",
+      label: "Create",
     };
+  },
+  watch: {
+    tipe(value) {
+      if (value == "mesin") {
+        this.getTopics();
+      }
+    },
   },
   created() {
     var currentUrl = this.$route.path.split("/");
-    this.parameterID = currentUrl[4];
-    this.url = currentUrl[3];
+    this.parameterID = currentUrl[5];
+    this.url = currentUrl[4];
+    this.label = this.url == "add" ? this.label : "Edit";
     PageOptions.pageWithFooter = true;
   },
   beforeRouteLeave(to, from, next) {
@@ -108,10 +148,12 @@ export default {
       const body = {
         oracle_id: this.oracle_id.label,
         tipe: this.tipe,
-        test_oracle_id : "01",
+        test_oracle_id: "01",
         topic_id: topicID,
+        operator: this.operator,
+        operator_value: this.value_formula,
+        operator_parameter : this.operator_parameter.label
       };
-
       if (this.url == "add") {
         this.$axios
           .post("/parameter", body, {
@@ -127,7 +169,7 @@ export default {
             });
 
             setTimeout(() => {
-              this.$router.push("/setting/parameter");
+              this.$router.push("/setting/form/parameter");
             }, 1500);
           })
           .catch((err) => {
@@ -152,7 +194,7 @@ export default {
             });
 
             setTimeout(() => {
-              this.$router.push("/setting/parameter");
+              this.$router.push("/setting/form/parameter");
             }, 1500);
           })
           .catch((err) => {
@@ -170,10 +212,14 @@ export default {
         this.$axios
           .get(url)
           .then((response) => {
+            console.log(response)
             const data = response.data.data;
-            this.name = data.txtName;
+            this.oracle_id = data.txtName;
             this.tipe = data.txtTipe;
             this.topic_id = data.intEwonSubsSettingID;
+            this.operator = data.formula.txtOperator
+            this.operator_parameter = data.formula.txtParameterOperator
+            this.value_formula = data.formula.intValueOperator
           })
           .catch((error) => {
             console.log(error);
@@ -185,7 +231,6 @@ export default {
       this.$axios
         .get(url)
         .then((response) => {
-          console.log(response.data.data)
           this.topics = response.data.data.data.map((x) => {
             return {
               label: x.txtTopic,
@@ -216,7 +261,6 @@ export default {
   },
   mounted() {
     this.getData();
-    this.getTopics();
     this.getOracleParameter();
   },
 };

@@ -1,4 +1,4 @@
-<template>
+1<template>
   <div>
     <!-- begin breadcrumb -->
     <ol class="breadcrumb float-xl-right">
@@ -19,17 +19,19 @@
       <vue-good-table
         :columns="columns"
         :rows="data"
+        :totalRows="meta.total"
+        :isLoading.sync="isLoading"
         :pagination-options="{
           enabled: true,
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
-          setCurrentPage: 2,
+          perPageDropdownEnabled: false,
+          setCurrentPage: 1,
+          perPage: 5,
           nextLabel: 'next',
           prevLabel: 'prev',
-          rowsPerPageLabel: 'Rows per page',
           ofLabel: 'of',
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
@@ -45,7 +47,12 @@
               :to="'/setting/oracle/edit/' + props.row.id"
               >Edit</b-button
             >
-            <b-button variant="danger" class="mr-2" @click="confirm(props.row.id)">Delete</b-button>
+            <b-button
+              variant="danger"
+              class="mr-2"
+              @click="confirm(props.row.id)"
+              >Delete</b-button
+            >
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -56,14 +63,22 @@
     <!-- end panel -->
     <b-overlay :show="confirmation" no-wrap>
       <template #overlay>
-        <div ref="dialog" tabindex="-1" role="dialog" aria-modal="false" aria-labelledby="form-confirm-label"
-          class="text-center p-3">
+        <div
+          ref="dialog"
+          tabindex="-1"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="form-confirm-label"
+          class="text-center p-3"
+        >
           <p><strong id="form-confirm-label">Are you sure?</strong></p>
           <div class="d-flex">
             <b-button variant="outline-danger" class="mr-3" @click="onCancel">
               Cancel
             </b-button>
-            <b-button variant="outline-success" @click="deleteData">OK</b-button>
+            <b-button variant="outline-success" @click="deleteData"
+              >OK</b-button
+            >
           </div>
         </div>
       </template>
@@ -78,12 +93,13 @@ export default {
   name: "data-role",
   data() {
     return {
-      oracleID : "",
-        confirmation: false,
+      oracleID: "",
+      confirmation: false,
+      isLoading: false,
       columns: [
         {
-          label : "ID",
-          field : "id",
+          label: "ID",
+          field: "id",
         },
         {
           label: "Username",
@@ -123,16 +139,16 @@ export default {
       this.getData(query);
     },
     onCancel() {
-        this.confirmation = false
-      },
-      confirm(id){
-        this.oracleID = id
-        this.confirmation =true
-      },
+      this.confirmation = false;
+    },
+    confirm(id) {
+      this.oracleID = id;
+      this.confirmation = true;
+    },
     getData(param) {
       const url = "/setting/oracle";
       this.$axios
-        .get(url,param)
+        .get(url, param)
         .then((response) => {
           this.data = response.data.data.data;
           this.meta = response.data.data.meta;
@@ -143,36 +159,36 @@ export default {
         });
     },
     deleteData() {
-        const url = "/setting/oracle/" + this.oracleID;
-        this.$axios
-          .delete(url, {})
-          .then(() => {
-            this.$notify({
-              title: `Delete Data Success`,
-              text: `Success`,
-              type: "success",
-            });
-
-            setTimeout(() => {
-              location.reload();
-            }, 1500);
-          })
-          .catch((err) => {
-            this.$notify({
-              title: `Delete Data Failed : ${err}`,
-              text: `Error`,
-              type: "error",
-            });
+      const url = "/setting/oracle/" + this.oracleID;
+      this.$axios
+        .delete(url, {})
+        .then(() => {
+          this.$notify({
+            title: `Delete Data Success`,
+            text: `Success`,
+            type: "success",
           });
-      },
+
+          setTimeout(() => {
+            location.reload();
+          }, 1500);
+        })
+        .catch((err) => {
+          this.$notify({
+            title: `Delete Data Failed : ${err}`,
+            text: `Error`,
+            type: "error",
+          });
+        });
+    },
   },
   mounted() {
     const query = {
-        page: 1,
-        limit: 5,
-      };
+      page: 1,
+      limit: 5,
+    };
 
-      this.getData(query);
+    this.getData(query);
   },
 };
 </script>

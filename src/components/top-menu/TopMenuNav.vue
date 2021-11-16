@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Menus from '../sidebar/SidebarMenu.vue'
+import Menus from '../sidebar/SidebarMenuByRole.vue'
 import TopMenuNavList from './TopMenuNavList.vue'
 import PageOptions from '../../config/PageOptions.vue'
 

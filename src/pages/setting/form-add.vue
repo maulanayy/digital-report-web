@@ -8,7 +8,7 @@
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Create New Form Setting</h1>
+    <h1 class="page-header">{{ label_form }}</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
@@ -47,7 +47,7 @@
             >
             </v-select>
           </div>
-          
+
           <label class="col-form-label col-md-2">Custom Parameter Name</label>
           <div class="col-md-4">
             <input
@@ -57,8 +57,6 @@
               v-model="custom_parameter_name"
             />
           </div>
-
-          
         </div>
 
         <div class="form-group row mb-1">
@@ -107,19 +105,19 @@
             allLabel: 'All',
           }"
         >
-        <template slot="table-row" slot-scope="props">
-          <span v-if="props.column.field == 'btn'">
-            <b-button
-              variant="danger"
-              class="mr-2"
-              @click="confirm(props.index)"
-              >Delete</b-button
-            >
-          </span>
-          <span v-else>
-            {{ props.formattedRow[props.column.field] }}
-          </span>
-        </template>
+          <template slot="table-row" slot-scope="props">
+            <span v-if="props.column.field == 'btn'">
+              <b-button
+                variant="danger"
+                class="mr-2"
+                @click="confirm(props.index)"
+                >Delete</b-button
+              >
+            </span>
+            <span v-else>
+              {{ props.formattedRow[props.column.field] }}
+            </span>
+          </template>
         </vue-good-table>
 
         <b-button
@@ -127,7 +125,7 @@
           variant="primary"
           @click="create()"
           :disabled="isLoading"
-          >Create</b-button
+          >{{ label_button }}</b-button
         >
       </form>
     </panel>
@@ -143,6 +141,8 @@ export default {
   name: "add-control-point",
   data() {
     return {
+      label_form: "Create Form QC",
+      label_button: "Create",
       params: [],
       param: "",
       no_doc: "",
@@ -171,6 +171,10 @@ export default {
           field: "TYPE_PARAMETER",
         },
         {
+          label: "TYPE VALUE",
+          field: "TYPE_VALUE",
+        },
+        {
           label: "MIN VALUE",
           field: "MIN_VALUE",
         },
@@ -180,8 +184,8 @@ export default {
         },
         {
           label: "Action",
-          field : "btn"
-        }
+          field: "btn",
+        },
       ],
       dataTable: [],
       options: [],
@@ -189,15 +193,17 @@ export default {
       parameters: [],
       meta: {},
       index: 1,
-      batchs : [],
-      batch_id : "",
-      isLoading : false
+      batchs: [],
+      batch_id: "",
+      isLoading: false,
     };
   },
   created() {
     var currentUrl = this.$route.path.split("/");
-    this.formID = currentUrl[4];
-    this.url = currentUrl[3];
+    this.formID = currentUrl[5];
+    this.url = currentUrl[4];
+    this.label_form = this.url == "edit" ? "Edit Form QC" : this.label_form;
+    this.label_button = this.url == "edit" ? "Edit" : this.label_button;
     PageOptions.pageWithFooter = true;
   },
   beforeRouteLeave(to, from, next) {
@@ -209,14 +215,14 @@ export default {
       const body = {
         name: this.name,
         cp_id: this.cp_id.value,
-        batch_type : this.batch_id.value,
+        batch_type: this.batch_id.value,
         no_doc: this.no_document,
         remark: this.remark,
         dataParameter: this.data,
       };
 
       if (this.url == "add") {
-        this.isLoading = true
+        this.isLoading = true;
         this.$axios
           .post("/form-parameter", body, {
             headers: {
@@ -229,13 +235,13 @@ export default {
               text: `Success`,
               type: "success",
             });
-            this.isLoading = false
+            this.isLoading = false;
             setTimeout(() => {
-              this.$router.push("/setting/form");
+              this.$router.push("/setting/form/qc");
             }, 1500);
           })
           .catch((err) => {
-            this.isLoading = false
+            this.isLoading = false;
             this.$notify({
               title: `Insert Data Failed : ${err}`,
               text: `Error`,
@@ -243,7 +249,7 @@ export default {
             });
           });
       } else {
-        this.isLoading = true
+        this.isLoading = true;
         this.$axios
           .put("/form-parameter/" + this.formID, body, {
             headers: {
@@ -251,7 +257,7 @@ export default {
             },
           })
           .then(() => {
-            this.isLoading = false
+            this.isLoading = false;
             this.$notify({
               title: `Update Data Success`,
               text: `Success`,
@@ -259,11 +265,11 @@ export default {
             });
 
             setTimeout(() => {
-              this.$router.push("/setting/form");
+              this.$router.push("/setting/form/qc");
             }, 1500);
           })
           .catch((err) => {
-            this.isLoading = false
+            this.isLoading = false;
             this.$notify({
               title: `Update Data Failed : ${err}`,
               text: `Error`,
@@ -282,11 +288,13 @@ export default {
             this.name = data.txtFormName;
             this.no_document = data.txtNoDok;
             this.remark = data.txtRemark;
-            const CP = this.contorlPoint.find((x) => {
-              return (x.value = data.intControlPointID);
+            const CP = this.contorlPoint.find(x => {
+              if (x.value == data.intControlPointID){
+                return x
+              }
             });
 
-            this.cp_id = CP;
+            this.cp_id = CP
             data.parameter.forEach((element) => {
               const minValue =
                 element.intMinValue == 0 ? "not defined" : element.intMinValue;
@@ -296,6 +304,7 @@ export default {
               this.data.push({
                 TEST_CODE: element.txtParameterName,
                 TEST_DESC: element.txtParameterName,
+                TYPE_VALUE: element.txtParameterValueType,
                 TYPE_PARAMETER: element.txtParameterType,
                 MIN_VALUE: minValue,
                 MAX_VALUE: maxValue,
@@ -339,41 +348,72 @@ export default {
           console.log(error);
         });
     },
-    addParameter() {
-      const parameter =
-        this.custom_parameter_name != ""
-          ? this.custom_parameter_name
-          : this.param.value;
-      const minValue =
-        this.custom_parameter_name != "" ? this.min_value : "not defined";
-      const maxValue =
-        this.custom_parameter_name != "" ? this.max_value : "not defined";
-      const typeParameter =
-        this.custom_parameter_name != "" ? "custom" : "oracle";
-      if (this.custom_parameter_name != "" || this.param.value != "") {
-        this.data.push({
-          TEST_CODE: parameter,
-          TEST_DESC: parameter,
-          TYPE_PARAMETER: typeParameter,
-          MIN_VALUE: minValue,
-          MAX_VALUE: maxValue,
+    async addParameter() {
+      console.log(this.param.value);
+      let typeValue = "";
+      if (!this.param.value && this.custom_parameter_name == "") {
+        this.$notify({
+          title: `Warning`,
+          text: `Parameter Is Empty`,
+          type: "warning",
         });
+      } else {
+        console.log("PARAM : ",this.param.value)
+        if (this.param.value) {
+          const url = "/parameter/" + this.param.value + "/oracle";
+          const type = await this.$axios.get(url);
+
+          if (!type.data.data.MIN_VALUE || !type.data.data.MAX_VALUE) {
+            typeValue = "VALUE";
+          } else {
+            typeValue = "NUMBER";
+          }
+        }
+
+        const parameter =
+          this.custom_parameter_name != ""
+            ? this.custom_parameter_name
+            : this.param.value;
+        const minValue =
+          this.custom_parameter_name != "" ? this.min_value : "not defined";
+        const maxValue =
+          this.custom_parameter_name != "" ? this.max_value : "not defined";
+        const typeParameter =
+          this.custom_parameter_name != "" ? "custom" : "oracle";
+
+          if (minValue == "" || maxValue == "") {
+            typeValue = "VALUE";
+          }else{
+            typeValue = "NUMBER";
+          }
+
+        if (this.custom_parameter_name != "" || this.param.value != "") {
+          this.data.push({
+            TEST_CODE: parameter,
+            TEST_DESC: parameter,
+            TYPE_PARAMETER: typeParameter,
+            TYPE_VALUE: typeValue,
+            MIN_VALUE: minValue,
+            MAX_VALUE: maxValue,
+          });
+        }
+
+        this.custom_parameter_name = "";
+        this.min_value = "";
+        this.max_value = "";
+        this.param = "";
       }
-
-      this.custom_parameter_name = ""
-      this.min_value = ""
-      this.max_value = ""
-      this.param = ""
-
     },
-    confirm(index){
-      console.log(index)
-      this.data.splice(index,1)
-    }
+    confirm(index) {
+      console.log(index);
+      this.data.splice(index, 1);
+    },
   },
-  mounted() {
+  beforeMount(){
     this.getCP();
     this.getParameter();
+  },
+  mounted() {
     this.getData();
   },
 };

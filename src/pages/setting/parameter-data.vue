@@ -13,7 +13,10 @@
 
     <!-- begin panel -->
     <panel title="Data Parameter">
-      <b-button class="mb-3" variant="primary" :to="'/setting/parameter/add'"
+      <b-button
+        class="mb-3"
+        variant="primary"
+        :to="'/setting/form/parameter/add'"
         >Create</b-button
       >
       <vue-good-table
@@ -26,24 +29,25 @@
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
-          setCurrentPage: 2,
+          perPageDropdownEnabled: false,
+          setCurrentPage: 1,
+          perPage: 10,
           nextLabel: 'next',
           prevLabel: 'prev',
-          rowsPerPageLabel: 'Rows per page',
           ofLabel: 'of',
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
         }"
         @on-page-change="onPageChange"
+        @on-per-page-change="onPageChange"
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
             <b-button
               variant="primary"
               class="mr-2"
-              :to="'/setting/parameter/edit/' + props.row.id"
+              :to="'/setting/form/parameter/edit/' + props.row.id"
               >Edit</b-button
             >
             <b-button
@@ -51,13 +55,6 @@
               class="mr-2"
               @click="confirm(props.row.id)"
               >Delete</b-button
-            >
-            <b-button
-              v-if="props.row.txtTipe == 'mesin'"
-              variant="primary"
-              class="mr-2"
-              :to="'/setting/parameter/' + props.row.id + '/graph'"
-              >Detail Ewon</b-button
             >
           </span>
           <span v-else>
@@ -161,7 +158,6 @@ export default {
         .get(url, { param: query })
         .then((response) => {
           this.data = response.data.data.data;
-          console.log(this.data);
           this.meta = response.data.data.meta;
         })
         .catch((error) => {
@@ -195,7 +191,7 @@ export default {
   mounted() {
     const query = {
       page: 1,
-      limit: 5,
+      limit: 10,
     };
     this.getData(query);
   },

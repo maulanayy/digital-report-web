@@ -25,12 +25,12 @@
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [5, 10, 15],
           dropdownAllowAll: false,
+          perPageDropdownEnabled: false,
           setCurrentPage: 1,
+          perPage : 10,
           nextLabel: 'next',
           prevLabel: 'prev',
-          rowsPerPageLabel: 'Rows per page',
           ofLabel: 'of',
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
@@ -191,7 +191,7 @@ export default {
   mounted() {
      const query = {
       page: 1,
-      limit: 5,
+      limit: 10,
     };
     this.getData(query);
   },

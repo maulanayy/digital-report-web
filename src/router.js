@@ -9,16 +9,6 @@ const router = new Router({
   mode: "history",
   routes: [
     {
-      path: "/dashboard",
-      name: "dashboard",
-      component: () => import("./pages/Dashboard-v1"),
-    },
-    {
-      path: "/icon",
-      name: "icon",
-      component: () => import("./pages/UI-icons"),
-    },
-    {
       path: "/",
       name: "dashboard",
       component: () => import("./pages/home/Dashboard"),
@@ -33,21 +23,7 @@ const router = new Router({
       name: "login",
       component: () => import("./pages/auth/login"),
     },
-    {
-      path: "/report",
-      name: "report",
-      component: () => import("./pages/home/report"),
-    },
-    {
-      path: "/report/:id",
-      name: "report detail",
-      component: () => import("./pages/home/detail_report"),
-    },
-    {
-      path: "/dashboard/graph/:id",
-      name: "dashboard-graph",
-      component: () => import("./pages/home/dashboard_graph"),
-    },
+   
     {
       path: "/user",
       name: "user",
@@ -149,30 +125,7 @@ const router = new Router({
         requireAuth: true,
       },
     },
-    {
-      path: "/product",
-      name: "product",
-      component: () => import("./pages/product/data"),
-      meta: {
-        requireAuth: true,
-      },
-    },
-    {
-      path: "/product/add",
-      name: "product-add",
-      component: () => import("./pages/product/add"),
-      meta: {
-        requireAuth: true,
-      },
-    },
-    {
-      path: "/product/edit/:id",
-      name: "product-edit",
-      component: () => import("./pages/product/add"),
-      meta: {
-        requireAuth: true,
-      },
-    },
+    
     {
       path: "/setting/ewon",
       name: "ewon",
@@ -193,6 +146,14 @@ const router = new Router({
       path: "/setting/ewon/edit/:id",
       name: "ewon-edit",
       component: () => import("./pages/setting/ewon-add"),
+      meta: {
+        requireAuth: true,
+      },
+    },
+    {
+      path: "/setting/ewon/:id/graph",
+      name: "parameter-graph",
+      component: () => import("./pages/setting/parameter-graph"),
       meta: {
         requireAuth: true,
       },
@@ -222,23 +183,16 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/parameter",
+      path: "/setting/form/parameter",
       name: "parameter",
       component: () => import("./pages/setting/parameter-data"),
       meta: {
         requireAuth: true,
       },
     },
+    
     {
-      path: "/setting/parameter/:id/graph",
-      name: "parameter-graph",
-      component: () => import("./pages/setting/parameter-graph"),
-      meta: {
-        requireAuth: true,
-      },
-    },
-    {
-      path: "/setting/parameter/add",
+      path: "/setting/form/parameter/add",
       name: "parameter-add",
       component: () => import("./pages/setting/parameter-add"),
       meta: {
@@ -246,7 +200,7 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/parameter/edit/:id",
+      path: "/setting/form/parameter/edit/:id",
       name: "parameter-edit",
       component: () => import("./pages/setting/parameter-add"),
       meta: {
@@ -254,7 +208,32 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/master-form",
+      path: "/setting/form/parameter-value",
+      name: "parameter",
+      component: () => import("./pages/setting/parameter-value-data"),
+      meta: {
+        requireAuth: true,
+      },
+    },
+    
+    {
+      path: "/setting/form/parameter-value/add",
+      name: "parameter-add",
+      component: () => import("./pages/setting/parameter-value-add"),
+      meta: {
+        requireAuth: true,
+      },
+    },
+    {
+      path: "/setting/form/parameter-value/edit/:id",
+      name: "parameter-edit",
+      component: () => import("./pages/setting/parameter-value-add"),
+      meta: {
+        requireAuth: true,
+      },
+    },
+    {
+      path: "/setting/form/master",
       name: "setting-form",
       component: () => import("./pages/setting/master-form-data"),
       meta: {
@@ -262,7 +241,7 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/master-form/add",
+      path: "/setting/form/master/add",
       name: "setting-form-add",
       component: () => import("./pages/setting/master-form-add"),
       meta: {
@@ -270,7 +249,7 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/master-form/edit/:id",
+      path: "/setting/form/master/edit/:id",
       name: "setting-form-edit",
       component: () => import("./pages/setting/master-form-add"),
       meta: {
@@ -278,7 +257,7 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/form",
+      path: "/setting/form/qc",
       name: "setting-form",
       component: () => import("./pages/setting/form-data"),
       meta: {
@@ -286,7 +265,7 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/form/add",
+      path: "/setting/form/qc/add",
       name: "setting-form-add",
       component: () => import("./pages/setting/form-add"),
       meta: {
@@ -294,7 +273,7 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/form/edit/:id",
+      path: "/setting/form/qc/edit/:id",
       name: "setting-form-edit",
       component: () => import("./pages/setting/form-add"),
       meta: {
@@ -302,15 +281,15 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/shift",
-      name: "setting-shift",
+      path: "/setting/user/shift",
+      name: "setting-user-shift",
       component: () => import("./pages/setting/shift-data"),
       meta: {
         requireAuth: true,
       },
     },
     {
-      path: "/setting/shift/add",
+      path: "/setting/user/shift/add",
       name: "setting-shift-add",
       component: () => import("./pages/setting/shift-add"),
       meta: {
@@ -318,7 +297,7 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/shift/edit/:id",
+      path: "/setting/user/shift/edit/:id",
       name: "setting-shift-add",
       component: () => import("./pages/setting/shift-add"),
       meta: {
@@ -326,31 +305,16 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/batch-type",
-      name: "setting-batch-type",
-      component: () => import("./pages/setting/batch-type-data"),
+      path: "/setting/user/password",
+      name: "setting-user-shift",
+      component: () => import("./pages/setting/password-data"),
       meta: {
         requireAuth: true,
       },
     },
+    
     {
-      path: "/setting/batch-type/add",
-      name: "setting-okp-add",
-      component: () => import("./pages/setting/batch-type-add"),
-      meta: {
-        requireAuth: true,
-      },
-    },
-    {
-      path: "/setting/batch-type/edit/:id",
-      name: "setting-shift-add",
-      component: () => import("./pages/setting/batch-type-add"),
-      meta: {
-        requireAuth: true,
-      },
-    },
-    {
-      path: "/setting/type-okp",
+      path: "/setting/form/okp",
       name: "setting-type-okp",
       component: () => import("./pages/setting/type-okp-data"),
       meta: {
@@ -358,7 +322,7 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/type-okp/add",
+      path: "/setting/form/okp/add",
       name: "setting-type-okp-add",
       component: () => import("./pages/setting/type-okp-add"),
       meta: {
@@ -366,7 +330,7 @@ const router = new Router({
       },
     },
     {
-      path: "/setting/type-okp/edit/:id",
+      path: "/setting/form/okp/edit/:id",
       name: "setting-type-okp-add",
       component: () => import("./pages/setting/type-okp-add"),
       meta: {
@@ -405,20 +369,6 @@ const router = new Router({
       meta: {
         requireAuth: true,
       },
-    },
-    
-    {
-      path: "/tutorial/form-element",
-      name: "form-element",
-      component: () => import("./pages/Form-elements"),
-      meta: {
-        requireAuth: true,
-      },
-    },
-    {
-      path: "/ui/modal-notification",
-      name: "modal-notification",
-      component: () => import("./pages/UI-modal-notification"),
     },
   ],
 });

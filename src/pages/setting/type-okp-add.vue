@@ -44,7 +44,8 @@
           type="submit"
           class="float-right mb-3"
           variant="primary"
-          >{{labelBtn}}</b-button
+          @click="create()"
+          >{{button}}</b-button
         >
       </b-form>
     </panel>
@@ -67,14 +68,14 @@ export default {
       cps: [],
       cp_id: [],
       label: "",
-      labelBtn : ""
+      button : ""
     };
   },
   created() {
     var currentUrl = this.$route.path.split("/");
-    this.typeOKPID = currentUrl[4];
-    this.url = currentUrl[3];
-    this.labelBtn = this.url == "add" ? "Create" : "Edit"
+    this.typeOKPID = currentUrl[5];
+    this.url = currentUrl[4];
+    this.button = this.url == "add" ? "Create" : "Edit"
     PageOptions.pageWithFooter = true;
   },
   beforeRouteLeave(to, from, next) {
@@ -131,7 +132,7 @@ export default {
               type: "success",
             });
             setTimeout(() => {
-              this.$router.push("/setting/type-okp");
+              this.$router.push("/setting/form/okp");
             }, 1500);
           })
           .catch((err) => {
@@ -157,7 +158,7 @@ export default {
             });
 
             setTimeout(() => {
-              this.$router.push("/setting/type-okp");
+              this.$router.push("/setting/form/okp");
             }, 1500);
           })
           .catch((err) => {
@@ -194,7 +195,7 @@ export default {
         this.label = "Add Type OKP";
       }
     },
-    getAreaCode() {
+    getCpCode() {
       const url = "/control-point/code";
       this.$axios
         .get(url)
@@ -213,7 +214,7 @@ export default {
   },
   mounted() {
     this.getData();
-    this.getAreaCode();
+    this.getCpCode();
   },
 };
 </script>

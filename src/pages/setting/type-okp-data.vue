@@ -13,7 +13,7 @@
 
     <!-- begin panel -->
     <panel title="Data Control Point">
-      <b-button class="mb-3" variant="primary" :to="'/setting/type-okp/add'"
+      <b-button class="mb-3" variant="primary" :to="'/setting/form/okp/add'"
         >Create</b-button
       >
       <vue-good-table
@@ -45,7 +45,7 @@
             <b-button
               variant="primary"
               class="mr-2"
-              :to="'/setting/type-okp/edit/' + props.row.id"
+              :to="'/setting/form/okp/edit/' + props.row.id"
               >Edit</b-button
             >
             <b-button

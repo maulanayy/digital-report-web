@@ -158,14 +158,31 @@
                   props.column.field != 'type'
               "
             >
-              <input
-                type="input"
-                class="form-control m-b-5"
-                placeholder="Input Parameter"
-                name="name"
-                v-model="parametersValues[`column_${props.index}`]"
-                :disabled="parameters[props.index].values != ''"
-              />
+              <!-- <span
+                v-if="
+                  parameters[props.index].values == '' &&
+                    !parameters[props.index].formula
+                "
+              > -->
+                <input
+                  type="number"
+                  class="form-control m-b-5"
+                  placeholder="Input Parameter"
+                  name="name"
+                  v-model="parametersValues[`columns_${props.index}`]"
+                  v-if="parameters[props.index].txtParameterValueType == 'NUMBER'"
+                />
+                <v-select
+                  placeholder="Input Parameter"
+                  name="name"
+                  v-model="parametersValues[`columns_${props.index}`]"
+                  v-if="parameters[props.index].txtParameterValueType == 'VALUE'"
+                  :options="parameter_values"
+                />
+              <!-- </span>
+              <span v-else>
+                {{ parametersValues[`column_${props.index}`] }}
+              </span> -->
             </span>
             <span v-else>
               {{ props.formattedRow[props.column.field] }}
@@ -223,7 +240,7 @@ export default {
       editMode: 0,
       formData: {},
       name: "",
-      cpId: "",
+      masterFormID: "",
       url: "",
       form_name: "",
       master_form: "",
@@ -269,11 +286,11 @@ export default {
       ],
       parameter_values: [
         {
-          label: "SESUAI STANDARD",
+          label: "OK",
           value: true,
         },
         {
-          label: "TIDAK SESUAI STANDARD",
+          label: "NOT OK",
           value: false,
         },
       ],
@@ -282,11 +299,12 @@ export default {
       meta: {},
       dataParameter: [],
       columnParameter: [],
+      params: []
     };
   },
   created() {
     var currentUrl = this.$route.path.split("/");
-    this.cpId = currentUrl[3];
+    this.masterFormID = currentUrl[3];
     this.url = currentUrl[2];
     PageOptions.pageWithFooter = true;
   },
@@ -297,27 +315,36 @@ export default {
   watch: {
     master_form(value) {
       const formID = value.value;
-      this.getNoDoc(formID);
-      this.getFormName(formID);
+      if (value) {
+        this.getNoDoc(formID);
+        this.getFormName(formID);
+      }
     },
 
     form_name(value) {
-      this.dataTable = []
-      this.getDataForm(value.value);
-      if (this.url == "edit") {
-        console.log("FORM VALUE : ", value.value);
-        this.getFormValue(value.value);
+      this.dataTable = [];
+      if (value) {
+        this.getDataForm(value.value);
+        this.getOKP(value.value);
+        if (this.url == "edit") {
+          this.getFormValue(value.value);
+        }
       }
-
     },
     okp(value) {
       const okp = !value.value ? value : value.value;
-      this.getDetailOKP(okp);
+      if (value) {
+        this.getDetailOKP(okp);
+      }
+    },
+    lot_number(lot) {
+      if (lot) {
+        this.getValueParameter(lot.value);
+      }
     },
   },
   methods: {
     addValue() {
-      console.log("LOT NUMBER : ", this.lot_number.value);
       if (this.lot_number.value == undefined) {
         this.$notify({
           title: `Lot Number Is Empty`,
@@ -336,13 +363,24 @@ export default {
           });
         } else {
           let values = this.parametersValues;
+          const keys = Object.keys(values)
+
+          for (let x = 0; x < keys.length; x++) {
+            const element = keys[x];
+           
+             const value = values[element].label != undefined ? values[element].label : values[`columns_${x}`] 
+              values[element] = value
+          }
+
           values["lot_number"] = this.lot_number.value;
+          console.log("VALUES")
+          console.log(values)
           this.dataParameter.push(values);
           for (let x = 0; x < this.data.length; x++) {
             const element = this.data[x];
             this.dataTable.push({
               parameter: element.parameter,
-              value: values[`column_${x}`],
+              value: values[`columns_${x}`],
               lot_number: this.lot_number.value,
             });
           }
@@ -350,7 +388,6 @@ export default {
         this.parametersValues = {};
       }
     },
-
     create() {
       const formID = !this.form_name.value
         ? this.formName.find((x) => {
@@ -363,7 +400,7 @@ export default {
         form: formID.value,
         form_name: formID.label,
         okp: this.okp.value,
-        lot_numbers_length : this.lot_numbers.length,
+        lot_numbers_length: this.lot_numbers.length,
         product_name: this.product_name,
         no_doc: this.no_doc,
         product_date: this.product_date,
@@ -401,7 +438,7 @@ export default {
           });
       } else {
         this.$axios
-          .put(`/form-data/${this.cpId}`, body, {
+          .put(`/form-data/${this.masterFormID}`, body, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -429,7 +466,7 @@ export default {
     getData() {
       if (this.url == "edit") {
         this.editMode = 1;
-        const url = "/form-data/" + this.cpId;
+        const url = "/form-data/" + this.masterFormID;
         this.$axios
           .get(url)
           .then((response) => {
@@ -473,13 +510,11 @@ export default {
         });
     },
     getFormName(formID) {
-      console.log("FORM ID : ", formID);
       const url = "/form-parameter/" + formID + "/code";
       this.$axios
         .get(url)
         .then((response) => {
           const data = response.data.data.data;
-          console.log(response.data.data);
           this.formName = data.map((x) => {
             return {
               label: x.txtFormName,
@@ -508,7 +543,7 @@ export default {
       if (value) {
         const url = "/form-parameter/" + value;
         this.data = [];
-        this.columnParameter = []
+        this.columnParameter = [];
         this.$axios
           .get(url)
           .then((response) => {
@@ -526,21 +561,27 @@ export default {
                 type: element.txtParameterType,
                 standard: element.standard,
               });
-              this.parametersValues[`column_${x}`] = element.values;
+              // this.parametersValues[`column_s${x}`] = element.values;
               this.columnParameter.push({
                 label: element.txtParameterName,
-                field: `column_${x}`,
+                field: `columns_${x}`,
               });
             }
+
           })
           .catch((error) => {
             console.log(error);
           });
       }
     },
-    getOKP() {
+    getOKP(form) {
+      console.log("FORM : ",form)
       this.$axios
-        .get("/parameter/okp")
+        .get("/parameter/okp", {
+          params: {
+            form_id: form,
+          },
+        })
         .then((response) => {
           this.okps = response.data.data.data.map((x) => {
             return {
@@ -554,7 +595,6 @@ export default {
         });
     },
     getDetailOKP(okp) {
-      console.log("OKP : ", okp);
       if (this.form_name == "" && this.url != "edit") {
         this.$notify({
           title: `Please Insert Form`,
@@ -573,29 +613,7 @@ export default {
             this.product_desc = detailOKP[0].DESCRIPTION;
             this.product_date = detailOKP[0].ACT_STR_DT;
             this.expired_date = detailOKP[0].EXPIRATION_DATE;
-            const spec = response.data.data.data.spec
-              ? response.data.data.data.spec
-              : [];
             this.lot_numbers = [];
-            for (let x = 0; x < this.data.length; x++) {
-              const element = this.data[x];
-
-              if (element.type == "oracle") {
-                const param = spec.find((x) => {
-                  return element.parameter == x.TEST_CODE;
-                });
-
-                if (param != null) {
-                  if (param.MIN_VALUE == null || param.MAX_VALUE == null) {
-                    element.standard = "SESUAI STANDARD";
-                  } else {
-                    element.standard = param.MIN_VALUE + "-" + param.MAX_VALUE;
-                  }
-                } else {
-                  element.standard = "";
-                }
-              }
-            }
 
             for (let x = 0; x < detailOKP.length; x++) {
               const element = detailOKP[x];
@@ -611,13 +629,97 @@ export default {
       }
     },
     getFormValue(value) {
-      const url = "/form-data/" + value + "/value/" + this.cpId;
+      const url = "/form-data/" + value + "/value/" + this.masterFormID;
       this.dataParameter = [];
       this.$axios
         .get(url)
         .then((response) => {
+          this.dataParameter = response.data.data.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    // addValueParam(event, index) {
+    //   let operatorIndex = 0;
+    //   const paramInput = this.parameters[index];
+    //   const dataParamFormula = this.parameters.find((x, ind) => {
+    //     console.log("INDEX : ", ind);
+    //     if (x.formula) {
+    //       console.log("PARAM NAME : ", paramInput.txtParameterName);
+    //       console.log("OPERATOR NAME : ", x.formula.txtParameterOperator);
+
+    //       if (paramInput.txtParameterName == x.formula.txtParameterOperator) {
+    //         operatorIndex = ind;
+    //         return x;
+    //       }
+
+    //       return paramInput.txtParameterName == x.formula.txtParameterOperator;
+    //     }
+    //   });
+    //   let value = 0;
+    //   console.log("PARAM VALUE : ", parseInt(event.target.value));
+    //   console.log(
+    //     "OPERATOR VALUE : ",
+    //     dataParamFormula.formula.intValueOperator
+    //   );
+    //   switch (dataParamFormula.formula.txtOperator) {
+    //     case "plus":
+    //       value =
+    //         parseInt(event.target.value) +
+    //         dataParamFormula.formula.intValueOperator;
+    //       break;
+    //     case "minus":
+    //       value =
+    //         parseInt(event.target.value) -
+    //         dataParamFormula.formula.intValueOperator;
+    //       break;
+    //     case "multiple":
+    //       value =
+    //         parseInt(event.target.value) *
+    //         dataParamFormula.formula.intValueOperator;
+    //       break;
+    //     case "devide":
+    //       value =
+    //         parseInt(event.target.value) /
+    //         dataParamFormula.formula.intValueOperator;
+    //       break;
+    //     default:
+    //       break;
+    //   }
+
+    //   console.log("VALUE : ", value);
+    //   console.log("OPERATOR INDEX : ", operatorIndex);
+    //   console.log(this.data[operatorIndex]);
+
+    //   this.parametersValues[`column_${operatorIndex}`] = value.toString();
+
+    //   console.log(this.parametersValues);
+    // },
+    getValueParameter(lot) {
+      const url = "/parameter/" + lot + "/lot-number";
+      this.$axios
+        .get(url)
+        .then((response) => {
           const data = response.data.data.data;
-          this.dataParameter = data;
+          for (let x = 0; x < this.data.length; x++) {
+            const element = this.data[x];
+            if (element.type == "oracle") {
+              const param = data.find((x) => {
+                return element.parameter == x.TEST_CODE;
+              });
+
+              if (param != null) {
+                if (param.MIN_VALUE == null || param.MAX_VALUE == null) {
+                  element.standard = "OK";
+                } else {
+                  element.standard = param.MIN_VALUE + "-" + param.MAX_VALUE;
+                }
+              } else {
+                element.standard = "";
+              }
+            }
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -625,7 +727,6 @@ export default {
     },
   },
   mounted() {
-    this.getOKP();
     this.getData();
     this.getFormCode();
   },

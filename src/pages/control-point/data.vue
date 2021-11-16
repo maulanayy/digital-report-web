@@ -25,12 +25,12 @@
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [5, 10, 15],
           dropdownAllowAll: false,
+          perPageDropdownEnabled: false,
           setCurrentPage: 1,
+          perPage: 5,
           nextLabel: 'next',
           prevLabel: 'prev',
-          rowsPerPageLabel: 'Rows per page',
           ofLabel: 'of',
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
@@ -94,7 +94,7 @@ export default {
   data() {
     return {
       cpID: "",
-      isLoading : false,
+      isLoading: false,
       confirmation: false,
       columns: [
         {

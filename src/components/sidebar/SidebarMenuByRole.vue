@@ -13,13 +13,29 @@ const sidebarMenuByRole = {
       icon: "fa fa-cog",
       title: "Setting",
       children: [
-        { path: "/setting/ewon", title: "TagName" },
-        { path: "/setting/oracle", title: "Oracle" },
-        { path: "/setting/parameter", title: "Parameter" },
-        { path: "/setting/form", title: "Form QC" },
-        { path: "/setting/master-form", title: "Master Form" },
-        { path: "/setting/type-okp", title: "Type OKP" },
-        { path: "/setting/shift", title: "Shift Code" },
+        { path: "/setting/ewon", icon: "fa fa-cog",title: "Tag Name" },
+        { path: "/setting/oracle", icon: "fa fa-cog",title: "Oracle" },
+        { 
+          path: "/setting/form" , 
+          icon: "fa fa-file",
+          title: "Form",
+          children : [
+            { path: "/setting/form/qc", icon: "fa fa-cog",title: "Form QC" },
+            { path: "/setting/form/master", icon: "fa fa-cog",title: "Master Form" },
+            { path: "/setting/form/okp", icon: "fa fa-cog",title: "Type OKP" },
+            { path: "/setting/form/parameter", icon: "fa fa-cog",title: "Parameter" },
+            { path: "/setting/form/parameter-value", icon: "fa fa-cog",title: "Custom Parameter Value" },
+          ]
+        },
+        { 
+          path: "/setting/user", 
+          title: "User",
+          icon: "fa fa-user",
+          children : [
+            { path: "/setting/user/shift", title: "Shift" },
+            { path: "/setting/user/password", title: "Password" },
+          ]
+        },
       ],
     },
   ],
@@ -38,6 +54,7 @@ const sidebarMenuByRole = {
         { path: "/setting/form", title: "Form QC" },
         { path: "/setting/master-form", title: "Master Form" },
         { path: "/setting/type-okp", title: "Type OKP" },
+        { path: "/setting/form/parameter-value", icon: "fa fa-cog",title: "Parameter Value" },
       ],
     },
   ],

@@ -219,10 +219,6 @@ export default {
           field: "txtNoDok",
         },
         {
-          label : "Lot Numbers Length",
-          field : "intLotNumberLength"
-        },
-        {
           label: "Production Date",
           field: "dtmProductionDate",
           type: "date",

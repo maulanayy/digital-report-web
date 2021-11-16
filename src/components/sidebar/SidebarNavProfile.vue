@@ -7,7 +7,6 @@
 					<img src="@/assets/img/user/user-13.jpg" alt="">
 				</div>
 				<div class="info" v-if="this.$store.state.userdata != null">
-					<b class="caret pull-right"></b>
 					{{this.$store.state.userdata.txtUsername}}
 					<small>{{this.$store.state.userdata.role}}</small>
 				</div>

@@ -15,10 +15,7 @@
 
     <!-- begin panel -->
     <panel title="Data Form">
-      <b-button
-        class="mb-3"
-        variant="primary"
-        :to="'/setting/master-form/add'"
+      <b-button class="mb-3" variant="primary" :to="'/setting/form/master/add'"
         >Create</b-button
       >
       <vue-good-table
@@ -31,24 +28,25 @@
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [5, 10, 15],
           dropdownAllowAll: false,
-          setCurrentPage: 2,
+          perPageDropdownEnabled: false,
+          setCurrentPage: 1,
+          perPage: 10,
           nextLabel: 'next',
           prevLabel: 'prev',
-          rowsPerPageLabel: 'Rows per page',
           ofLabel: 'of',
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
         }"
         @on-page-change="onPageChange"
+        @on-per-page-change="onPageChange"
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
             <b-button
               variant="primary"
               class="mr-2"
-              :to="'/setting/master-form/edit/' + props.row.id"
+              :to="'/setting/form/master/edit/' + props.row.id"
               >Edit</b-button
             >
             <b-button
@@ -197,7 +195,7 @@ export default {
   mounted() {
     const query = {
       page: 1,
-      limit: 5,
+      limit: 10,
     };
     this.getData(query);
   },

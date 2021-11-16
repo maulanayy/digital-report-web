@@ -14,10 +14,7 @@
 
     <!-- begin panel -->
     <panel title="Data Form">
-      <b-button
-        class="mb-3"
-        variant="primary"
-        :to="'/setting/form/add'"
+      <b-button class="mb-3" variant="primary" :to="'/setting/form/qc/add'"
         >Create</b-button
       >
       <vue-good-table
@@ -26,28 +23,29 @@
         :isLoading.sync="isLoading"
         :totalRows="meta.total"
         :pagination-options="{
-          enabled: true,
+           enabled: true,
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [5, 10, 15],
           dropdownAllowAll: false,
-          setCurrentPage: 2,
+          perPageDropdownEnabled: false,
+          setCurrentPage: 1,
+          perPage: 5,
           nextLabel: 'next',
           prevLabel: 'prev',
-          rowsPerPageLabel: 'Rows per page',
           ofLabel: 'of',
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
         }"
         @on-page-change="onPageChange"
+        @on-per-page-change="onPageChange"
       >
         <template slot="table-row" slot-scope="props">
           <span v-if="props.column.field == 'btn'">
             <b-button
               variant="primary"
               class="mr-2"
-              :to="'/setting/form/edit/' + props.row.id"
+              :to="'/setting/form/qc/edit/' + props.row.id"
               >Edit</b-button
             >
             <b-button
@@ -158,8 +156,6 @@ export default {
         .then((response) => {
           this.data = response.data.data.data;
           this.meta = response.data.data.meta;
-          // console.log(this.meta)
-          // console.log(this.data);
         })
         .catch((error) => {
           this.$notify({
@@ -170,7 +166,7 @@ export default {
         });
     },
     deleteData() {
-      const url = "/form-parameter" + this.formID;
+      const url = "/form-parameter/" + this.formID;
       this.$axios
         .delete(url, {})
         .then(() => {

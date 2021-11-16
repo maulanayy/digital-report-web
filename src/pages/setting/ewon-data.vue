@@ -4,11 +4,11 @@
     <ol class="breadcrumb float-xl-right">
       <li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
       <li class="breadcrumb-item"><a href="javascript:;">Setting</a></li>
-      <li class="breadcrumb-item active">TagName</li>
+      <li class="breadcrumb-item active">Tag Name</li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Setting TagName</h1>
+    <h1 class="page-header">Setting Tag Name</h1>
     <!-- end page-header -->
 
     <!-- begin panel -->
@@ -24,12 +24,12 @@
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
-          setCurrentPage: 2,
+          perPageDropdownEnabled: false,
+          setCurrentPage: 1,
+          perPage: 5,
           nextLabel: 'next',
           prevLabel: 'prev',
-          rowsPerPageLabel: 'Rows per page',
           ofLabel: 'of',
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
@@ -51,6 +51,12 @@
               class="mr-2"
               @click="confirm(props.row.id)"
               >Delete</b-button
+            >
+            <b-button
+              variant="primary"
+              class="mr-2"
+              :to="'/setting/ewon/' + props.row.id + '/graph'"
+              >Detail</b-button
             >
           </span>
           <span v-else-if="props.column.field == 'txtStatus'">

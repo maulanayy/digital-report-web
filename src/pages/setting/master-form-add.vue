@@ -12,7 +12,7 @@
     <!-- end page-header -->
 
     <!-- begin panel -->
-    <panel title="Create New Form">
+    <panel :title="header+' Form Master'">
       <form>
         <div class="form-group row m-b-15">
           <label class="col-form-label col-md-2">Form Name</label>
@@ -121,7 +121,7 @@
           variant="primary"
           @click="create()"
           :disabled="isLoading"
-          >Create</b-button
+          >{{button}}</b-button
         >
       </form>
     </panel>
@@ -139,6 +139,7 @@ export default {
     return {
       breadcumb: "Create",
       header: "Create",
+      button : "Create",
       forms: [],
       form: "",
       data: [],
@@ -169,10 +170,11 @@ export default {
   },
   created() {
     var currentUrl = this.$route.path.split("/");
-    this.formID = currentUrl[4];
-    this.url = currentUrl[3];
+    this.formID = currentUrl[5];
+    this.url = currentUrl[4];
     this.breadcumb = this.url == "edit" ? "Update" : this.breadcumb;
     this.header = this.url == "edit" ? "Update" : this.header;
+    this.button = this.url == "edit" ? "Update" : this.button;
     PageOptions.pageWithFooter = true;
   },
   beforeRouteLeave(to, from, next) {
@@ -205,7 +207,7 @@ export default {
             });
             this.isLoading = false;
             setTimeout(() => {
-              this.$router.push("/setting/master-form");
+              this.$router.push("/setting/form/master");
             }, 1500);
           })
           .catch((err) => {
@@ -233,7 +235,7 @@ export default {
             });
 
             setTimeout(() => {
-              this.$router.push("/setting/master-form");
+              this.$router.push("/setting/form/master");
             }, 1500);
           })
           .catch((err) => {
@@ -285,7 +287,6 @@ export default {
           .get(url)
           .then((response) => {
             const data = response.data.data;
-            console.log(data);
             this.name = data.txtFormName;
             this.no_document = data.txtNoDok;
             this.remark = data.txtRemark;

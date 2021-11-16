@@ -29,21 +29,22 @@
       <div class="col-xl-12">
         <!-- begin panel -->
         <panel title="Data Parameter">
-          <vue-good-table :columns="columns" :rows="data" :pagination-options="{
+          <vue-good-table :columns="columns" :rows="data" :isLoading.sync="isLoading" :pagination-options="{
           enabled: true,
           mode: 'records',
           perPage: this.meta.perPage,
           position: 'bottom',
-          perPageDropdown: [3, 7, 9],
           dropdownAllowAll: false,
-          setCurrentPage: 2,
+          perPageDropdownEnabled: false,
+          setCurrentPage: 1,
+          perPage : 10,
           nextLabel: 'next',
           prevLabel: 'prev',
           rowsPerPageLabel: 'Rows per page',
           ofLabel: 'of',
           pageLabel: 'page', // for 'pages' mode
           allLabel: 'All',
-        }">
+        }" @on-page-change="onPageChange" @on-per-page-change="onPageChange">
           </vue-good-table>
         </panel>
         <!-- end panel -->
@@ -57,6 +58,7 @@
     name: "dashboard-graph",
     data() {
       return {
+        isLoading: false,
         series: [],
         chartOptions: {
           chart: {
@@ -104,10 +106,6 @@
         },
         columns: [{
             label: "Name",
-            field: "txtName",
-          },
-          {
-            label: "Topic",
             field: "txtTopic",
           },
           {
@@ -131,25 +129,28 @@
       console.log(this.paramID)
     },
     methods: {
-      getData() {
-        const url = "/parameter/" + this.paramID +"/detail";
+      onPageChange(params) {
+        const query = {
+          page: params.currentPage,
+          limit: params.currentPerPage,
+        };
+
+        this.getData(query);
+      },
+      getData(query) {
+        const url = "/parameter/" + this.paramID + "/detail";
         this.$axios
-          .get(url)
+          .get(url, {
+            params: query
+          })
           .then((response) => {
             this.data = response.data.data.data;
             this.meta = response.data.data.meta;
-            const dataSeries = this.data.map(value => {
-              const res = {
-                x : value.dtmCreatedAt,
-                y : value.intValue
-              }
-              return res
-            }) 
             this.series = [{
-              name: response.data.data.parameter.txtName,
-              data: dataSeries,
+              name: this.data[0].txtTopic,
+              data: response.data.data.graph,
             }]
-            
+
           })
           .catch((error) => {
             console.log(error);
@@ -157,7 +158,11 @@
       },
     },
     beforeMount() {
-      this.getData();
+      const query = {
+        page: 1,
+        limit: 10,
+      };
+      this.getData(query);
     },
   };
 </script>

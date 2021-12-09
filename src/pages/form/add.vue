@@ -119,7 +119,7 @@
     <panel title="Input Form">
       <form>
         <div class="form-group row m-b-15">
-          <label class="col-form-label col-md-1">Number Process</label>
+          <label class="col-form-label col-md-1">Number Process Oracle</label>
           <div class="col-md-4">
             <v-select
               :options="lot_numbers"
@@ -127,6 +127,16 @@
               v-model="lot_number"
             >
             </v-select>
+          </div>
+          <label class="col-form-label col-md-1">Number Process Custom</label>
+          <div class="col-md-4">
+            <input
+              type="input"
+              class="form-control m-b-5"
+              placeholder="Enter Number Process Custom"
+              name="parameter_name_custom"
+              v-model="parameter_name_custom"
+            />
           </div>
         </div>
         <vue-good-table
@@ -149,6 +159,7 @@
             pageLabel: 'page', // for 'pages' mode
             allLabel: 'All',
           }"
+          ref="table_param"
         >
           <template slot="table-row" slot-scope="props">
             <span
@@ -164,21 +175,21 @@
                     !parameters[props.index].formula
                 "
               > -->
-                <input
-                  type="number"
-                  class="form-control m-b-5"
-                  placeholder="Input Parameter"
-                  name="name"
-                  v-model="parametersValues[`columns_${props.index}`]"
-                  v-if="parameters[props.index].txtParameterValueType == 'NUMBER'"
-                />
-                <v-select
-                  placeholder="Input Parameter"
-                  name="name"
-                  v-model="parametersValues[`columns_${props.index}`]"
-                  v-if="parameters[props.index].txtParameterValueType == 'VALUE'"
-                  :options="parameter_values"
-                />
+              <input
+                type="number"
+                class="form-control m-b-5"
+                placeholder="Input Parameter"
+                name="name"
+                v-model="parametersValues[`columns_${props.index}`]"
+                v-if="parameters[props.index].txtParameterValueType == 'NUMBER'"
+              />
+              <v-select
+                placeholder="Input Parameter"
+                name="name"
+                v-model="parametersValues[`columns_${props.index}`]"
+                v-if="parameters[props.index].txtParameterValueType == 'VALUE'"
+                :options="parameters[props.index].type_values"
+              />
               <!-- </span>
               <span v-else>
                 {{ parametersValues[`column_${props.index}`] }}
@@ -194,12 +205,21 @@
             <b-button
               class="ml-1 float-right"
               variant="primary"
+              @click="create()"
+              >Save
+            </b-button>
+            <b-button
+              class="ml-1 float-right"
+              variant="primary"
               @click="addValue()"
               >Add</b-button
             >
-            <b-button class="float-right" variant="primary" @click="create()"
-              >Save
-            </b-button>
+            <b-button
+              class="ml-1 float-right"
+              variant="primary"
+              @click="editValue()"
+              >Edit</b-button
+            >
           </div>
         </div>
         <vue-good-table
@@ -252,6 +272,7 @@ export default {
       expired_date: "",
       product_desc: "",
       parameter_value: "",
+      parameter_name_custom: "",
       param_type: "",
       min_value: 0,
       max_value: 0,
@@ -287,11 +308,11 @@ export default {
       parameter_values: [
         {
           label: "OK",
-          value: true,
+          value: "OK",
         },
         {
           label: "NOT OK",
-          value: false,
+          value: "NOT OK",
         },
       ],
       data: [],
@@ -299,7 +320,7 @@ export default {
       meta: {},
       dataParameter: [],
       columnParameter: [],
-      params: []
+      params: [],
     };
   },
   created() {
@@ -345,15 +366,22 @@ export default {
   },
   methods: {
     addValue() {
-      if (this.lot_number.value == undefined) {
+      if (
+        this.lot_number != null &&
+        this.parameter_name_custom == ""
+      ) {
         this.$notify({
           title: `Lot Number Is Empty`,
           text: `Warning`,
           type: "warning",
         });
       } else {
+        const parameterValue =
+          this.lot_number != null
+            ? this.lot_number.value
+            : this.parameter_name_custom;
         const founded = this.dataParameter.find((x) => {
-          return x.lot_number == this.lot_number.value;
+          return x.lot_number == parameterValue;
         });
         if (founded) {
           this.$notify({
@@ -363,27 +391,84 @@ export default {
           });
         } else {
           let values = this.parametersValues;
-          const keys = Object.keys(values)
+          const keys = Object.keys(values);
 
           for (let x = 0; x < keys.length; x++) {
             const element = keys[x];
-           
-             const value = values[element].label != undefined ? values[element].label : values[`columns_${x}`] 
-              values[element] = value
+
+            const value =
+              values[element].label != undefined
+                ? values[element].label
+                : values[`columns_${x}`];
+            values[element] = value;
           }
 
-          values["lot_number"] = this.lot_number.value;
-          console.log("VALUES")
-          console.log(values)
+          values["lot_number"] = parameterValue;
           this.dataParameter.push(values);
-          for (let x = 0; x < this.data.length; x++) {
-            const element = this.data[x];
-            this.dataTable.push({
-              parameter: element.parameter,
-              value: values[`columns_${x}`],
-              lot_number: this.lot_number.value,
-            });
+          this.parameter_value = parameterValue;
+        }
+        this.parameter_name_custom = "";
+        this.parametersValues = {};
+      }
+    },
+    editValue() {
+      if (
+        this.lot_number.value == undefined &&
+        this.parameter_name_custom == ""
+      ) {
+        this.$notify({
+          title: `Lot Number Is Empty`,
+          text: `Warning`,
+          type: "warning",
+        });
+      } else {
+        const parameterValue =
+          this.lot_number.value != undefined
+            ? this.lot_number.value
+            : this.parameter_name_custom;
+        const founded = this.dataParameter.find((x) => {
+          return x.lot_number == parameterValue;
+        });
+        if (founded) {
+          const index = this.dataParameter.findIndex((x) => {
+            return x.lot_number == parameterValue;
+          });
+
+          console.log("INDEX  : ", index);
+
+          let values = this.parametersValues;
+          const keys = Object.keys(values);
+
+          for (let x = 0; x < keys.length; x++) {
+            const element = keys[x];
+
+            const value =
+              values[element].label != undefined
+                ? values[element].label
+                : values[`columns_${x}`];
+            values[element] = value;
           }
+
+          values["lot_number"] = parameterValue;
+
+          this.dataParameter.splice(index, 1);
+          this.dataParameter.push(values);
+          // console.log("========================================")
+          // console.log(this.dataParameter[index])
+          // for (let x = 0; x < this.data.length; x++) {
+          //   const element = this.data[x];
+          //   this.dataTable.push({
+          //     parameter: element.parameter,
+          //     value: values[`columns_${x}`],
+          //     lot_number: this.lot_number.value,
+          //   });
+          // }
+        } else {
+          this.$notify({
+            title: `Lot Number Not Found`,
+            text: `Warning`,
+            type: "warning",
+          });
         }
         this.parametersValues = {};
       }
@@ -394,7 +479,21 @@ export default {
             return x.label == this.form_name;
           })
         : this.form_name;
-      this.data.pop();
+  
+
+      for (let z = 0; z < this.dataParameter.length; z++) {
+        const elementParam = this.dataParameter[z];
+        console.log("ELEMENT PARAM : ", elementParam);
+        for (let x = 0; x < this.data.length; x++) {
+          const element = this.data[x];
+          console.log("ELEMENT : ", element);
+          this.dataTable.push({
+            parameter: element.parameter,
+            value: elementParam[`columns_${x}`],
+            lot_number: elementParam.lot_number,
+          });
+        }
+      }
       const body = {
         form_master: this.master_form.value,
         form: formID.value,
@@ -408,8 +507,6 @@ export default {
         product_desc: this.product_desc,
         parameters: this.dataTable,
       };
-
-      console.log(body);
 
       if (this.url == "add") {
         this.$axios
@@ -549,11 +646,35 @@ export default {
           .then((response) => {
             const data = response.data.data;
             this.name = data.txtName;
-            this.parameters = data.parameter;
+
+            let parameters = data.parameter.map((element) => {
+              if (
+                element.txtParameterValueType == "VALUE" &&
+                element.type_values.length > 0
+              ) {
+                let typeValues = element.type_values.map((x) => {
+                  x = {
+                    label: x,
+                    value: x,
+                  };
+
+                  return x;
+                });
+
+                element["type_values"] = typeValues;
+              } else {
+                element["type_values"] = this.parameter_values;
+              }
+
+              return element;
+            });
+
+            this.parameters = parameters;
             this.columnParameter.push({
               label: "Lot Number",
               field: "lot_number",
             });
+
             for (let x = 0; x < this.parameters.length; x++) {
               const element = this.parameters[x];
               this.data.push({
@@ -567,7 +688,6 @@ export default {
                 field: `columns_${x}`,
               });
             }
-
           })
           .catch((error) => {
             console.log(error);
@@ -575,7 +695,7 @@ export default {
       }
     },
     getOKP(form) {
-      console.log("FORM : ",form)
+      console.log("FORM : ", form);
       this.$axios
         .get("/parameter/okp", {
           params: {

@@ -174,6 +174,7 @@ export default {
       if (this.url == "edit") {
         this.label = "Edit Type OKP";
         const url = "/setting/type-okp/" + this.typeOKPID;
+        console.log(url)
         this.$axios
           .get(url)
           .then((response) => {

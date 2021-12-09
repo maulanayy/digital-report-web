@@ -35,26 +35,37 @@
           </div>
         </div>
         <div class="form-group row m-b-12">
+          <label class="col-form-label col-md-1">Form Name</label>
+          <div class="col-md-3">
+            <v-select
+              :options="forms"
+              name="form_name"
+              v-model="form_name"
+              placeholder="Select Form Name"
+            >
+            </v-select>
+          </div>
+
           <label class="col-form-label col-md-1">Product Name</label>
-          <div class="col-md-4">
-            <input
-              type="input"
-              class="form-control m-b-5"
-              placeholder="Product name"
+          <div class="col-md-3">
+            <v-select
+              :options="products"
               name="product_name"
               v-model="product_name"
-            />
+              placeholder="Select Product Name"
+            >
+            </v-select>
           </div>
 
           <label class="col-form-label col-md-1">No Document</label>
-          <div class="col-md-4">
-            <input
-              type="input"
-              class="form-control m-b-5"
-              placeholder="No Document"
+          <div class="col-md-3">
+            <v-select
+              :options="docs"
               name="no_document"
               v-model="no_document"
-            />
+              placeholder="Select Document Name"
+            >
+            </v-select>
           </div>
         </div>
         <b-button type="submit" variant="primary">Filter</b-button>
@@ -99,9 +110,9 @@
               @click="confirmApproval(props.row.id)"
               v-if="
                 !props.row.txtApprove &&
-                  userData.role != 4 &&
-                  userData.role != 2 &&
-                  userData.role != 5
+                  userData.intRoleID != 4 &&
+                  userData.intRoleID != 2 &&
+                  userData.intRoleID != 5
               "
               >Approve</b-button
             >
@@ -109,7 +120,7 @@
               variant="primary"
               class="mr-2"
               :to="'/form/edit/' + props.row.id"
-              v-if="!props.row.txtClosed && userData.role != 5"
+              v-if="!props.row.txtClosed && userData.intRoleID != 5"
               >Continue</b-button
             >
             <b-button
@@ -118,18 +129,18 @@
               @click="closed(props.row.id)"
               v-if="
                 !props.row.txtClosed &&
-                  userData.role != 4 &&
-                  userData.role != 2 &&
-                  userData.role != 5
+                  userData.intRoleID != 4 &&
+                  userData.intRoleID != 2 &&
+                  userData.intRoleID != 5
               "
               >Closed</b-button
             >
             <b-button
               variant="primary"
               class="mr-2"
-              @click="print(props.row.id,props.row.txtFormName)"
-              >Print</b-button
-            >
+              @click="print(props.row.id, props.row.txtFormName)"
+              >Download
+            </b-button>
           </span>
           <span v-else>
             {{ props.formattedRow[props.column.field] }}
@@ -203,12 +214,12 @@ export default {
           type: "number",
         },
         {
-          label: "Name",
+          label: "Form Name",
           field: "txtFormName",
         },
         {
-          label : "OKP",
-          field : "txtOKP",
+          label: "OKP",
+          field: "txtOKP",
         },
         {
           label: "Product",
@@ -244,8 +255,12 @@ export default {
       meta: {},
       date_start: "",
       date_end: "",
+      products: [],
       product_name: "",
+      docs: [],
       no_document: "",
+      forms: [],
+      form_name: "",
     };
   },
   created() {
@@ -370,7 +385,7 @@ export default {
           });
         });
     },
-    print(id,formName) {
+    print(id, formName) {
       const url = "/form-data/print/" + id;
       this.$axios({
         url: url,
@@ -385,6 +400,35 @@ export default {
         link.click();
       });
     },
+    getDataFilter() {
+      const url = "/form-data-parameter";
+      this.$axios
+        .get(url)
+        .then((response) => {
+          let data = response.data.data;
+
+          this.forms = data.form.map(x => {
+            return {
+              label : x.txtFormName,
+              value : x.id
+            }
+          })
+
+          this.docs = data.form.map(x => {
+            return {
+              label : x.txtNoDok,
+              value : x.txtNoDok
+            }
+          })
+        })
+        .catch((error) => {
+          this.$notify({
+            title: `Update Data Failed : ${error}`,
+            text: `Error`,
+            type: "error",
+          });
+        });
+    },
   },
   mounted() {
     const query = {
@@ -392,6 +436,7 @@ export default {
       limit: 5,
     };
     this.getData(query);
+    this.getDataFilter();
   },
 };
 </script>

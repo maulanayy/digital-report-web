@@ -287,6 +287,8 @@ export default {
           .get(url)
           .then((response) => {
             const data = response.data.data;
+            
+            console.log(data)
             this.name = data.txtFormName;
             this.no_document = data.txtNoDok;
             this.remark = data.txtRemark;

@@ -110,7 +110,7 @@
               <b-button
                 variant="danger"
                 class="mr-2"
-                @click="confirm(props.index)"
+                @click="confirm(props)"
                 >Delete</b-button
               >
             </span>
@@ -404,8 +404,12 @@ export default {
         this.param = "";
       }
     },
-    confirm(index) {
-      console.log(index);
+    confirm(props) {
+      const testCode = props.row.TEST_CODE
+      const index = this.data.findIndex(x => {
+        return x.TEST_CODE == testCode 
+      })
+
       this.data.splice(index, 1);
     },
   },

@@ -110,7 +110,7 @@ if (token !== "") {
 
 let axiosOptoins = {
   baseURL: "http://localhost:1337",
-  timeout: 180000, // 3 menit
+  timeout: 600000, // 3 menit
   headers: headers,
 };
 

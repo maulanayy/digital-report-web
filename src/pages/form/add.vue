@@ -147,7 +147,7 @@
           :pagination-options="{
             enabled: true,
             mode: 'records',
-            perPage: 20,
+            perPage: 50,
             position: 'bottom',
             dropdownAllowAll: false,
             perPageDropdownEnabled: false,
@@ -181,13 +181,13 @@
                 placeholder="Input Parameter"
                 name="name"
                 v-model="parametersValues[`columns_${props.index}`]"
-                v-if="parameters[props.index].txtParameterValueType == 'NUMBER'"
+                v-if="parameters[props.index].type_value == 'NUMBER'"
               />
               <v-select
                 placeholder="Input Parameter"
                 name="name"
                 v-model="parametersValues[`columns_${props.index}`]"
-                v-if="parameters[props.index].txtParameterValueType == 'VALUE'"
+                v-if="parameters[props.index].type_value == 'VALUE'"
                 :options="parameters[props.index].type_values"
               />
               <!-- </span>
@@ -246,6 +246,20 @@
         </vue-good-table>
       </form>
     </panel>
+    <b-overlay :show="loading" no-wrap>
+      <template #overlay>
+        <div
+          ref="dialog"
+          tabindex="-1"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="form-confirm-label"
+          class="text-center p-3"
+        >
+          <p><strong id="form-confirm-label">LOADING...</strong></p>
+        </div>
+      </template>
+    </b-overlay>
     <notifications position="top right" class="mt-3 ml-3" :speed="500" />
   </div>
 </template>
@@ -259,6 +273,7 @@ export default {
     return {
       editMode: 0,
       formData: {},
+      loading:false,
       name: "",
       masterFormID: "",
       url: "",
@@ -271,7 +286,6 @@ export default {
       product_date: "",
       expired_date: "",
       product_desc: "",
-      parameter_value: "",
       parameter_name_custom: "",
       param_type: "",
       min_value: 0,
@@ -366,8 +380,8 @@ export default {
   },
   methods: {
     addValue() {
-      if (
-        this.lot_number != null &&
+     if (
+        this.lot_number == "" &&
         this.parameter_name_custom == ""
       ) {
         this.$notify({
@@ -375,11 +389,11 @@ export default {
           text: `Warning`,
           type: "warning",
         });
-      } else {
-        const parameterValue =
-          this.lot_number != null
-            ? this.lot_number.value
-            : this.parameter_name_custom;
+      } else {  
+
+        const parameterValue = this.parameter_name_custom != "" ? this.parameter_name_custom : this.lot_number.value
+
+        console.log(parameterValue)
         const founded = this.dataParameter.find((x) => {
           return x.lot_number == parameterValue;
         });
@@ -392,23 +406,34 @@ export default {
         } else {
           let values = this.parametersValues;
           const keys = Object.keys(values);
-
           for (let x = 0; x < keys.length; x++) {
             const element = keys[x];
 
-            const value =
-              values[element].label != undefined
-                ? values[element].label
-                : values[`columns_${x}`];
-            values[element] = value;
+            if (values[element].value) {
+              values[element] = values[element].value
+            }
           }
 
           values["lot_number"] = parameterValue;
           this.dataParameter.push(values);
-          this.parameter_value = parameterValue;
         }
         this.parameter_name_custom = "";
+
         this.parametersValues = {};
+        for (let x = 0; x < this.columnParameter.length; x++) {
+          const element = this.columnParameter[x];
+          const foundParam = this.parameters.find(x => {
+            return x.intParameterID == element.label
+          })
+          if (foundParam){
+            if (foundParam.txtParameterValueType == "NUMBER") {
+              this.parametersValues[element.field] = foundParam.values
+            }
+          }
+          
+        }
+
+        console.log(this.parametersValues)
       }
     },
     editValue() {
@@ -422,10 +447,8 @@ export default {
           type: "warning",
         });
       } else {
-        const parameterValue =
-          this.lot_number.value != undefined
-            ? this.lot_number.value
-            : this.parameter_name_custom;
+        const parameterValue = this.parameter_name_custom != "" ? this.parameter_name_custom : this.lot_number.value
+
         const founded = this.dataParameter.find((x) => {
           return x.lot_number == parameterValue;
         });
@@ -434,19 +457,15 @@ export default {
             return x.lot_number == parameterValue;
           });
 
-          console.log("INDEX  : ", index);
-
           let values = this.parametersValues;
           const keys = Object.keys(values);
 
           for (let x = 0; x < keys.length; x++) {
             const element = keys[x];
 
-            const value =
-              values[element].label != undefined
-                ? values[element].label
-                : values[`columns_${x}`];
-            values[element] = value;
+            if (values[element].value) {
+              values[element] = values[element].value
+            }
           }
 
           values["lot_number"] = parameterValue;
@@ -573,7 +592,6 @@ export default {
               label: data.txtFormName,
               value: data.id,
             };
-            console.log(this.master_form);
             this.okp = data.txtOkp;
             this.no_doc = data.txtNoDok;
             this.product_name = data.txtProductName;
@@ -677,6 +695,9 @@ export default {
 
             for (let x = 0; x < this.parameters.length; x++) {
               const element = this.parameters[x];
+              if (element.txtParameterValueType == "NUMBER") {
+                this.parametersValues[`columns_${x}`] = element.values;
+              }
               this.data.push({
                 parameter: element.txtParameterName,
                 type: element.txtParameterType,
@@ -695,7 +716,6 @@ export default {
       }
     },
     getOKP(form) {
-      console.log("FORM : ", form);
       this.$axios
         .get("/parameter/okp", {
           params: {
@@ -818,27 +838,38 @@ export default {
     // },
     getValueParameter(lot) {
       const url = "/parameter/" + lot + "/lot-number";
+      console.log("URL : ",url)
+      this.loading = true
       this.$axios
         .get(url)
         .then((response) => {
+          this.loading = false
           const data = response.data.data.data;
+          // let newData = []
+          console.log(data)
           for (let x = 0; x < this.data.length; x++) {
-            const element = this.data[x];
+            let element = this.data[x];
             if (element.type == "oracle") {
               const param = data.find((x) => {
                 return element.parameter == x.TEST_CODE;
               });
-
-              if (param != null) {
-                if (param.MIN_VALUE == null || param.MAX_VALUE == null) {
-                  element.standard = "OK";
+              if (param) {
+                if (param.MIN_VALUE_NUM == 0 && param.MAX_VALUE_NUM == 0 || param.MIN_VALUE_NUM == null && param.MAX_VALUE_NUM == null) {
+                  element.standard = "";
+                  this.parametersValues[`columns_${x}`] = {
+                    label : param.RESULT_VALUE_CHAR,
+                    value : param.RESULT_VALUE_CHAR
+                  }
                 } else {
-                  element.standard = param.MIN_VALUE + "-" + param.MAX_VALUE;
+                  this.parametersValues[`columns_${x}`] = param.RESULT_VALUE_NUM
+                  element.standard = param.MIN_VALUE_NUM + "-" + param.MAX_VALUE_NUM;
                 }
               } else {
                 element.standard = "";
               }
+              // newData.push(element)
             }
+            // this.data = newData
           }
         })
         .catch((error) => {

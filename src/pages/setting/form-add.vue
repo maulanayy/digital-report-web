@@ -60,8 +60,18 @@
         </div>
 
         <div class="form-group row mb-1">
-          <label class="col-form-label col-md-2">Parameter MIN Value</label>
-          <div class="col-md-4">
+          <label class="col-form-label col-md-1">Type Parameter</label>
+          <div class="col-md-3">
+            <v-select
+              :options="types"
+              name="type_parameters"
+              v-model="type_parameters"
+              placeholder="Select Type Parameter"
+            >
+            </v-select>
+          </div>
+          <label class="col-form-label col-md-1">Parameter MIN Value</label>
+          <div class="col-md-3">
             <input
               type="input"
               class="form-control mb-1"
@@ -70,8 +80,8 @@
             />
           </div>
 
-          <label class="col-form-label col-md-2">Parameter MAX Value</label>
-          <div class="col-md-4">
+          <label class="col-form-label col-md-1">Parameter MAX Value</label>
+          <div class="col-md-3">
             <input
               type="input"
               class="form-control mb-1"
@@ -143,6 +153,17 @@ export default {
     return {
       label_form: "Create Form QC",
       label_button: "Create",
+      types : [
+        {
+          label: "VALUE",
+          value: "VALUE",
+        },
+        {
+          label: "NUMBER",
+          value: "NUMBER",
+        },
+      ],
+      type_parameters : "",
       params: [],
       param: "",
       no_doc: "",
@@ -350,7 +371,14 @@ export default {
     },
     async addParameter() {
       console.log(this.param.value);
-      let typeValue = "";
+      let typeValue = this.type_parameters.value;
+      if (!this.type_parameters.value) {
+        this.$notify({
+          title: `Warning`,
+          text: `Parameter Type Is Empty`,
+          type: "warning",
+        });
+      }
       if (!this.param.value && this.custom_parameter_name == "") {
         this.$notify({
           title: `Warning`,
@@ -359,16 +387,16 @@ export default {
         });
       } else {
         console.log("PARAM : ",this.param.value)
-        if (this.param.value) {
-          const url = "/parameter/" + this.param.value + "/oracle";
-          const type = await this.$axios.get(url);
+        // if (this.param.value) {
+        //   const url = "/parameter/" + this.param.value + "/oracle";
+        //   const type = await this.$axios.get(url);
 
-          if (!type.data.data.MIN_VALUE || !type.data.data.MAX_VALUE) {
-            typeValue = "VALUE";
-          } else {
-            typeValue = "NUMBER";
-          }
-        }
+        //   // if (!type.data.data.MIN_VALUE || !type.data.data.MAX_VALUE) {
+        //   //   typeValue = "VALUE";
+        //   // } else {
+        //   //   typeValue = "NUMBER";
+        //   // }
+        // }
 
         const parameter =
           this.custom_parameter_name != ""
@@ -381,11 +409,11 @@ export default {
         const typeParameter =
           this.custom_parameter_name != "" ? "custom" : "oracle";
 
-          if (minValue == "" || maxValue == "") {
-            typeValue = "VALUE";
-          }else{
-            typeValue = "NUMBER";
-          }
+          // if (minValue == "" || maxValue == "") {
+          //   typeValue = "VALUE";
+          // }else{
+          //   typeValue = "NUMBER";
+          // }
 
         if (this.custom_parameter_name != "" || this.param.value != "") {
           this.data.push({
@@ -402,6 +430,7 @@ export default {
         this.min_value = "";
         this.max_value = "";
         this.param = "";
+        this.type_parameters = "";
       }
     },
     confirm(props) {
